@@ -8,6 +8,11 @@ export const Theme = {
       font-weight: 400;
       font-size: 14px;
     `,
+    medium: css`
+      font-family: "Pretendard";
+      font-weight: 500;
+      font-size: 16px;
+    `,
     smallTitle: css`
       font-family: "Pretendard";
       font-weight: 600;
