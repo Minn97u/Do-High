@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 import styled from "styled-components";
+import { IoEye, IoEyeOff } from "react-icons/io5";
 import logo from "../assets/logo.svg";
 
 const Login = () => {
   const [userType, setUserType] = useState("general");
+  const [showPassword, setShowPassword] = useState(false);
 
   return (
     <Container>
@@ -21,7 +23,15 @@ const Login = () => {
       </TabContainer>
       <InputContainer>
         <Input type="text" placeholder="아이디" />
-        <Input type="password" placeholder="비밀번호" />
+        <PasswordContainer>
+          <Input
+            type={showPassword ? "text" : "password"}
+            placeholder="비밀번호"
+          />
+          <ToggleButton onClick={() => setShowPassword(!showPassword)}>
+            {showPassword ? <IoEyeOff /> : <IoEye />}
+          </ToggleButton>
+        </PasswordContainer>
       </InputContainer>
       <LoginButton>로그인</LoginButton>
       <Inquiry>관리자에게 찾기 문의하기</Inquiry>
@@ -94,6 +104,22 @@ const LoginButton = styled.button`
   border-radius: 50px;
   cursor: pointer;
   margin-bottom: 22px;
+`;
+
+const PasswordContainer = styled.div`
+  position: relative;
+  width: 100%;
+`;
+
+const ToggleButton = styled.div`
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-40%);
+  cursor: pointer;
+  font-size: 25px;
+  color: ${(props) => props.theme.colors.gray2};
+  user-select: none;
 `;
 
 const Inquiry = styled.div`
