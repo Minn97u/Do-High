@@ -28,12 +28,16 @@ export const Theme = {
       font-size: 24px;
       font-weight: 800;
     `,
+    Nanum: css`
+      font-family: "nanumsquare";
+    `,
   },
 
   colors: {
     mainC: "#FC5833",
-    subBlue: "#BBD7FE",
-    subGray: "#808080",
+    subBlue: "#94C1FF",
+    subOrange: "#FF8A3F",
+    subBrown: "#691D1D",
     white: "#ffffff",
     gray: "#F5F5F5",
     gray2: "#BFBFBF",

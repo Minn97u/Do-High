@@ -66,7 +66,8 @@ const Tab = styled.div`
   text-align: center;
   font-weight: 500;
   color: ${(props) => (props.active ? "black" : props.theme.colors.gray2)};
-  border-bottom: ${(props) => (props.active ? "3px solid #94C1FF" : "none")};
+  border-bottom: ${(props) =>
+    props.active ? `3px solid ${props.theme.colors.subBlue}` : "none"};
 `;
 
 const InputContainer = styled.div`
@@ -99,7 +100,7 @@ const LoginButton = styled.button`
   height: 48px;
   font-size: 16px;
   color: white;
-  background: linear-gradient(to right, #ff6d3a, #ff4c3a);
+  background: linear-gradient(to right, #ff5b2d, #f34f43);
   border: none;
   border-radius: 50px;
   cursor: pointer;
