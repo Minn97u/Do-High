@@ -62,7 +62,7 @@ const Alarm = () => {
 export default Alarm;
 
 const PageContainer = styled.div`
-  background-color: #f7f8fa;
+  background-color: ${(props) => props.theme.colors.gray};
   height: 100vh;
   display: flex;
   flex-direction: column;
@@ -73,8 +73,10 @@ const Header = styled.div`
   display: flex;
   align-items: center;
   width: 100%;
-  height: 70px;
   position: relative;
+  /* height: 50px; */
+  margin-bottom: 10px;
+  padding: 15px 0;
 `;
 
 const BackButton = styled.button`
@@ -84,16 +86,15 @@ const BackButton = styled.button`
   cursor: pointer;
   position: absolute;
   left: 22px;
-  top: 19px;
+  top: 12px;
 `;
 
 const Title = styled.h1`
+  ${(props) => props.theme.fonts.semibold};
   font-size: 18px;
-  font-weight: bold;
   margin: 0;
   text-align: center;
   flex: 1;
-  ${(props) => props.theme.fonts.smallTitle};
 `;
 
 const NotificationList = styled.div`
@@ -125,16 +126,18 @@ const Content = styled.div`
 
 const Type = styled.div`
   margin-bottom: 10px;
-  ${(props) => props.theme.fonts.default};
+  ${(props) => props.theme.fonts.regular};
+  font-size: 14px;
   color: ${(props) => props.theme.colors.gray3};
 `;
 
 const Message = styled.div`
-  font-size: 14px;
   ${(props) => props.theme.fonts.medium};
+  font-size: 16px;
 `;
 
 const Time = styled.div`
-  ${(props) => props.theme.fonts.default};
+  ${(props) => props.theme.fonts.regular};
+  font-size: 14px;
   color: ${(props) => props.theme.colors.gray3};
 `;
