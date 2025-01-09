@@ -3,27 +3,27 @@ import "./font.css";
 
 export const Theme = {
   fonts: {
-    default: css`
+    regular: css`
       font-family: "Pretendard";
       font-weight: 400;
-      font-size: 14px;
+      font-size: 12px;
     `,
     medium: css`
       font-family: "Pretendard";
       font-weight: 500;
-      font-size: 16px;
+      font-size: 14px;
     `,
-    smallTitle: css`
+    semiBold: css`
       font-family: "Pretendard";
       font-weight: 600;
-      font-size: 18px;
+      font-size: 16px;
     `,
-    subTitle: css`
+    bold: css`
       font-family: "Pretendard";
-      font-size: 22px;
-      font-weight: 800;
+      font-size: 18px;
+      font-weight: 700;
     `,
-    title: css`
+    extraBold: css`
       font-family: "Pretendard";
       font-size: 24px;
       font-weight: 800;
@@ -39,7 +39,7 @@ export const Theme = {
     subOrange: "#FF8A3F",
     subBrown: "#691D1D",
     white: "#ffffff",
-    gray: "#F5F5F5",
+    gray: "#F7F8FA",
     gray2: "#BFBFBF",
     gray3: "#A3A3A3",
     black2: "#282828",
