@@ -10,6 +10,10 @@ const GlobalStyle = createGlobalStyle`
     margin: 0;
     padding: 0;
     border: 0;
+    font-family: 'Pretendard';
+    font-weight: 400;
+    color: #0C0C0C;
+    font-weight: 400;
     text-decoration: none;
     box-sizing: border-box;
     line-height: 1.5em;
