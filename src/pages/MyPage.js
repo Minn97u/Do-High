@@ -12,6 +12,7 @@ import character5 from "../assets/characters/character5.svg";
 import character6 from "../assets/characters/character6.svg";
 import character7 from "../assets/characters/character7.svg";
 import character8 from "../assets/characters/character8.svg";
+import dropdownArrow from "../assets/dropdown.svg";
 import { useNavigate } from "react-router-dom";
 
 const MyPage = () => {
@@ -85,7 +86,7 @@ const MyPage = () => {
           </InfoItem>
           <ChangePassword onClick={handlePasswordChange}>
             비밀번호 변경
-            <Arrow>&gt;</Arrow>
+            <Arrow src={dropdownArrow} alt="arrow" />
           </ChangePassword>
         </InfoList>
       </Content>
@@ -240,8 +241,10 @@ const ChangePassword = styled.div`
   cursor: pointer;
 `;
 
-const Arrow = styled.span`
-  font-size: 18px;
+const Arrow = styled.img`
+  width: 14px;
+  height: 14px;
+  transform: rotate(-90deg);
   color: ${(props) => props.theme.colors.gray2};
 `;
 
