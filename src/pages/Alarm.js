@@ -4,6 +4,7 @@ import backBtn from "../assets/backBtn.svg";
 import flagIcon from "../assets/flag.svg";
 import coinIcon from "../assets/coin.svg";
 import speakerIcon from "../assets/speaker.svg";
+import { useNavigate } from "react-router-dom";
 
 const notifications = [
   {
@@ -30,10 +31,12 @@ const notifications = [
 ];
 
 const Alarm = () => {
+  const navigate = useNavigate();
+
   return (
     <PageContainer>
       <Header>
-        <BackButton>
+        <BackButton onClick={() => navigate(-1)}>
           <img src={backBtn} alt="뒤로가기" />
         </BackButton>
         <Title>알림</Title>
@@ -85,12 +88,12 @@ const BackButton = styled.button`
   font-size: 24px;
   cursor: pointer;
   position: absolute;
-  left: 22px;
+  left: 20px;
   top: 12px;
 `;
 
 const Title = styled.h1`
-  ${(props) => props.theme.fonts.semibold};
+  ${(props) => props.theme.fonts.semiBold};
   font-size: 18px;
   margin: 0;
   text-align: center;

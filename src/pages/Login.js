@@ -2,10 +2,16 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import { IoEye, IoEyeOff } from "react-icons/io5";
 import logo from "../assets/logo.svg";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
+  const navigate = useNavigate();
   const [userType, setUserType] = useState("general");
   const [showPassword, setShowPassword] = useState(false);
+
+  const handleLogin = () => {
+    navigate("/");
+  };
 
   return (
     <Container>
@@ -29,11 +35,11 @@ const Login = () => {
             placeholder="비밀번호"
           />
           <ToggleButton onClick={() => setShowPassword(!showPassword)}>
-            {showPassword ? <IoEyeOff /> : <IoEye />}
+            {showPassword ? <IoEye /> : <IoEyeOff />}
           </ToggleButton>
         </PasswordContainer>
       </InputContainer>
-      <LoginButton>로그인</LoginButton>
+      <LoginButton onClick={handleLogin}>로그인</LoginButton>
       <Inquiry>관리자에게 찾기 문의하기</Inquiry>
     </Container>
   );

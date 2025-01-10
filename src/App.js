@@ -3,6 +3,7 @@ import Home from "./pages/Main";
 import Login from "./pages/Login";
 import Alarm from "./pages/Alarm";
 import MyPage from "./pages/MyPage";
+import PwChange from "./pages/PwChange";
 import NotFoundPage from "./pages/NotFoundPage";
 import BoardList from "./pages/BoardList";
 import BoardDetail from "./pages/BoardDetail";
@@ -16,6 +17,7 @@ function App() {
         <Route path="/auth/login" element={<Login />} />
         <Route path="/alarm" element={<Alarm />} />
         <Route path="/mypage" element={<MyPage />} />
+        <Route path="/mypage/pwchange" element={<PwChange />} />
         <Route path="/BoardList" element={<BoardList />} />
         <Route path="/BoardList/:boardId" element={<BoardDetail />} />
         <Route path="*" element={<NotFoundPage />} />
