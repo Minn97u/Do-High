@@ -11,13 +11,13 @@ const Admin = () => {
         <Title>어드민</Title>
       </Header>
       <ButtonContainer>
-        <ActionButton onClick={() => navigate("/create-account")}>
+        <ActionButton onClick={() => navigate("/admin/create")}>
           새로운 계정 생성
         </ActionButton>
-        <ActionButton onClick={() => navigate("/manage-account")}>
+        <ActionButton onClick={() => navigate("/admin/manage")}>
           기존 계정 설정
         </ActionButton>
-        <ActionButton onClick={() => navigate("/create-post")}>
+        <ActionButton onClick={() => navigate("/admin/boardpost")}>
           게시글 작성
         </ActionButton>
         <Logout>
