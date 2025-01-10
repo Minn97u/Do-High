@@ -3,8 +3,10 @@ import styled from "styled-components";
 import { useForm } from "react-hook-form";
 import backBtn from "../assets/backBtn.svg";
 import { IoEye, IoEyeOff } from "react-icons/io5";
+import { useNavigate } from "react-router-dom";
 
 const PwChange = () => {
+  const navigate = useNavigate();
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -25,7 +27,7 @@ const PwChange = () => {
   return (
     <Container>
       <Header>
-        <BackButton>
+        <BackButton onClick={() => navigate(-1)}>
           <img src={backBtn} alt="뒤로가기" />
         </BackButton>
         <Title>비밀번호 변경</Title>
@@ -158,7 +160,7 @@ const Form = styled.form`
 
 const InputContainer = styled.div`
   width: 100%;
-  max-width: 360px;
+  max-width: 400px;
 `;
 
 const Label = styled.div`
@@ -215,7 +217,6 @@ const ErrorMessage = styled.div`
 
 const SaveButton = styled.button`
   width: 100%;
-  max-width: 350px;
   padding: 14px;
   ${(props) => props.theme.fonts.medium};
   font-size: 16px;

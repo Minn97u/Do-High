@@ -12,8 +12,10 @@ import character5 from "../assets/characters/character5.svg";
 import character6 from "../assets/characters/character6.svg";
 import character7 from "../assets/characters/character7.svg";
 import character8 from "../assets/characters/character8.svg";
+import { useNavigate } from "react-router-dom";
 
 const MyPage = () => {
+  const navigate = useNavigate();
   const [isPopupVisible, setPopupVisible] = useState(false);
   const [selectedCharacter, setSelectedCharacter] = useState(0);
 
@@ -27,6 +29,10 @@ const MyPage = () => {
 
   const handleCharacterSelect = (index) => {
     setSelectedCharacter(index);
+  };
+
+  const handlePasswordChange = () => {
+    navigate("/mypage/pwchange");
   };
 
   const characters = [
@@ -44,7 +50,7 @@ const MyPage = () => {
   return (
     <Container>
       <Header>
-        <BackButton>
+        <BackButton onClick={() => navigate(-1)}>
           <img src={backBtn} alt="뒤로가기" />
         </BackButton>
         <Title>내 정보 수정</Title>
@@ -77,7 +83,7 @@ const MyPage = () => {
             <Label>입사일</Label>
             <Value>2023-10-01</Value>
           </InfoItem>
-          <ChangePassword>
+          <ChangePassword onClick={handlePasswordChange}>
             비밀번호 변경
             <Arrow>&gt;</Arrow>
           </ChangePassword>
@@ -123,7 +129,7 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-  height: 100vh;
+  min-height: 100vh;
   background-color: ${(props) => props.theme.colors.gray};
 `;
 
@@ -141,14 +147,13 @@ const BackButton = styled.button`
   font-size: 24px;
   cursor: pointer;
   position: absolute;
-  left: 22px;
+  left: 20px;
   top: 12px;
 `;
 
 const Title = styled.h1`
   ${(props) => props.theme.fonts.semiBold};
   font-size: 18px;
-  margin: 0;
   text-align: center;
   flex: 1;
 `;
