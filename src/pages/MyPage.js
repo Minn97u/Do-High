@@ -1,7 +1,334 @@
-import React from "react";
+import React, { useState } from "react";
+import styled from "styled-components";
+import backBtn from "../assets/backBtn.svg";
+import profile from "../assets/profile.svg";
+import plus from "../assets/plus.svg";
+import check from "../assets/check.svg";
+import character1 from "../assets/characters/character1.svg";
+import character2 from "../assets/characters/character2.svg";
+import character3 from "../assets/characters/character3.svg";
+import character4 from "../assets/characters/character4.svg";
+import character5 from "../assets/characters/character5.svg";
+import character6 from "../assets/characters/character6.svg";
+import character7 from "../assets/characters/character7.svg";
+import character8 from "../assets/characters/character8.svg";
 
 const MyPage = () => {
-  return <div></div>;
+  const [isPopupVisible, setPopupVisible] = useState(false);
+  const [selectedCharacter, setSelectedCharacter] = useState(0);
+
+  const handleEditButtonClick = () => {
+    setPopupVisible(true);
+  };
+
+  const handleClosePopup = () => {
+    setPopupVisible(false);
+  };
+
+  const handleCharacterSelect = (index) => {
+    setSelectedCharacter(index);
+  };
+
+  const characters = [
+    profile,
+    character1,
+    character2,
+    character3,
+    character4,
+    character5,
+    character6,
+    character7,
+    character8,
+  ];
+
+  return (
+    <Container>
+      <Header>
+        <BackButton>
+          <img src={backBtn} alt="뒤로가기" />
+        </BackButton>
+        <Title>내 정보 수정</Title>
+      </Header>
+      <Content>
+        <ProfileImageWrapper>
+          <ProfileImage src={characters[selectedCharacter]} alt="profile" />
+          <EditButton onClick={handleEditButtonClick}>
+            <img src={plus} alt="plus" />
+          </EditButton>
+        </ProfileImageWrapper>
+        <InfoList>
+          <InfoItem>
+            <Label>이름</Label>
+            <Value>허재민</Value>
+          </InfoItem>
+          <InfoItem>
+            <Label>소속</Label>
+            <Value>음성 2센터</Value>
+          </InfoItem>
+          <InfoItem>
+            <Label>사번</Label>
+            <Value>2022080101</Value>
+          </InfoItem>
+          <InfoItem>
+            <Label>레벨</Label>
+            <Value>F1-I</Value>
+          </InfoItem>
+          <InfoItem>
+            <Label>입사일</Label>
+            <Value>2023-10-01</Value>
+          </InfoItem>
+          <ChangePassword>
+            비밀번호 변경
+            <Arrow>&gt;</Arrow>
+          </ChangePassword>
+        </InfoList>
+      </Content>
+      {isPopupVisible && (
+        <PopupOverlay onClick={handleClosePopup}>
+          <Popup onClick={(e) => e.stopPropagation()}>
+            <Divider />
+            <PopupTitle>캐릭터 선택</PopupTitle>
+            <CharacterGrid>
+              {characters.map((character, index) => (
+                <CharacterWrapper
+                  key={index}
+                  onClick={() => handleCharacterSelect(index)}
+                >
+                  <CharacterImageWrapper>
+                    <CharacterImage
+                      src={character}
+                      alt={`character-${index}`}
+                      isSelected={selectedCharacter === index}
+                    />
+                    {selectedCharacter === index && (
+                      <CheckMark>
+                        <img src={check} alt="check" />
+                      </CheckMark>
+                    )}
+                  </CharacterImageWrapper>
+                </CharacterWrapper>
+              ))}
+            </CharacterGrid>
+            <SaveButton onClick={handleClosePopup}>저장하기</SaveButton>
+          </Popup>
+        </PopupOverlay>
+      )}
+    </Container>
+  );
 };
 
 export default MyPage;
+
+const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100vh;
+  background-color: ${(props) => props.theme.colors.gray};
+`;
+
+const Header = styled.div`
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 15px 0;
+  position: relative;
+`;
+
+const BackButton = styled.button`
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  position: absolute;
+  left: 22px;
+  top: 12px;
+`;
+
+const Title = styled.h1`
+  ${(props) => props.theme.fonts.semiBold};
+  font-size: 18px;
+  margin: 0;
+  text-align: center;
+  flex: 1;
+`;
+
+const Content = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 20px;
+  margin-top: 20px;
+`;
+
+const ProfileImageWrapper = styled.div`
+  position: relative;
+  width: 104px;
+  height: 104px;
+  margin-right: 7px;
+`;
+
+const ProfileImage = styled.img`
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+`;
+
+const EditButton = styled.div`
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  background-color: ${(props) => props.theme.colors.mainC};
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: solid 4px ${(props) => props.theme.colors.gray};
+
+  img {
+    width: 12px;
+    height: 12px;
+  }
+`;
+
+const InfoList = styled.div`
+  width: 100%;
+  margin-top: 60px;
+`;
+
+const InfoItem = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  background-color: none;
+  border: 1px solid #e6e7e8;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  height: 60px;
+`;
+
+const Label = styled.div`
+  ${(props) => props.theme.fonts.semiBold};
+`;
+
+const Value = styled.div`
+  ${(props) => props.theme.fonts.medium};
+  font-size: 16px;
+  color: ${(props) => props.theme.colors.gray2};
+`;
+
+const ChangePassword = styled.div`
+  ${(props) => props.theme.fonts.semiBold};
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  background-color: ${(props) => props.theme.colors.gray};
+  border: 1px solid ${(props) => props.theme.colors.gray2};
+  border-radius: 10px;
+  margin-top: 20px;
+  font-size: 16px;
+  color: #333333;
+  cursor: pointer;
+`;
+
+const Arrow = styled.span`
+  font-size: 18px;
+  color: ${(props) => props.theme.colors.gray2};
+`;
+
+const PopupOverlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  justify-content: center;
+  align-items: end;
+`;
+
+const Popup = styled.div`
+  background: ${(props) => props.theme.colors.white};
+  width: 100%;
+  padding: 0 20px;
+  border-radius: 20px 20px 0 0;
+  height: 570px;
+`;
+
+const Divider = styled.div`
+  width: 37.5px;
+  height: 4px;
+  background-color: ${(props) => props.theme.colors.gray};
+  border-radius: 3px;
+  margin: auto;
+  margin-top: 9px;
+  margin-bottom: 31px;
+`;
+
+const PopupTitle = styled.h2`
+  ${(props) => props.theme.fonts.semiBold};
+  font-size: 18px;
+  text-align: center;
+  margin-bottom: 40px;
+`;
+
+const CharacterGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  margin-bottom: 45px;
+`;
+
+const CharacterWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+`;
+
+const CharacterImageWrapper = styled.div`
+  position: relative;
+  width: 80px;
+  height: 80px;
+`;
+
+const CharacterImage = styled.img`
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  outline: ${(props) => (props.isSelected ? "3px solid #FF6B6B" : "none")};
+`;
+
+const CheckMark = styled.div`
+  position: absolute;
+  bottom: 2px;
+  right: -7px;
+  background: ${(props) => props.theme.colors.mainC};
+  border-radius: 50%;
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  img {
+    width: 14px;
+    height: 10px;
+  }
+`;
+const SaveButton = styled.button`
+  width: 100%;
+  background: linear-gradient(to right, #ff5b2d, #f34f43);
+  ${(props) => props.theme.fonts.medium};
+  color: ${(props) => props.theme.colors.white};
+  padding: 14px;
+  border-radius: 50px;
+  font-size: 16px;
+  cursor: pointer;
+`;
