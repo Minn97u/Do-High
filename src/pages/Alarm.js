@@ -90,7 +90,7 @@ const BackButton = styled.button`
 `;
 
 const Title = styled.h1`
-  ${(props) => props.theme.fonts.semibold};
+  ${(props) => props.theme.fonts.semiBold};
   font-size: 18px;
   margin: 0;
   text-align: center;
