@@ -196,7 +196,7 @@ const Input = styled.input`
   }
 `;
 
-const ToggleButton = styled.button`
+const ToggleButton = styled.span`
   position: absolute;
   right: 10px;
   top: 57%;

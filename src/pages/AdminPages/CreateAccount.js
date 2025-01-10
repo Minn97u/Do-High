@@ -251,7 +251,7 @@ const Label = styled.div`
 const Input = styled.input`
   width: 100%;
   padding: 14px;
-  ${(props) => props.theme.fonts.semiBold};
+  ${(props) => props.theme.fonts.medium};
   font-size: 14px;
   background-color: ${(props) =>
     props.hasError ? "#FFEEEB" : props.theme.colors.gray};
