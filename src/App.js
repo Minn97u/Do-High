@@ -1,6 +1,7 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 import Home from "./pages/Main";
 import Login from "./pages/Login";
+import Admin from "./pages/Admin";
 import Alarm from "./pages/Alarm";
 import MyPage from "./pages/MyPage";
 import PwChange from "./pages/PwChange";
@@ -15,6 +16,7 @@ function App() {
         <Route path="/" element={<Navigate to="/main" />} />
         <Route path="/main" element={<Home />} />
         <Route path="/auth/login" element={<Login />} />
+        <Route path="/admin" element={<Admin />} />
         <Route path="/alarm" element={<Alarm />} />
         <Route path="/mypage" element={<MyPage />} />
         <Route path="/mypage/pwchange" element={<PwChange />} />
