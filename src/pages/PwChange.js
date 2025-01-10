@@ -217,6 +217,7 @@ const ErrorMessage = styled.div`
 
 const SaveButton = styled.button`
   width: 100%;
+  max-width: 400px;
   padding: 14px;
   ${(props) => props.theme.fonts.medium};
   font-size: 16px;
