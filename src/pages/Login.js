@@ -106,7 +106,7 @@ const LoginButton = styled.button`
   height: 48px;
   font-size: 16px;
   color: white;
-  background: linear-gradient(to right, #ff5b2d, #f34f43);
+  background: ${(props) => props.theme.colors.btn};
   border: none;
   border-radius: 50px;
   cursor: pointer;

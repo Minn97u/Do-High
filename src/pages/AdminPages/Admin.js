@@ -69,7 +69,7 @@ const ActionButton = styled.button`
   ${(props) => props.theme.fonts.semiBold};
   font-size: 16px;
   color: ${(props) => props.theme.colors.white};
-  background: linear-gradient(to right, #ff5b2d, #f34f43);
+  background: ${(props) => props.theme.colors.btn};
   border-radius: 10px;
   cursor: pointer;
 `;

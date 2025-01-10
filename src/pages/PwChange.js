@@ -222,7 +222,7 @@ const SaveButton = styled.button`
   font-size: 16px;
   border-radius: 50px;
   background: ${(props) =>
-    props.disabled ? "#a6a8ab" : "linear-gradient(to right, #ff5b2d, #f34f43)"};
+    props.disabled ? props.theme.colors.btnGray : props.theme.colors.btn};
   color: ${(props) => (props.disabled ? "#d3d3d5" : "#FFFFFF")};
   cursor: ${(props) => (props.disabled ? "not-allowed" : "pointer")};
   margin-top: auto;

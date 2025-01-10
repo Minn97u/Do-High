@@ -329,7 +329,7 @@ const CheckMark = styled.div`
 `;
 const SaveButton = styled.button`
   width: 100%;
-  background: linear-gradient(to right, #ff5b2d, #f34f43);
+  background: ${(props) => props.theme.colors.btn};
   ${(props) => props.theme.fonts.medium};
   color: ${(props) => props.theme.colors.white};
   padding: 14px;

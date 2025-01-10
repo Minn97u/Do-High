@@ -44,6 +44,8 @@ export const Theme = {
     gray3: "#A3A3A3",
     black2: "#282828",
     black3: "#0C0C0C",
+    btn: "linear-gradient(to right, #ff5b2d, #f34f43)",
+    btnGray: "#A6A8AB",
     black: "#000",
   },
   breakpoints: {},
