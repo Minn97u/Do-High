@@ -1,14 +1,13 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import { useForm } from "react-hook-form";
-import backBtn from "../assets/backBtn.svg";
 import { IoEye, IoEyeOff } from "react-icons/io5";
+import backBtn from "../../../assets/backBtn.svg";
 import { useNavigate } from "react-router-dom";
 
-const PwChange = () => {
+const ManageIdPw = () => {
   const navigate = useNavigate();
-  const [showCurrentPassword, setShowCurrentPassword] = useState(false);
-  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const {
@@ -20,77 +19,81 @@ const PwChange = () => {
     mode: "onChange",
   });
 
-  const onSubmit = (data) => {
-    console.log("Form Submitted:", data);
+  const username = watch("username");
+
+  const onSubmit = () => {
+    navigate("/admin/manage");
   };
+
+  const isUsernameValid = username && /^[a-zA-Z]+$/.test(username);
 
   return (
     <Container>
       <Header>
-        <BackButton onClick={() => navigate(-1)}>
+        <BackButton onClick={() => navigate("/admin/manage")}>
           <img src={backBtn} alt="뒤로가기" />
         </BackButton>
-        <Title>비밀번호 변경</Title>
+        <Title>아이디, 비밀번호</Title>
       </Header>
       <Form onSubmit={handleSubmit(onSubmit)}>
         <InputContainer>
-          <Label>기존 비밀번호</Label>
-          <PasswordContainer>
-            <Input
-              type={showCurrentPassword ? "text" : "password"}
-              placeholder="기존 비밀번호 입력"
-              hasError={!!errors.currentPassword}
-              {...register("currentPassword", {
-                required: "기존 비밀번호를 입력해주세요.",
-              })}
-            />
-            <ToggleButton
-              onClick={() => setShowCurrentPassword(!showCurrentPassword)}
-            >
-              {showCurrentPassword ? <IoEye /> : <IoEyeOff />}
-            </ToggleButton>
-          </PasswordContainer>
-          {errors.currentPassword && (
-            <ErrorMessage>{errors.currentPassword.message}</ErrorMessage>
+          <Label>새로운 아이디를 입력해주세요</Label>
+          <Input
+            type="text"
+            placeholder="영문 이름으로 입력"
+            hasError={!!errors.username}
+            {...register("username", {
+              required: "아이디를 입력해주세요.",
+              pattern: {
+                value: /^[a-zA-Z]+$/,
+                message: "영문으로만 입력해주세요.",
+              },
+            })}
+          />
+          {errors.username ? (
+            <ErrorMessage>{errors.username.message}</ErrorMessage>
+          ) : (
+            isUsernameValid && (
+              <SuccessMessage>사용 가능한 아이디입니다.</SuccessMessage>
+            )
           )}
         </InputContainer>
 
         <InputContainer>
-          <Label>신규 비밀번호</Label>
+          <Label>새로운 비밀번호를 입력해주세요</Label>
           <PasswordContainer>
             <Input
-              type={showNewPassword ? "text" : "password"}
+              type={showPassword ? "text" : "password"}
               placeholder="영문, 숫자 포함 8자 이상"
-              hasError={!!errors.newPassword}
-              {...register("newPassword", {
-                required: "신규 비밀번호를 입력해주세요.",
+              hasError={!!errors.password}
+              {...register("password", {
+                required: "비밀번호를 입력해주세요.",
                 pattern: {
                   value: /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/,
-                  message:
-                    "비밀번호는 영문, 숫자를 포함하고 8자 이상이어야 합니다.",
+                  message: "영문, 숫자 포함 8자 이상으로 입력해주세요.",
                 },
               })}
             />
-            <ToggleButton onClick={() => setShowNewPassword(!showNewPassword)}>
-              {showNewPassword ? <IoEye /> : <IoEyeOff />}
+            <ToggleButton onClick={() => setShowPassword(!showPassword)}>
+              {showPassword ? <IoEye /> : <IoEyeOff />}
             </ToggleButton>
           </PasswordContainer>
-          {errors.newPassword && (
-            <ErrorMessage>{errors.newPassword.message}</ErrorMessage>
+          {errors.password && (
+            <ErrorMessage>{errors.password.message}</ErrorMessage>
           )}
         </InputContainer>
 
         <InputContainer>
-          <Label>신규 비밀번호 확인</Label>
+          <Label>새로운 비밀번호를 확인해주세요</Label>
           <PasswordContainer>
             <Input
               type={showConfirmPassword ? "text" : "password"}
-              placeholder="신규 비밀번호 입력"
+              placeholder="비밀번호 확인"
               hasError={!!errors.confirmPassword}
               {...register("confirmPassword", {
                 required: "비밀번호를 다시 입력해주세요.",
                 validate: (value) =>
-                  value === watch("newPassword") ||
+                  value === watch("password") ||
                   "비밀번호가 일치하지 않습니다.",
               })}
             />
@@ -105,15 +108,15 @@ const PwChange = () => {
           )}
         </InputContainer>
 
-        <SaveButton type="submit" disabled={!isValid}>
+        <SubmitButton type="submit" disabled={!isValid}>
           변경하기
-        </SaveButton>
+        </SubmitButton>
       </Form>
     </Container>
   );
 };
 
-export default PwChange;
+export default ManageIdPw;
 
 const Container = styled.div`
   display: flex;
@@ -178,6 +181,7 @@ const PasswordContainer = styled.div`
 
 const Input = styled.input`
   width: 100%;
+  ${(props) => props.theme.fonts.medium};
   padding: 14px;
   font-size: 14px;
   background-color: ${(props) =>
@@ -215,7 +219,14 @@ const ErrorMessage = styled.div`
   margin-left: 4px;
 `;
 
-const SaveButton = styled.button`
+const SuccessMessage = styled.div`
+  color: ${(props) => props.theme.colors.subBlue};
+  font-size: 12px;
+  margin-top: 6px;
+  margin-left: 4px;
+`;
+
+const SubmitButton = styled.button`
   width: 100%;
   max-width: 400px;
   padding: 14px;
