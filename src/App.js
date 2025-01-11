@@ -45,6 +45,7 @@ function App() {
         <Route path="/mypage-entry" element={<MypageEntry />} />
         <Route path="/mypage" element={<MyPage />} />
         <Route path="/mypage/pwchange" element={<PwChange />} />
+
         <Route path="/boardPost" element={<BoardPost />} />
         <Route path="/BoardList" element={<BoardList />} />
         <Route path="/BoardList/:boardId" element={<BoardDetail />} />

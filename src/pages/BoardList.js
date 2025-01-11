@@ -3,11 +3,14 @@ import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import backBtn from "../assets/backBtn.svg";
 import dropdownArrow from "../assets/dropdown.svg";
+import writeIcon from "../assets/write.svg"; // 작성 아이콘
 
 const BoardList = () => {
   const navigate = useNavigate();
   const [sortOpen, setSortOpen] = useState(false);
   const [sortOption, setSortOption] = useState("최신순");
+
+  const isAdmin = localStorage.getItem("isAdmin") === "true";
 
   const posts = [
     {
@@ -75,7 +78,7 @@ const BoardList = () => {
         {posts.map((post) => (
           <ListItem
             key={post.id}
-            onClick={() => navigate("/boardList/:boardId")}
+            onClick={() => navigate(`/boardList/${post.id}`)}
           >
             <ItemTitle>{post.title}</ItemTitle>
             <ItemContent>{post.content}</ItemContent>
@@ -83,6 +86,12 @@ const BoardList = () => {
           </ListItem>
         ))}
       </ListContainer>
+
+      {isAdmin && (
+        <WriteButton onClick={() => navigate("/boardPost")}>
+          <img src={writeIcon} alt="게시글 작성" />
+        </WriteButton>
+      )}
     </Container>
   );
 };
@@ -181,6 +190,7 @@ const ListItem = styled.div`
   padding: 20px;
   padding-top: 24px;
   margin-bottom: 8px;
+  cursor: pointer;
 `;
 
 const ItemTitle = styled.h2`
@@ -200,7 +210,26 @@ const ItemContent = styled.p`
 
 const ItemDate = styled.p`
   ${(props) => props.theme.fonts.regular};
-  font-size: 14px;
   font-size: 12px;
   color: ${(props) => props.theme.colors.gray2};
+`;
+
+const WriteButton = styled.button`
+  position: fixed;
+  bottom: 72px;
+  right: 20px;
+  width: 48px;
+  height: 48px;
+  border: none;
+  border-radius: 50%;
+  background-color: ${(props) => props.theme.colors.mainC};
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  img {
+    width: 31px;
+    height: 31px;
+  }
 `;
