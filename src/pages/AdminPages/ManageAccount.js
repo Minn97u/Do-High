@@ -15,7 +15,7 @@ const ManageAccount = () => {
   return (
     <Container>
       <Header>
-        <BackButton onClick={() => navigate("/admin")}>
+        <BackButton onClick={() => navigate("/admin/search")}>
           <img src={backBtn} alt="뒤로가기" />
         </BackButton>
         <Title>구성원 정보 설정</Title>

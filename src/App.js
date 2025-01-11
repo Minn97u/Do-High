@@ -4,6 +4,7 @@ import Login from "./pages/Login";
 import Admin from "./pages/AdminPages/Admin";
 import CreateAccount from "./pages/AdminPages/CreateAccount";
 import CreateAccountNext from "./pages/AdminPages/CreateAccountNext";
+import SearchAccount from "./pages/AdminPages/SearchAccount";
 import ManageAccount from "./pages/AdminPages/ManageAccount";
 import ManageName from "./pages/AdminPages/ManagePages/ManageName";
 import ManageWorkplace from "./pages/AdminPages/ManagePages/ManageWorkplace";
@@ -30,6 +31,7 @@ function App() {
         <Route path="/admin" element={<Admin />} />
         <Route path="/admin/create" element={<CreateAccount />} />
         <Route path="/admin/create-next" element={<CreateAccountNext />} />
+        <Route path="/admin/search" element={<SearchAccount />} />
         <Route path="/admin/manage" element={<ManageAccount />} />
         <Route path="/admin/manage/name" element={<ManageName />} />
         <Route path="/admin/manage/workplace" element={<ManageWorkplace />} />

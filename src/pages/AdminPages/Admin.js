@@ -14,7 +14,7 @@ const Admin = () => {
         <ActionButton onClick={() => navigate("/admin/create")}>
           새로운 계정 생성
         </ActionButton>
-        <ActionButton onClick={() => navigate("/admin/manage")}>
+        <ActionButton onClick={() => navigate("/admin/search")}>
           기존 계정 설정
         </ActionButton>
         <ActionButton onClick={() => navigate("/admin/boardpost")}>
