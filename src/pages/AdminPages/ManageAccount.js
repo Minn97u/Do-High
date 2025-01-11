@@ -15,7 +15,7 @@ const ManageAccount = () => {
   return (
     <Container>
       <Header>
-        <BackButton onClick={() => navigate(-1)}>
+        <BackButton onClick={() => navigate("/admin")}>
           <img src={backBtn} alt="뒤로가기" />
         </BackButton>
         <Title>구성원 정보 설정</Title>
@@ -25,42 +25,42 @@ const ManageAccount = () => {
           <ProfileImage src={profile} alt="Profile" />
         </ProfileImageWrapper>
         <InfoList>
-          <InfoItem onClick={() => handleNavigation("/manage/name")}>
+          <InfoItem onClick={() => handleNavigation("/admin/manage/name")}>
             <Label>이름</Label>
             <ValueWrapper>
               <Value>허재민</Value>
               <Arrow src={dropdownArrow} alt="arrow" />
             </ValueWrapper>
           </InfoItem>
-          <InfoItem onClick={() => handleNavigation("/manage/affiliation")}>
+          <InfoItem onClick={() => handleNavigation("/admin/manage/workplace")}>
             <Label>소속</Label>
             <ValueWrapper>
               <Value>음성 2센터 2</Value>
               <Arrow src={dropdownArrow} alt="arrow" />
             </ValueWrapper>
           </InfoItem>
-          <InfoItem>
+          <InfoItem onClick={() => handleNavigation("/admin/manage/number")}>
             <Label>사번</Label>
             <ValueWrapper>
               <Value>2022080101</Value>
               <Arrow src={dropdownArrow} alt="arrow" />
             </ValueWrapper>
           </InfoItem>
-          <InfoItem onClick={() => handleNavigation("/manage/level")}>
+          <InfoItem onClick={() => handleNavigation("/admin/manage/level")}>
             <Label>레벨</Label>
             <ValueWrapper>
               <Value>F1-I</Value>
               <Arrow src={dropdownArrow} alt="arrow" />
             </ValueWrapper>
           </InfoItem>
-          <InfoItem onClick={() => handleNavigation("/manage/join-date")}>
+          <InfoItem onClick={() => handleNavigation("/admin/manage/date")}>
             <Label>입사일</Label>
             <ValueWrapper>
               <Value>2023-10-01</Value>
               <Arrow src={dropdownArrow} alt="arrow" />
             </ValueWrapper>
           </InfoItem>
-          <InfoItem onClick={() => handleNavigation("/manage/account")}>
+          <InfoItem onClick={() => handleNavigation("/admin/manage/account")}>
             <Label>아이디, 비밀번호</Label>
             <ValueWrapper>
               <Arrow src={dropdownArrow} alt="arrow" />
@@ -130,6 +130,7 @@ const ProfileImage = styled.img`
 
 const InfoList = styled.div`
   width: 100%;
+  max-width: 400px;
 `;
 
 const InfoItem = styled.div`
@@ -141,6 +142,7 @@ const InfoItem = styled.div`
   border: 1px solid #ececec;
   border-radius: 10px;
   margin-bottom: 20px;
+  cursor: pointer;
 `;
 
 const Label = styled.div`

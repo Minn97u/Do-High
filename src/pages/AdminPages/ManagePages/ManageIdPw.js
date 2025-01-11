@@ -2,10 +2,10 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import { useForm } from "react-hook-form";
 import { IoEye, IoEyeOff } from "react-icons/io5";
-import backBtn from "../../assets/backBtn.svg";
+import backBtn from "../../../assets/backBtn.svg";
 import { useNavigate } from "react-router-dom";
 
-const CreateAccountNext = () => {
+const ManageIdPw = () => {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -22,8 +22,7 @@ const CreateAccountNext = () => {
   const username = watch("username");
 
   const onSubmit = () => {
-    alert("계정이 성공적으로 생성되었습니다.");
-    navigate("/admin");
+    navigate("/admin/manage");
   };
 
   const isUsernameValid = username && /^[a-zA-Z]+$/.test(username);
@@ -31,14 +30,14 @@ const CreateAccountNext = () => {
   return (
     <Container>
       <Header>
-        <BackButton onClick={() => navigate("/admin/create")}>
+        <BackButton onClick={() => navigate("/admin/manage")}>
           <img src={backBtn} alt="뒤로가기" />
         </BackButton>
-        <Title>계정 생성</Title>
+        <Title>아이디, 비밀번호</Title>
       </Header>
       <Form onSubmit={handleSubmit(onSubmit)}>
         <InputContainer>
-          <Label>아이디</Label>
+          <Label>새로운 아이디를 입력해주세요</Label>
           <Input
             type="text"
             placeholder="영문 이름으로 입력"
@@ -61,7 +60,7 @@ const CreateAccountNext = () => {
         </InputContainer>
 
         <InputContainer>
-          <Label>비밀번호</Label>
+          <Label>새로운 비밀번호를 입력해주세요</Label>
           <PasswordContainer>
             <Input
               type={showPassword ? "text" : "password"}
@@ -85,7 +84,7 @@ const CreateAccountNext = () => {
         </InputContainer>
 
         <InputContainer>
-          <Label>비밀번호 확인</Label>
+          <Label>새로운 비밀번호를 확인해주세요</Label>
           <PasswordContainer>
             <Input
               type={showConfirmPassword ? "text" : "password"}
@@ -110,14 +109,14 @@ const CreateAccountNext = () => {
         </InputContainer>
 
         <SubmitButton type="submit" disabled={!isValid}>
-          생성하기
+          변경하기
         </SubmitButton>
       </Form>
     </Container>
   );
 };
 
-export default CreateAccountNext;
+export default ManageIdPw;
 
 const Container = styled.div`
   display: flex;
