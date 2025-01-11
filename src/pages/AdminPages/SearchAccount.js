@@ -49,7 +49,7 @@ const SearchAccount = () => {
         <BackButton onClick={() => navigate("/admin")}>
           <img src={backBtn} alt="뒤로가기" />
         </BackButton>
-        <Title>기존 계정 찾기</Title>
+        <Title>기존 계정 설정</Title>
       </Header>
       <Content>
         <InputContainer>

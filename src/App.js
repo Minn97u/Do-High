@@ -14,6 +14,7 @@ import ManageDate from "./pages/AdminPages/ManagePages/ManageDate";
 import ManageIdPw from "./pages/AdminPages/ManagePages/ManageIdPw";
 import BoardPost from "./pages/AdminPages/BoardPost";
 import Alarm from "./pages/Alarm";
+import MypageEntry from "./pages/MypageEntry";
 import MyPage from "./pages/MyPage";
 import PwChange from "./pages/PwChange";
 import NotFoundPage from "./pages/NotFoundPage";
@@ -41,6 +42,7 @@ function App() {
         <Route path="/admin/manage/account" element={<ManageIdPw />} />
 
         <Route path="/alarm" element={<Alarm />} />
+        <Route path="/mypage-entry" element={<MypageEntry />} />
         <Route path="/mypage" element={<MyPage />} />
         <Route path="/mypage/pwchange" element={<PwChange />} />
         <Route path="/boardPost" element={<BoardPost />} />
