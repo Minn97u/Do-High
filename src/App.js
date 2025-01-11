@@ -13,6 +13,7 @@ import ManageLV from "./pages/AdminPages/ManagePages/ManageLV";
 import ManageDate from "./pages/AdminPages/ManagePages/ManageDate";
 import ManageIdPw from "./pages/AdminPages/ManagePages/ManageIdPw";
 import BoardPost from "./pages/AdminPages/BoardPost";
+import BoardEdit from "./pages/AdminPages/BoardEdit";
 import Alarm from "./pages/Alarm";
 import MypageEntry from "./pages/MypageEntry";
 import MyPage from "./pages/MyPage";
@@ -46,6 +47,8 @@ function App() {
         <Route path="/mypage" element={<MyPage />} />
         <Route path="/mypage/pwchange" element={<PwChange />} />
 
+        <Route path="/boardPost" element={<BoardPost />} />
+        <Route path="/boardEdit" element={<BoardEdit />} />
         <Route path="/boardPost" element={<BoardPost />} />
         <Route path="/BoardList" element={<BoardList />} />
         <Route path="/BoardList/:boardId" element={<BoardDetail />} />
