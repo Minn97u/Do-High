@@ -3,7 +3,7 @@ import styled from "styled-components";
 import backBtn from "../../assets/backBtn.svg";
 import { useNavigate } from "react-router-dom";
 
-const BoardPost = () => {
+const BoardEdit = () => {
   const navigate = useNavigate();
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
@@ -20,10 +20,10 @@ const BoardPost = () => {
   return (
     <Container>
       <Header>
-        <BackButton onClick={() => navigate(-1)}>
+        <BackButton onClick={() => navigate(`/boardList/:id`)}>
           <img src={backBtn} alt="뒤로가기" />
         </BackButton>
-        <HeaderTitle>게시글 작성</HeaderTitle>
+        <HeaderTitle>게시글 수정</HeaderTitle>
       </Header>
 
       <Content>
@@ -52,13 +52,13 @@ const BoardPost = () => {
         disabled={isButtonDisabled}
         onClick={handleSubmit}
       >
-        작성 완료
+        수정 완료
       </SubmitButton>
     </Container>
   );
 };
 
-export default BoardPost;
+export default BoardEdit;
 
 const Container = styled.div`
   display: flex;

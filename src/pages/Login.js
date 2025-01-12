@@ -10,6 +10,15 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
 
   const handleLogin = () => {
+    if (userType === "admin") {
+      const fakeToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...";
+      localStorage.setItem("accessToken", fakeToken);
+      localStorage.setItem("isAdmin", "true");
+    } else {
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("isAdmin");
+    }
+
     navigate("/");
   };
 
@@ -96,21 +105,6 @@ const Input = styled.input`
   ::placeholder {
     color: ${(props) => props.theme.colors.gray2};
   }
-  &::-webkit-input-placeholder {
-    color: ${(props) => props.theme.colors.gray2};
-  }
-`;
-
-const LoginButton = styled.button`
-  width: 89%;
-  height: 48px;
-  font-size: 16px;
-  color: white;
-  background: ${(props) => props.theme.colors.btn};
-  border: none;
-  border-radius: 50px;
-  cursor: pointer;
-  margin-bottom: 22px;
 `;
 
 const PasswordContainer = styled.div`
@@ -127,6 +121,18 @@ const ToggleButton = styled.div`
   font-size: 25px;
   color: ${(props) => props.theme.colors.gray2};
   user-select: none;
+`;
+
+const LoginButton = styled.button`
+  width: 89%;
+  height: 48px;
+  font-size: 16px;
+  color: white;
+  background: ${(props) => props.theme.colors.btn};
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  margin-bottom: 22px;
 `;
 
 const Inquiry = styled.div`
