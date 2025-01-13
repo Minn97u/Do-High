@@ -333,16 +333,16 @@ const Percentage = styled.div`
   margin-top: 4px;
 `;
 
-const Coin = styled.div`
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  img {
-    width: 34px;
-    height: 34px;
-  }
-`;
+// const Coin = styled.div`
+//   position: absolute;
+//   top: 50%;
+//   left: 50%;
+//   transform: translate(-50%, -50%);
+//   img {
+//     width: 34px;
+//     height: 34px;
+//   }
+// `;
 
 const Carousel = styled.div`
   border-radius: 50px;
