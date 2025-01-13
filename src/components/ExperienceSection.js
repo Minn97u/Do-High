@@ -1,38 +1,77 @@
 import React from "react";
 import styled from "styled-components";
+import coinIcon from "../assets/coin.svg";
+import silverCoinIcon from "../assets/silverCoin.svg";
+import bronzeCoinIcon from "../assets/bronzeCoin.svg";
+import backBtn from "../assets/mainArrow.svg";
+import { useNavigate } from "react-router-dom";
 
 const ExperienceSection = () => {
-  const experiences = Array(12).fill({
-    label: "TF 880",
-    date: "24.01.21",
-    isNew: true,
-  });
+  const navigate = useNavigate();
+
+  const quests = [
+    { title: "8월 직무 퀘스트", subtitle: "생산성 증진", coinType: "gold" },
+    { title: "32주 리더 퀘스트", subtitle: "월특근", coinType: "silver" },
+    { title: "32주 리더 퀘스트", subtitle: "업무 효율", coinType: "bronze" },
+  ];
+
+  const handleExpClick = () => {
+    navigate("/exp");
+  };
+
+  const handleQuestClick = () => {
+    navigate("/quest");
+  };
 
   return (
     <ExperienceSectionContainer>
-      <SectionTitle>최근에 이런 경험치를 얻으셨어요!</SectionTitle>
-      <RecentExperience>
-        <ExperienceCard>
-          <CardContent>
-            <ExperienceInfo>최근 수령한 경험치</ExperienceInfo>
-            <ExperienceInfo>인사평가</ExperienceInfo>
-          </CardContent>
-          <CardContent>
-            <ExperienceValue>+1,500</ExperienceValue>
-            <ExperienceDate>2025.01.02</ExperienceDate>
-          </CardContent>
-        </ExperienceCard>
-      </RecentExperience>
-      <SectionTitle2>재민님이 쌓으신 총 누적 기록 보고가세요~</SectionTitle2>
-      <ExperienceGrid>
-        {experiences.map((exp, index) => (
-          <ExperienceItem key={index}>
-            {exp.isNew && <NewBadge>NEW</NewBadge>}
-            <ExperienceLabel>{exp.label}</ExperienceLabel>
-            <ExperienceDate>{exp.date}</ExperienceDate>
-          </ExperienceItem>
+      <SectionHeader>
+        <SectionTitle>최근에 재민님이 받은 do예요!</SectionTitle>
+        <ArrowIcon src={backBtn} alt="More" onClick={handleExpClick} />
+      </SectionHeader>
+      <RecentDoCard>
+        <CardContent>
+          <CardDate>24.01.02</CardDate>
+          <CardTitle>인사평가 C등급</CardTitle>
+        </CardContent>
+        <CardValue>
+          <CoinIcon src={coinIcon} alt="Coin" />
+          1,500
+        </CardValue>
+      </RecentDoCard>
+      <SectionHeader>
+        <SectionTitle>재민님이 수행한 퀘스트예요!</SectionTitle>
+        <ArrowIcon src={backBtn} alt="More" onClick={handleQuestClick} />
+      </SectionHeader>
+      <QuestList>
+        {quests.map((quest, index) => (
+          <QuestCard key={index}>
+            <QuestTitle>{quest.title}</QuestTitle>
+            <DottedLine />
+            <QuestIcon
+              src={
+                quest.coinType === "gold"
+                  ? coinIcon
+                  : quest.coinType === "silver"
+                  ? silverCoinIcon
+                  : bronzeCoinIcon
+              }
+              alt={`${quest.coinType} Coin`}
+            />
+            <QuestSubtitle
+              color={
+                quest.coinType === "gold"
+                  ? "#FBB62C"
+                  : quest.coinType === "silver"
+                  ? "#BBC5CE"
+                  : "#BD8B51"
+              }
+            >
+              {quest.subtitle}
+            </QuestSubtitle>
+          </QuestCard>
         ))}
-      </ExperienceGrid>
+      </QuestList>
     </ExperienceSectionContainer>
   );
 };
@@ -40,94 +79,104 @@ const ExperienceSection = () => {
 export default ExperienceSection;
 
 const ExperienceSectionContainer = styled.div`
-  margin: 16px;
+  padding: 16px;
 `;
 
-const RecentExperience = styled.div`
-  margin-bottom: 61px;
-`;
-
-const SectionTitle = styled.h4`
-  font-size: 18px;
-  ${(props) => props.theme.fonts.bold};
-  margin-bottom: 20px;
-  color: ${(props) => props.theme.colors.black3};
-`;
-
-const SectionTitle2 = styled.h4`
-  ${(props) => props.theme.fonts.bold};
-  margin-bottom: 29px;
-  color: ${(props) => props.theme.colors.black2};
-`;
-
-const ExperienceCard = styled.div`
-  background-color: ${(props) => props.theme.colors.white};
-  border-radius: 9px;
-  height: 94px;
-  padding: 21px 24px;
-`;
-
-const CardContent = styled.div`
+const SectionHeader = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-bottom: 13px;
 `;
 
-const ExperienceValue = styled.div`
-  ${(props) => props.theme.fonts.Nanum};
-  font-size: 24px;
-  font-weight: 700;
-  color: ${(props) => props.theme.colors.mainC};
+const SectionTitle = styled.h4`
+  ${(props) => props.theme.fonts.semiBold};
+  font-size: 18px;
+  color: ${(props) => props.theme.colors.black2};
 `;
 
-const ExperienceInfo = styled.div`
+const ArrowIcon = styled.img`
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+`;
+
+const RecentDoCard = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 23px 28px;
+  border-radius: 18px;
+  background-color: ${(props) => props.theme.colors.white};
+  margin-bottom: 35px;
+`;
+
+const CardContent = styled.div``;
+
+const CardDate = styled.div`
+  ${(props) => props.theme.fonts.regular};
+  font-size: 14px;
+  color: ${(props) => props.theme.colors.gray2};
+`;
+
+const CardTitle = styled.div`
+  ${(props) => props.theme.fonts.semiBold};
+  color: ${(props) => props.theme.colors.black2};
+`;
+
+const CardValue = styled.div`
+  ${(props) => props.theme.fonts.semiBold};
+  color: ${(props) => props.theme.colors.black2};
+  display: flex;
+  align-items: center;
+`;
+
+const CoinIcon = styled.img`
+  width: 26px;
+  height: 26px;
+  margin-right: 5px;
+`;
+
+const QuestList = styled.div`
+  display: flex;
+  gap: 12px;
+  overflow-x: scroll;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+`;
+
+const QuestCard = styled.div`
+  flex: 0 0 145px;
+  width: 145px;
+  padding: 20px 14px;
+  border-radius: 20px;
+  background-color: ${(props) => props.theme.colors.white};
+  text-align: center;
+`;
+
+const QuestTitle = styled.div`
+  ${(props) => props.theme.fonts.semiBold};
+  margin-bottom: 8px;
+  color: ${(props) => props.theme.colors.black2};
+`;
+
+const DottedLine = styled.div`
+  border-top: 1px dashed ${(props) => props.theme.colors.gray2};
+  opacity: 0.5;
+  margin-bottom: 13px;
+`;
+
+const QuestIcon = styled.img`
+  width: 58px;
+  height: 58px;
+  margin-bottom: 8px;
+`;
+
+const QuestSubtitle = styled.div`
   ${(props) => props.theme.fonts.semiBold};
   font-size: 14px;
+  color: ${(props) => props.color};
 `;
-
-const ExperienceDate = styled.div`
-  ${(props) => props.theme.fonts.Nanum};
-  font-size: 14px;
-  margin-top: 3px;
-`;
-
-const ExperienceGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 12px;
-`;
-
-const ExperienceItem = styled.div`
-  background-color: #ff7f50;
-  color: #fff;
-  border-radius: 50%;
-  width: 60px;
-  height: 60px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-  font-size: 12px;
-  font-weight: bold;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-`;
-
-const NewBadge = styled.div`
-  position: absolute;
-  top: -18px;
-  color: #ff0000;
-  font-size: 10px;
-  padding: 2px 5px;
-  border-radius: 5px;
-`;
-
-const ExperienceLabel = styled.div`
-  margin-bottom: 4px;
-`;
-
-// const ExperienceDate = styled.div`
-//   font-size: 10px;
-//   color: #fff;
-//   margin-top: 2px;
-// `;
