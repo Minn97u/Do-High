@@ -21,6 +21,8 @@ import PwChange from "./pages/PwChange";
 import NotFoundPage from "./pages/NotFoundPage";
 import BoardList from "./pages/BoardList";
 import BoardDetail from "./pages/BoardDetail";
+import Quest from "./pages/Quest";
+import ExpList from "./pages/ExpList";
 
 function App() {
   return (
@@ -28,6 +30,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Navigate to="/main" />} />
         <Route path="/main" element={<Home />} />
+        <Route path="/alarm" element={<Alarm />} />
         <Route path="/auth/login" element={<Login />} />
 
         <Route path="/admin" element={<Admin />} />
@@ -42,7 +45,6 @@ function App() {
         <Route path="/admin/manage/date" element={<ManageDate />} />
         <Route path="/admin/manage/account" element={<ManageIdPw />} />
 
-        <Route path="/alarm" element={<Alarm />} />
         <Route path="/mypage-entry" element={<MypageEntry />} />
         <Route path="/mypage" element={<MyPage />} />
         <Route path="/mypage/pwchange" element={<PwChange />} />
@@ -52,6 +54,10 @@ function App() {
         <Route path="/boardPost" element={<BoardPost />} />
         <Route path="/BoardList" element={<BoardList />} />
         <Route path="/BoardList/:boardId" element={<BoardDetail />} />
+
+        <Route path="/quest" element={<Quest />} />
+        <Route path="/exp" element={<ExpList />} />
+
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </>

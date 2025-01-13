@@ -4,19 +4,30 @@ import coinIcon from "../assets/coin.svg";
 import silverCoinIcon from "../assets/silverCoin.svg";
 import bronzeCoinIcon from "../assets/bronzeCoin.svg";
 import backBtn from "../assets/mainArrow.svg";
+import { useNavigate } from "react-router-dom";
 
 const ExperienceSection = () => {
+  const navigate = useNavigate();
+
   const quests = [
     { title: "8월 직무 퀘스트", subtitle: "생산성 증진", coinType: "gold" },
     { title: "32주 리더 퀘스트", subtitle: "월특근", coinType: "silver" },
     { title: "32주 리더 퀘스트", subtitle: "업무 효율", coinType: "bronze" },
   ];
 
+  const handleExpClick = () => {
+    navigate("/exp");
+  };
+
+  const handleQuestClick = () => {
+    navigate("/quest");
+  };
+
   return (
     <ExperienceSectionContainer>
       <SectionHeader>
         <SectionTitle>최근에 재민님이 받은 do예요!</SectionTitle>
-        <ArrowIcon src={backBtn} alt="More" />
+        <ArrowIcon src={backBtn} alt="More" onClick={handleExpClick} />
       </SectionHeader>
       <RecentDoCard>
         <CardContent>
@@ -30,7 +41,7 @@ const ExperienceSection = () => {
       </RecentDoCard>
       <SectionHeader>
         <SectionTitle>재민님이 수행한 퀘스트예요!</SectionTitle>
-        <ArrowIcon src={backBtn} alt="More" />
+        <ArrowIcon src={backBtn} alt="More" onClick={handleQuestClick} />
       </SectionHeader>
       <QuestList>
         {quests.map((quest, index) => (
