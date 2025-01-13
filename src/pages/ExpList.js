@@ -62,6 +62,15 @@ const ExpList = () => {
         points: 40,
       },
     ],
+    "전사 프로젝트": [
+      {
+        id: 4,
+        date: "2025.01.02",
+        type: "전사 프로젝트",
+        grade: "A등급",
+        points: 2000,
+      },
+    ],
   };
 
   const handleSortClick = () => {
@@ -80,14 +89,20 @@ const ExpList = () => {
   return (
     <Container>
       <Header>
-        <BackButton onClick={() => navigate(-1)}>
+        <BackButton onClick={() => navigate("/")}>
           <img src={backBtn} alt="뒤로가기" />
         </BackButton>
         <Title>경험치 내역</Title>
       </Header>
 
       <TabBar>
-        {["전체", "인사평가", "직무 퀘스트", "리더 퀘스트"].map((tab) => (
+        {[
+          "전체",
+          "인사평가",
+          "직무 퀘스트",
+          "리더 퀘스트",
+          "전사 프로젝트",
+        ].map((tab) => (
           <Tab
             key={tab}
             selected={selectedTab === tab}
@@ -191,11 +206,16 @@ const TabBar = styled.div`
   border-bottom: 1px solid #e6e7e8;
   height: 40px;
   align-items: center;
+  overflow-y: hidden;
+  overflow-x: auto;
+  white-space: nowrap;
+  &::-webkit-scrollbar {
+    display: none;
+  }
 `;
 
 const Tab = styled.button`
   ${(props) => props.theme.fonts.semiBold};
-  flex: 1;
   padding: 13px 0;
   font-size: 16px;
   border: none;
@@ -204,6 +224,7 @@ const Tab = styled.button`
   border-bottom: ${(props) => (props.selected ? "4px solid #FC5833" : "none")};
   color: ${(props) =>
     props.selected ? props.theme.colors.black3 : props.theme.colors.gray2};
+  min-width: 110px;
 `;
 
 const SortBar = styled.div`
