@@ -15,3 +15,17 @@ export const getPosts = async (sort = "LATEST") => {
     throw error;
   }
 };
+
+//게시글 단건 조회
+export const getPostById = async (postId) => {
+  try {
+    const response = await Axios.get(`/posts/${postId}`);
+    if (response.data.responseType === "SUCCESS") {
+      return response.data.success;
+    } else {
+      throw new Error(response.data.error?.message);
+    }
+  } catch (error) {
+    throw error;
+  }
+};

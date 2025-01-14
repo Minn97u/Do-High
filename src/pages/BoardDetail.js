@@ -1,25 +1,40 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
 import backBtn from "../assets/backBtn.svg";
 import menu from "../assets/menu.svg";
+import { getPostById } from "../api/BoardApi";
 
 const BoardDetail = () => {
   const navigate = useNavigate();
+  const { boardId } = useParams();
   const [menuOpen, setMenuOpen] = useState(false);
-
   const isAdmin = localStorage.getItem("isAdmin") === "true";
 
-  const post = {
-    id: 1,
-    title: "AAA 프로젝트 신설",
-    date: "2025.01.07. 17:00",
-    content: `
-      임시 본문입니다. 팀미션인증 채널 > 팀별 첫 모임 보고에 1월 10일 금요일 자정까지 업로드 부탁드립니다.
-      임시 본문입니다. 팀미션인증 채널 > 팀별 첫 모임 보고에 1월 10일 금요일 자정까지 업로드 부탁드립니다.
-      임시 본문입니다. 팀미션인증 채널 > 팀별 첫 모임 보고에 1월 10일 금요일 자정까지 업로드 부탁드립니다.
-    `,
-  };
+  const [post, setPost] = useState({
+    id: null,
+    title: "",
+    content: "",
+    author: "",
+    createdAt: "",
+  });
+
+  useEffect(() => {
+    const fetchPostDetail = async () => {
+      try {
+        const postId = Number(boardId);
+        const data = await getPostById(postId);
+
+        setPost(data);
+      } catch (error) {
+        console.error("게시글 상세 조회 실패:", error.message);
+      }
+    };
+
+    if (boardId) {
+      fetchPostDetail();
+    }
+  }, [boardId]);
 
   const handleMenuToggle = () => {
     setMenuOpen((prev) => !prev);
@@ -61,7 +76,7 @@ const BoardDetail = () => {
 
       <DetailContainer>
         <PostTitle>{post.title}</PostTitle>
-        <PostDate>작성일 {post.date}</PostDate>
+        <PostDate>작성일 {post.createdAt}</PostDate>
         <PostContent>{post.content}</PostContent>
       </DetailContainer>
     </Container>
