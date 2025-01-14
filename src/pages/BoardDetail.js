@@ -4,6 +4,7 @@ import styled from "styled-components";
 import backBtn from "../assets/backBtn.svg";
 import menu from "../assets/menu.svg";
 import { getPostById } from "../api/BoardApi";
+import dayjs from "dayjs";
 
 const BoardDetail = () => {
   const navigate = useNavigate();
@@ -52,6 +53,10 @@ const BoardDetail = () => {
     }
   };
 
+  const formatDate = (dateString) => {
+    return dayjs(dateString).format("YYYY.MM.DD. HH:mm");
+  };
+
   return (
     <Container>
       <Header>
@@ -76,7 +81,7 @@ const BoardDetail = () => {
 
       <DetailContainer>
         <PostTitle>{post.title}</PostTitle>
-        <PostDate>작성일 {post.createdAt}</PostDate>
+        <PostDate>작성일 {formatDate(post.createdAt)}</PostDate>
         <PostContent>{post.content}</PostContent>
       </DetailContainer>
     </Container>

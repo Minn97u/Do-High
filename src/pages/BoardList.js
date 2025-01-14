@@ -5,6 +5,7 @@ import backBtn from "../assets/backBtn.svg";
 import dropdownArrow from "../assets/dropdown.svg";
 import writeIcon from "../assets/write.svg";
 import { getPosts } from "../api/BoardApi";
+import dayjs from "dayjs";
 
 const BoardList = () => {
   const navigate = useNavigate();
@@ -34,6 +35,10 @@ const BoardList = () => {
   const handleSortSelect = (option) => {
     setSortOption(option);
     setSortOpen(false);
+  };
+
+  const formatDate = (dateString) => {
+    return dayjs(dateString).format("YYYY.MM.DD. HH:mm");
   };
 
   return (
@@ -70,7 +75,7 @@ const BoardList = () => {
           >
             <ItemTitle>{post.title}</ItemTitle>
             <ItemContent>{post.content}</ItemContent>
-            <ItemDate>작성일 {post.createdAt}</ItemDate>
+            <ItemDate>작성일 {formatDate(post.createdAt)}</ItemDate>
           </ListItem>
         ))}
       </ListContainer>
