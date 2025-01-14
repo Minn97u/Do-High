@@ -1,43 +1,31 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import backBtn from "../assets/backBtn.svg";
 import dropdownArrow from "../assets/dropdown.svg";
-import writeIcon from "../assets/write.svg"; // 작성 아이콘
+import writeIcon from "../assets/write.svg";
+import { getPosts } from "../api/BoardApi";
 
 const BoardList = () => {
   const navigate = useNavigate();
   const [sortOpen, setSortOpen] = useState(false);
   const [sortOption, setSortOption] = useState("최신순");
-
+  const [posts, setPosts] = useState([]);
   const isAdmin = localStorage.getItem("isAdmin") === "true";
 
-  const posts = [
-    {
-      id: 1,
-      title: "AAA 프로젝트 신설",
-      content: "AAA 프로젝트를 진행합니다. 본 프로젝트는 어떤 내용이...",
-      date: "2025.2.15",
-    },
-    {
-      id: 2,
-      title: "AAA 프로젝트 신설",
-      content: "AAA 프로젝트를 진행합니다. 본 프로젝트는 어떤 내용이...",
-      date: "2025.2.15",
-    },
-    {
-      id: 3,
-      title: "AAA 프로젝트 신설",
-      content: "AAA 프로젝트를 진행합니다. 본 프로젝트는 어떤 내용이...",
-      date: "2025.2.15",
-    },
-    {
-      id: 4,
-      title: "AAA 프로젝트 신설",
-      content: "AAA 프로젝트를 진행합니다. 본 프로젝트는 어떤 내용이...",
-      date: "2025.2.15",
-    },
-  ];
+  useEffect(() => {
+    const fetchPosts = async () => {
+      try {
+        const sortParam = sortOption === "최신순" ? "LATEST" : "OLDEST";
+        const { posts } = await getPosts(sortParam);
+        setPosts(posts);
+      } catch (error) {
+        console.error("게시글 조회 실패:", error.message);
+      }
+    };
+
+    fetchPosts();
+  }, [sortOption]);
 
   const handleSortClick = () => {
     setSortOpen((prev) => !prev);
@@ -82,7 +70,7 @@ const BoardList = () => {
           >
             <ItemTitle>{post.title}</ItemTitle>
             <ItemContent>{post.content}</ItemContent>
-            <ItemDate>작성일 {post.date}</ItemDate>
+            <ItemDate>작성일 {post.createdAt}</ItemDate>
           </ListItem>
         ))}
       </ListContainer>
