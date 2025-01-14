@@ -58,3 +58,17 @@ export const deletePostById = async (postId) => {
     throw error;
   }
 };
+
+// 게시글 수정
+export const updatePost = async (postId, title, content) => {
+  try {
+    const response = await Axios.put(`/posts/${postId}`, { title, content });
+    if (response.data.responseType === "SUCCESS") {
+      return response.data.success;
+    } else {
+      throw new Error(response.data.error?.message);
+    }
+  } catch (error) {
+    throw error;
+  }
+};

@@ -1,26 +1,54 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import backBtn from "../../assets/backBtn.svg";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+
+import { getPostById, updatePost } from "../../api/BoardApi";
 
 const BoardEdit = () => {
   const navigate = useNavigate();
+  const { boardId } = useParams();
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
 
   const isButtonDisabled =
     title.trim().length === 0 || content.trim().length === 0;
 
-  const handleSubmit = () => {
+  useEffect(() => {
+    const fetchExistingPost = async () => {
+      try {
+        const postId = Number(boardId);
+        const data = await getPostById(postId);
+        setTitle(data.title || "");
+        setContent(data.content || "");
+      } catch (error) {
+        console.error("게시글 불러오기 실패:", error.message);
+      }
+    };
+
+    if (boardId) {
+      fetchExistingPost();
+    }
+  }, [boardId]);
+
+  const handleSubmit = async () => {
     if (!isButtonDisabled) {
-      navigate("/boardList");
+      try {
+        const postId = Number(boardId);
+        await updatePost(postId, title, content);
+        alert("게시글이 수정되었습니다.");
+        navigate("/boardList");
+      } catch (error) {
+        console.error("게시글 수정 실패:", error.message);
+        alert("게시글 수정에 실패했습니다.");
+      }
     }
   };
 
   return (
     <Container>
       <Header>
-        <BackButton onClick={() => navigate(`/boardList/:id`)}>
+        <BackButton onClick={() => navigate(`/boardList/${boardId}`)}>
           <img src={backBtn} alt="뒤로가기" />
         </BackButton>
         <HeaderTitle>게시글 수정</HeaderTitle>
@@ -31,7 +59,6 @@ const BoardEdit = () => {
           <Label>제목</Label>
           <TextInput
             type="text"
-            placeholder="제목을 작성해주세요."
             value={title}
             onChange={(e) => setTitle(e.target.value)}
           />
@@ -40,7 +67,6 @@ const BoardEdit = () => {
         <InputContainer>
           <Label>내용</Label>
           <TextArea
-            placeholder="본문을 작성해주세요."
             value={content}
             onChange={(e) => setContent(e.target.value)}
           />

@@ -49,11 +49,10 @@ function App() {
         <Route path="/mypage" element={<MyPage />} />
         <Route path="/mypage/pwchange" element={<PwChange />} />
 
+        <Route path="/boardlist" element={<BoardList />} />
         <Route path="/boardPost" element={<BoardPost />} />
-        <Route path="/boardEdit" element={<BoardEdit />} />
-        <Route path="/boardPost" element={<BoardPost />} />
-        <Route path="/BoardList" element={<BoardList />} />
-        <Route path="/BoardList/:boardId" element={<BoardDetail />} />
+        <Route path="/boardlist/:boardId" element={<BoardDetail />} />
+        <Route path="/boardedit/:boardId" element={<BoardEdit />} />
 
         <Route path="/quest" element={<Quest />} />
         <Route path="/exp" element={<ExpList />} />
