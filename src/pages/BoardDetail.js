@@ -3,8 +3,9 @@ import { useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
 import backBtn from "../assets/backBtn.svg";
 import menu from "../assets/menu.svg";
-import { getPostById } from "../api/BoardApi";
 import dayjs from "dayjs";
+
+import { getPostById, deletePostById } from "../api/BoardApi";
 
 const BoardDetail = () => {
   const navigate = useNavigate();
@@ -45,11 +46,17 @@ const BoardDetail = () => {
     navigate(`/boardEdit/${post.id}`);
   };
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
     const confirmDelete = window.confirm("정말 삭제하시겠습니까?");
     if (confirmDelete) {
-      alert("삭제되었습니다.");
-      navigate(-1);
+      try {
+        await deletePostById(post.id);
+        alert("삭제되었습니다.");
+        navigate(-1);
+      } catch (error) {
+        console.error("게시글 삭제 실패:", error.message);
+        alert("삭제에 실패했습니다.");
+      }
     }
   };
 

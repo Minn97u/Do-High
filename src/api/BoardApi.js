@@ -44,3 +44,17 @@ export const createPost = async (title, content) => {
     throw error;
   }
 };
+
+//게시글 삭제
+export const deletePostById = async (postId) => {
+  try {
+    const response = await Axios.delete(`/posts/${postId}`);
+    if (response.data.responseType === "SUCCESS") {
+      return response.data.success;
+    } else {
+      throw new Error(response.data.error?.message);
+    }
+  } catch (error) {
+    throw error;
+  }
+};
