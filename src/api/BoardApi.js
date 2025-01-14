@@ -29,3 +29,18 @@ export const getPostById = async (postId) => {
     throw error;
   }
 };
+
+//게시글 작성
+export const createPost = async (title, content) => {
+  try {
+    const response = await Axios.post("/posts", { title, content });
+
+    if (response.data.responseType === "SUCCESS") {
+      return response.data.success;
+    } else {
+      throw new Error(response.data.error?.message);
+    }
+  } catch (error) {
+    throw error;
+  }
+};

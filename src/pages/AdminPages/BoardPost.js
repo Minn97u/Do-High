@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import backBtn from "../../assets/backBtn.svg";
 import { useNavigate } from "react-router-dom";
+import { createPost } from "../../api/BoardApi";
 
 const BoardPost = () => {
   const navigate = useNavigate();
@@ -11,9 +12,16 @@ const BoardPost = () => {
   const isButtonDisabled =
     title.trim().length === 0 || content.trim().length === 0;
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!isButtonDisabled) {
-      navigate("/boardList");
+      try {
+        await createPost(title, content);
+        alert("게시글이 작성되었습니다.");
+        navigate("/boardList");
+      } catch (error) {
+        console.error("게시글 작성 실패:", error.message);
+        alert("게시글 작성에 실패했습니다.");
+      }
     }
   };
 
