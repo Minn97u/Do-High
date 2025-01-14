@@ -1,25 +1,42 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
 import backBtn from "../assets/backBtn.svg";
 import menu from "../assets/menu.svg";
+import dayjs from "dayjs";
+
+import { getPostById, deletePostById } from "../api/BoardApi";
 
 const BoardDetail = () => {
   const navigate = useNavigate();
+  const { boardId } = useParams();
   const [menuOpen, setMenuOpen] = useState(false);
-
   const isAdmin = localStorage.getItem("isAdmin") === "true";
 
-  const post = {
-    id: 1,
-    title: "AAA 프로젝트 신설",
-    date: "2025.01.07. 17:00",
-    content: `
-      임시 본문입니다. 팀미션인증 채널 > 팀별 첫 모임 보고에 1월 10일 금요일 자정까지 업로드 부탁드립니다.
-      임시 본문입니다. 팀미션인증 채널 > 팀별 첫 모임 보고에 1월 10일 금요일 자정까지 업로드 부탁드립니다.
-      임시 본문입니다. 팀미션인증 채널 > 팀별 첫 모임 보고에 1월 10일 금요일 자정까지 업로드 부탁드립니다.
-    `,
-  };
+  const [post, setPost] = useState({
+    id: null,
+    title: "",
+    content: "",
+    author: "",
+    createdAt: "",
+  });
+
+  useEffect(() => {
+    const fetchPostDetail = async () => {
+      try {
+        const postId = Number(boardId);
+        const data = await getPostById(postId);
+
+        setPost(data);
+      } catch (error) {
+        console.error("게시글 상세 조회 실패:", error.message);
+      }
+    };
+
+    if (boardId) {
+      fetchPostDetail();
+    }
+  }, [boardId]);
 
   const handleMenuToggle = () => {
     setMenuOpen((prev) => !prev);
@@ -29,18 +46,28 @@ const BoardDetail = () => {
     navigate(`/boardEdit/${post.id}`);
   };
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
     const confirmDelete = window.confirm("정말 삭제하시겠습니까?");
     if (confirmDelete) {
-      alert("삭제되었습니다.");
-      navigate(-1);
+      try {
+        await deletePostById(post.id);
+        alert("삭제되었습니다.");
+        navigate(-1);
+      } catch (error) {
+        console.error("게시글 삭제 실패:", error.message);
+        alert("삭제에 실패했습니다.");
+      }
     }
+  };
+
+  const formatDate = (dateString) => {
+    return dayjs(dateString).format("YYYY.MM.DD. HH:mm");
   };
 
   return (
     <Container>
       <Header>
-        <BackButton onClick={() => navigate(-1)}>
+        <BackButton onClick={() => navigate("/boardlist")}>
           <img src={backBtn} alt="뒤로가기" />
         </BackButton>
         <HeaderTitle>게시글 상세</HeaderTitle>
@@ -61,7 +88,7 @@ const BoardDetail = () => {
 
       <DetailContainer>
         <PostTitle>{post.title}</PostTitle>
-        <PostDate>작성일 {post.date}</PostDate>
+        <PostDate>작성일 {formatDate(post.createdAt)}</PostDate>
         <PostContent>{post.content}</PostContent>
       </DetailContainer>
     </Container>
