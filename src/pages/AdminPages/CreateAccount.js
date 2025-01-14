@@ -49,13 +49,15 @@ const CreateAccount = () => {
   }, []);
 
   const handleSubmitForm = (data) => {
-    console.log("Form Data:", {
-      ...data,
-      team: selectedTeam,
-      jobType: selectedJobType,
-      date: selectedDate,
+    navigate("/admin/create-next", {
+      state: {
+        name: data.name,
+        team: selectedTeam,
+        number: data.employeeNumber,
+        jobType: selectedJobType,
+        date: selectedDate,
+      },
     });
-    navigate("/admin/create-next");
   };
 
   return (
