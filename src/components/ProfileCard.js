@@ -132,7 +132,9 @@ const ProfileCard = () => {
 
 export default ProfileCard;
 
-const Container = styled.div``;
+const Container = styled.div`
+  margin-bottom: 35px;
+`;
 
 const ProfileCardContainer = styled.div`
   background-color: ${(props) => props.theme.colors.white};
@@ -140,7 +142,7 @@ const ProfileCardContainer = styled.div`
   padding: 28px 24px;
   border-radius: 20px 20px 0 0;
   margin-bottom: 0px;
-  padding-bottom: 0px;
+  /* padding-bottom: 0px; */
   height: 310px;
 `;
 

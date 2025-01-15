@@ -4,10 +4,13 @@ import styled from "styled-components";
 import backBtn from "../assets/backBtn.svg";
 import dropdownArrow from "../assets/dropdown.svg";
 import coinIcon from "../assets/coin.svg";
+import infoIcon from "../assets/info.svg";
+import expListInfo from "../assets/expListInfo.svg";
 
 const ExpList = () => {
   const navigate = useNavigate();
   const [sortOpen, setSortOpen] = useState(false);
+  const [infoOpen, setInfoOpen] = useState(false);
   const [sortOption, setSortOption] = useState("최신순");
   const [selectedTab, setSelectedTab] = useState("전체");
 
@@ -112,7 +115,7 @@ const ExpList = () => {
           </Tab>
         ))}
       </TabBar>
-      {selectedTab === "직무 퀘스트" && (
+      {selectedTab === "인사평가" && (
         <Description>
           <div>
             <p>
@@ -127,6 +130,16 @@ const ExpList = () => {
       )}
 
       <SortBar>
+        {selectedTab !== "인사평가" && selectedTab !== "전사 프로젝트" && (
+          <InfoIconWrapper>
+            <InfoIcon
+              src={infoIcon}
+              alt="정보"
+              onClick={() => setInfoOpen(!infoOpen)}
+            />
+            {infoOpen && <InfoImage src={expListInfo} alt="정보 설명" />}
+          </InfoIconWrapper>
+        )}
         <SortButton onClick={handleSortClick}>
           <SortText>{sortOption}</SortText>
           <SortIcon src={dropdownArrow} alt="정렬" />
@@ -231,11 +244,34 @@ const SortBar = styled.div`
   background-color: ${(props) => props.theme.colors.white};
   position: relative;
   display: flex;
-  justify-content: flex-end;
+  justify-content: ${(props) =>
+    props.hasInfoIcon ? "space-between" : "flex-end"};
   align-items: center;
   padding: 9px 20px;
   border-bottom: 2px solid #e6e7e8;
   padding-top: 19px;
+`;
+
+const InfoIconWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  margin-right: auto;
+`;
+
+const InfoIcon = styled.img`
+  cursor: pointer;
+  width: 20px;
+  height: 20px;
+`;
+
+const InfoImage = styled.img`
+  position: absolute;
+  top: 45px;
+  left: 5px;
+  width: 250px;
+  z-index: 100;
+  border-radius: 8px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
 `;
 
 const SortButton = styled.button`
