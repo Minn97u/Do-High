@@ -11,7 +11,6 @@ import character4 from "../assets/characters/character4.svg";
 import character5 from "../assets/characters/character5.svg";
 import character6 from "../assets/characters/character6.svg";
 import character7 from "../assets/characters/character7.svg";
-import character8 from "../assets/characters/character8.svg";
 import dropdownArrow from "../assets/dropdown.svg";
 import { useNavigate } from "react-router-dom";
 
@@ -45,7 +44,6 @@ const MyPage = () => {
     character5,
     character6,
     character7,
-    character8,
   ];
 
   return (

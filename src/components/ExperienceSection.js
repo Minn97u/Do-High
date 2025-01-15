@@ -1,8 +1,8 @@
 import React from "react";
 import styled from "styled-components";
-import coinIcon from "../assets/coin.svg";
-import silverCoinIcon from "../assets/silverCoin.svg";
-import bronzeCoinIcon from "../assets/bronzeCoin.svg";
+import coinIcon from "../assets/coin/GoldDo.svg";
+import silverCoinIcon from "../assets/coin/SliverDo.svg";
+import bronzeCoinIcon from "../assets//coin/BronzeDo.svg";
 import backBtn from "../assets/mainArrow.svg";
 import { useNavigate } from "react-router-dom";
 

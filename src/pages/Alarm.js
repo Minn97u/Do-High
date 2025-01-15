@@ -2,16 +2,16 @@ import React from "react";
 import styled from "styled-components";
 import backBtn from "../assets/backBtn.svg";
 import flagIcon from "../assets/flag.svg";
-import coinIcon from "../assets/coin.svg";
+import levelUp from "../assets/levelUp.svg";
 import speakerIcon from "../assets/speaker.svg";
 import { useNavigate } from "react-router-dom";
 
 const notifications = [
   {
     id: 1,
-    type: "경험치",
-    icon: coinIcon,
-    message: "새로운 경험치를 획득했어요",
+    type: "레벨업",
+    icon: levelUp,
+    message: "레벨업 했어요.",
     time: "1시간 전",
   },
   {
@@ -114,12 +114,12 @@ const NotificationCard = styled.div`
 `;
 
 const Icon = styled.div`
-  width: 24px;
-  height: 24px;
-  margin-right: 5px;
+  width: 26px;
+  height: 26px;
+  margin-right: 10px;
   img {
-    width: 100%;
-    height: 100%;
+    width: 26px;
+    height: 26px;
   }
 `;
 
