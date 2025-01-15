@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { useForm } from "react-hook-form";
 import backBtn from "../../assets/backBtn.svg";
@@ -6,38 +6,58 @@ import dropdownArrow from "../../assets/dropdown.svg";
 import calendar from "../../assets/calendar.svg";
 import CalendarComponent from "../../components/Calendar";
 import { useNavigate } from "react-router-dom";
+import { fetchTeamList, fetchJobTypeList } from "../../api/AdminApi";
 
 const CreateAccount = () => {
   const navigate = useNavigate();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [selectedAffiliation, setSelectedAffiliation] =
-    useState("소속을 선택해주세요");
-  const [isLevelDropdownOpen, setIsLevelDropdownOpen] = useState(false);
-  const [selectedLevel, setSelectedLevel] = useState("레벨을 선택해주세요");
+  const [isJobDropdownOpen, setIsJobDropdownOpen] = useState(false);
+  const [selectedTeam, setSelectedTeam] = useState("소속을 선택해주세요");
+  const [selectedJobType, setSelectedJobType] = useState("직군을 선택해주세요");
+  const [teamList, setTeamList] = useState([]);
+  const [jobTypeList, setJobTypeList] = useState([]);
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState("0000-00-00");
-
-  const handleDropdownSelect = (value) => {
-    setSelectedAffiliation(value);
-    setIsDropdownOpen(false);
-  };
-
-  const handleLevelDropdownSelect = (value) => {
-    setSelectedLevel(value);
-    setIsLevelDropdownOpen(false);
-  };
 
   const {
     register,
     handleSubmit,
-    formState: { errors, isValid },
+    formState: { errors, isValid, isSubmitted },
   } = useForm({
     mode: "onChange",
   });
 
-  const onSubmit = (data) => {
-    console.log("Submitted data:", data);
-    navigate("/admin/create-next");
+  useEffect(() => {
+    const fetchLists = async () => {
+      try {
+        const teamResponse = await fetchTeamList();
+        const jobTypeResponse = await fetchJobTypeList();
+
+        if (teamResponse.responseType === "SUCCESS") {
+          setTeamList(teamResponse.success);
+        }
+
+        if (jobTypeResponse.responseType === "SUCCESS") {
+          setJobTypeList(jobTypeResponse.success);
+        }
+      } catch (error) {
+        alert("목록을 불러오는 데 실패했습니다.");
+      }
+    };
+
+    fetchLists();
+  }, []);
+
+  const handleSubmitForm = (data) => {
+    navigate("/admin/create-next", {
+      state: {
+        name: data.name,
+        team: selectedTeam,
+        number: data.employeeNumber,
+        jobType: selectedJobType,
+        date: selectedDate,
+      },
+    });
   };
 
   return (
@@ -48,7 +68,7 @@ const CreateAccount = () => {
         </BackButton>
         <Title>계정 생성</Title>
       </Header>
-      <Form onSubmit={handleSubmit(onSubmit)}>
+      <Form onSubmit={handleSubmit(handleSubmitForm)}>
         <InputContainer>
           <Label>이름</Label>
           <Input
@@ -65,42 +85,67 @@ const CreateAccount = () => {
           <DropdownContainer>
             <DropdownHeader
               onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-              hasError={!!errors.affiliation}
               isOpen={isDropdownOpen}
-              selectedAffiliation={selectedAffiliation}
+              isPlaceholder={selectedTeam === "소속을 선택해주세요"}
+              hasError={isSubmitted && selectedTeam === "소속을 선택해주세요"}
             >
-              {selectedAffiliation}
+              {selectedTeam}
               <DropdownArrow src={dropdownArrow} isOpen={isDropdownOpen} />
             </DropdownHeader>
             {isDropdownOpen && (
               <DropdownList>
-                <DropdownItem
-                  onClick={() => handleDropdownSelect("음성 1센터")}
-                >
-                  음성 1센터
-                </DropdownItem>
-                <DropdownItem
-                  onClick={() => handleDropdownSelect("음성 2센터")}
-                >
-                  음성 2센터
-                </DropdownItem>
-                <DropdownItem
-                  onClick={() => handleDropdownSelect("용인백암센터")}
-                >
-                  용인백암센터
-                </DropdownItem>
-                <DropdownItem
-                  onClick={() => handleDropdownSelect("남양주센터")}
-                >
-                  남양주센터
-                </DropdownItem>
+                {teamList.map((team, index) => (
+                  <DropdownItem
+                    key={index}
+                    onClick={() => {
+                      setSelectedTeam(team);
+                      setIsDropdownOpen(false);
+                    }}
+                  >
+                    {team}
+                  </DropdownItem>
+                ))}
               </DropdownList>
             )}
-          </DropdownContainer>
-          {selectedAffiliation === "소속을 선택해주세요" &&
-            errors.affiliation && (
-              <ErrorMessage>{errors.affiliation.message}</ErrorMessage>
+            {isSubmitted && selectedTeam === "소속을 선택해주세요" && (
+              <ErrorMessage>소속을 선택해주세요.</ErrorMessage>
             )}
+          </DropdownContainer>
+        </InputContainer>
+
+        <InputContainer>
+          <Label>직군</Label>
+          <DropdownContainer>
+            <DropdownHeader
+              onClick={() => setIsJobDropdownOpen(!isJobDropdownOpen)}
+              isOpen={isJobDropdownOpen}
+              isPlaceholder={selectedJobType === "직군을 선택해주세요"}
+              hasError={
+                isSubmitted && selectedJobType === "직군을 선택해주세요"
+              }
+            >
+              {selectedJobType}
+              <DropdownArrow src={dropdownArrow} isOpen={isJobDropdownOpen} />
+            </DropdownHeader>
+            {isJobDropdownOpen && (
+              <DropdownList>
+                {jobTypeList.map((job, index) => (
+                  <DropdownItem
+                    key={index}
+                    onClick={() => {
+                      setSelectedJobType(job);
+                      setIsJobDropdownOpen(false);
+                    }}
+                  >
+                    {job}
+                  </DropdownItem>
+                ))}
+              </DropdownList>
+            )}
+            {isSubmitted && selectedJobType === "직군을 선택해주세요" && (
+              <ErrorMessage>직군을 선택해주세요.</ErrorMessage>
+            )}
+          </DropdownContainer>
         </InputContainer>
 
         <InputContainer>
@@ -123,50 +168,9 @@ const CreateAccount = () => {
         </InputContainer>
 
         <InputContainer>
-          <Label>레벨</Label>
-          <DropdownContainer>
-            <DropdownHeader
-              onClick={() => setIsLevelDropdownOpen(!isLevelDropdownOpen)}
-              isOpen={isLevelDropdownOpen}
-              selectedAffiliation={selectedLevel}
-              selectedLevel={selectedLevel}
-            >
-              {selectedLevel}
-              <DropdownArrow src={dropdownArrow} isOpen={isLevelDropdownOpen} />
-            </DropdownHeader>
-            {isLevelDropdownOpen && (
-              <DropdownList>
-                <DropdownItem
-                  onClick={() => handleLevelDropdownSelect("레벨 1")}
-                >
-                  레벨 1
-                </DropdownItem>
-                <DropdownItem
-                  onClick={() => handleLevelDropdownSelect("레벨 2")}
-                >
-                  레벨 2
-                </DropdownItem>
-                <DropdownItem
-                  onClick={() => handleLevelDropdownSelect("레벨 3")}
-                >
-                  레벨 3
-                </DropdownItem>
-              </DropdownList>
-            )}
-          </DropdownContainer>
-          {selectedLevel === "레벨을 선택해주세요" && errors.level && (
-            <ErrorMessage>{errors.level.message}</ErrorMessage>
-          )}
-        </InputContainer>
-
-        <InputContainer>
           <Label>입사일</Label>
           <DropdownContainer>
-            <DropdownHeader
-              onClick={() => setIsCalendarOpen(!isCalendarOpen)}
-              isOpen={isCalendarOpen}
-              selectedDate={selectedDate}
-            >
+            <DropdownHeader onClick={() => setIsCalendarOpen(!isCalendarOpen)}>
               {selectedDate}
               <CalendarIcon src={calendar} alt="달력" />
             </DropdownHeader>
@@ -267,6 +271,9 @@ const Input = styled.input`
     outline-color: ${(props) => props.theme.colors.mainC};
     outline-width: 1px;
   }
+  input:valid {
+    background-color: transparent;
+  }
 `;
 
 const DropdownContainer = styled.div`
@@ -278,22 +285,8 @@ const DropdownHeader = styled.div`
   padding: 14px;
   ${(props) => props.theme.fonts.semiBold};
   font-size: 14px;
-  color: ${(props) => {
-    if (props.selectedDate === "0000-00-00") {
-      return props.theme.colors.gray2;
-    } else if (
-      (props.selectedAffiliation !== "소속을 선택해주세요" &&
-        props.selectedLevel === undefined) ||
-      (props.selectedLevel !== "레벨을 선택해주세요" &&
-        props.selectedAffiliation === undefined) ||
-      (props.selectedAffiliation !== "소속을 선택해주세요" &&
-        props.selectedLevel !== "레벨을 선택해주세요")
-    ) {
-      return props.theme.colors.black3;
-    } else {
-      return props.theme.colors.gray2;
-    }
-  }};
+  color: ${(props) =>
+    props.isPlaceholder ? props.theme.colors.gray2 : props.theme.colors.black3};
   background-color: ${(props) =>
     props.hasError ? "#FFEEEB" : props.theme.colors.gray};
   border-radius: 10px;

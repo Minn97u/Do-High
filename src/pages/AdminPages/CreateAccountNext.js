@@ -3,10 +3,14 @@ import styled from "styled-components";
 import { useForm } from "react-hook-form";
 import { IoEye, IoEyeOff } from "react-icons/io5";
 import backBtn from "../../assets/backBtn.svg";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import { createNewEmployee } from "../../api/AdminApi";
 
 const CreateAccountNext = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const initialData = location.state;
+
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
@@ -21,9 +25,21 @@ const CreateAccountNext = () => {
 
   const username = watch("username");
 
-  const onSubmit = () => {
-    alert("계정이 성공적으로 생성되었습니다.");
-    navigate("/admin");
+  const onSubmit = async (data) => {
+    const employeeData = {
+      ...initialData,
+      id: data.username,
+      pwd: data.password,
+    };
+
+    try {
+      await createNewEmployee(employeeData);
+      alert("계정이 성공적으로 생성되었습니다.");
+      navigate("/admin");
+    } catch (error) {
+      alert("계정 생성에 실패했습니다. 다시 시도해주세요.");
+      console.error(error);
+    }
   };
 
   const isUsernameValid = username && /^[a-zA-Z]+$/.test(username);
