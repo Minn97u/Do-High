@@ -1,46 +1,77 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import backBtn from "../../assets/backBtn.svg";
 import searchIcon from "../../assets/search.svg";
 import dropdownArrow from "../../assets/dropdown.svg";
 import { useNavigate } from "react-router-dom";
+import {
+  fetchTeamList,
+  searchMembers,
+  searchMembersByTeam,
+} from "../../api/AdminApi";
 
 const SearchAccount = () => {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedAffiliation, setSelectedAffiliation] = useState("");
-  const [searchResults, setSearchResults] = useState([
-    { name: "허재민", affiliation: "음성 2센터", id: "2022080101" },
-    { name: "허재식", affiliation: "음성 1센터", id: "2021010130" },
-  ]);
+  const [displayResults, setDisplayResults] = useState([]);
+  const [teamList, setTeamList] = useState([]);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [hasError, setHasError] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
+  const [hasError, setHasError] = useState(false);
 
-  const dummyData = [
-    { name: "허재민", affiliation: "음성 2센터", id: "2022080101" },
-    { name: "허재식", affiliation: "음성 1센터", id: "2021010130" },
-    { name: "허재용", affiliation: "용인백암센터", id: "2018060108" },
-    { name: "허재진", affiliation: "사업기획팀", id: "2023020209" },
-  ];
+  useEffect(() => {
+    const fetchTeams = async () => {
+      try {
+        const response = await fetchTeamList();
+        if (response.responseType === "SUCCESS") {
+          setTeamList(response.success);
+        } else {
+          console.error("소속 목록 조회 실패:", response.error.message);
+        }
+      } catch (error) {
+        console.error("소속 목록 조회 중 오류 발생:", error);
+      }
+    };
+    fetchTeams();
+  }, []);
 
-  const handleSearch = () => {
-    if (!searchQuery) {
+  const handleSearchQuery = async () => {
+    if (!searchQuery.trim()) {
+      setDisplayResults([]);
       setHasError(true);
-      setSearchResults([]);
-    } else {
-      setHasError(false);
-      const results = dummyData.filter(
-        (data) =>
-          data.name.includes(searchQuery) || data.id.includes(searchQuery)
-      );
-      setSearchResults(results);
+      return;
+    }
+    setHasError(false);
+    try {
+      const response = await searchMembers(searchQuery.trim());
+      if (response.responseType === "SUCCESS") {
+        setDisplayResults(response.success);
+      } else {
+        console.error("검색 실패:", response.error.message);
+        setDisplayResults([]);
+      }
+    } catch (error) {
+      console.error("검색 중 오류 발생:", error);
+      setDisplayResults([]);
     }
   };
 
-  const handleAffiliationSelect = (value) => {
-    setSelectedAffiliation(value);
+  const handleAffiliationSelect = async (team) => {
+    setSelectedAffiliation(team);
     setIsDropdownOpen(false);
+    try {
+      const response = await searchMembersByTeam(team);
+      if (response.responseType === "SUCCESS") {
+        setDisplayResults(response.success);
+      } else {
+        console.error("팀별 구성원 검색 실패:", response.error.message);
+        setDisplayResults([]);
+      }
+    } catch (error) {
+      console.error("팀별 구성원 검색 중 오류 발생:", error);
+      setDisplayResults([]);
+    }
   };
 
   return (
@@ -62,12 +93,13 @@ const SearchAccount = () => {
               onBlur={() => setIsFocused(false)}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
-            <SearchButton onClick={handleSearch}>
+            <SearchButton onClick={handleSearchQuery}>
               <img src={searchIcon} alt="검색" />
             </SearchButton>
           </SearchBar>
           {hasError && <ErrorMessage>검색어를 입력해주세요.</ErrorMessage>}
         </InputContainer>
+
         <InputContainer>
           <DropdownContainer>
             <DropdownHeader
@@ -80,49 +112,41 @@ const SearchAccount = () => {
             </DropdownHeader>
             {isDropdownOpen && (
               <DropdownList>
-                <DropdownItem
-                  onClick={() => handleAffiliationSelect("음성 1센터")}
-                >
-                  음성 1센터
-                </DropdownItem>
-                <DropdownItem
-                  onClick={() => handleAffiliationSelect("음성 2센터")}
-                >
-                  음성 2센터
-                </DropdownItem>
-                <DropdownItem
-                  onClick={() => handleAffiliationSelect("용인백암센터")}
-                >
-                  용인백암센터
-                </DropdownItem>
-                <DropdownItem
-                  onClick={() => handleAffiliationSelect("사업기획팀")}
-                >
-                  사업기획팀
-                </DropdownItem>
+                {teamList.map((team, index) => (
+                  <DropdownItem
+                    key={index}
+                    onClick={() => handleAffiliationSelect(team)}
+                  >
+                    {team}
+                  </DropdownItem>
+                ))}
               </DropdownList>
             )}
           </DropdownContainer>
         </InputContainer>
-        {searchResults.length > 0 && (
-          <ResultsContainer>
-            <ResultsLabel>구성원 목록</ResultsLabel>
-            <ResultsList>
-              {searchResults.map((result) => (
-                <ResultItem
-                  key={result.id}
-                  onClick={() => navigate(`/admin/manage`)}
-                  // onClick={() => navigate(`/admin/manage/${result.id}`)}
-                >
-                  <Name>{result.name}</Name>
-                  <Details>{result.affiliation}</Details>
-                  <Details>{result.id}</Details>
-                  <ArrowIcon src={dropdownArrow} alt="화살표" />
-                </ResultItem>
-              ))}
-            </ResultsList>
-          </ResultsContainer>
-        )}
+
+        <ResultsContainer>
+          {displayResults.length > 0 && (
+            <>
+              <ResultsLabel>검색 결과</ResultsLabel>
+              <ResultsList>
+                {displayResults.map((result) => (
+                  <ResultItem
+                    key={result.memberId}
+                    onClick={() =>
+                      navigate(`/admin/manage/${result.identificationNumber}`)
+                    }
+                  >
+                    <Name>{result.name}</Name>
+                    <Details>{result.team}</Details>
+                    <Details>{result.identificationNumber}</Details>
+                    <ArrowIcon src={dropdownArrow} alt="화살표" />
+                  </ResultItem>
+                ))}
+              </ResultsList>
+            </>
+          )}
+        </ResultsContainer>
       </Content>
     </Container>
   );
@@ -242,7 +266,11 @@ const DropdownArrow = styled.img`
 `;
 
 const DropdownList = styled.ul`
+  height: 240px;
+  max-height: 240px;
+  overflow-y: auto;
   position: absolute;
+  padding: 10px 12px;
   top: 100%;
   left: 0;
   width: 100%;
@@ -250,16 +278,30 @@ const DropdownList = styled.ul`
   border-radius: 10px;
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
   z-index: 1000;
+
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background-color: ${(props) => props.theme.colors.gray2};
+    border-radius: 3px;
+  }
+  &::-webkit-scrollbar-track {
+    background-color: ${(props) => props.theme.colors.gray};
+  }
 `;
 
 const DropdownItem = styled.li`
   padding: 14px;
+  border-radius: 10px;
   ${(props) => props.theme.fonts.medium};
   font-size: 14px;
   cursor: pointer;
-
+  color: ${(props) => props.theme.colors.gray2};
+  text-align: center;
   &:hover {
-    background-color: ${(props) => props.theme.colors.gray};
+    background-color: #efeff1;
+    color: ${(props) => props.theme.colors.black3};
   }
 `;
 

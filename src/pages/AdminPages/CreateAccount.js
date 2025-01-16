@@ -170,7 +170,10 @@ const CreateAccount = () => {
         <InputContainer>
           <Label>입사일</Label>
           <DropdownContainer>
-            <DropdownHeader onClick={() => setIsCalendarOpen(!isCalendarOpen)}>
+            <DropdownHeader
+              onClick={() => setIsCalendarOpen(!isCalendarOpen)}
+              isPlaceholder={selectedDate === "0000-00-00"}
+            >
               {selectedDate}
               <CalendarIcon src={calendar} alt="달력" />
             </DropdownHeader>
@@ -314,7 +317,7 @@ const DropdownList = styled.ul`
   max-height: 240px;
   overflow-y: auto;
   background-color: ${(props) => props.theme.colors.gray};
-  border-radius: 10px;
+  padding: 10px 12px;
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
   z-index: 1000;
 
@@ -335,6 +338,7 @@ const DropdownItem = styled.li`
   ${(props) => props.theme.fonts.semiBold};
   font-size: 14px;
   text-align: center;
+  border-radius: 10px;
   color: ${(props) => props.theme.colors.gray2};
   cursor: pointer;
   &:hover {

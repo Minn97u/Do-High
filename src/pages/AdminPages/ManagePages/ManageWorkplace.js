@@ -1,14 +1,36 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import backBtn from "../../../assets/backBtn.svg";
 import dropdownArrow from "../../../assets/dropdown.svg";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { fetchTeamList } from "../../../api/AdminApi";
+import { Axios } from "../../../api/Axios";
 
 const ManageWorkplace = () => {
   const navigate = useNavigate();
+  const { id } = useParams();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [selectedAffiliation, setSelectedAffiliation] = useState("");
   const [hasSelected, setHasSelected] = useState(false);
+  const [teamList, setTeamList] = useState([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    const fetchTeams = async () => {
+      try {
+        const response = await fetchTeamList();
+        if (response.responseType === "SUCCESS") {
+          setTeamList(response.success);
+        } else {
+          console.error("소속 목록 조회 실패:", response.error.message);
+        }
+      } catch (error) {
+        console.error("소속 목록 조회 중 오류 발생:", error);
+      }
+    };
+
+    fetchTeams();
+  }, []);
 
   const handleDropdownSelect = (value) => {
     setSelectedAffiliation(value);
@@ -16,12 +38,43 @@ const ManageWorkplace = () => {
     setIsDropdownOpen(false);
   };
 
-  const isButtonDisabled = !hasSelected;
+  const isButtonDisabled = !hasSelected || isSubmitting;
+
+  const updateTeam = async () => {
+    try {
+      setIsSubmitting(true);
+      const response = await Axios.post(`/admin/mod/team`, {
+        memberId: id,
+        team: selectedAffiliation,
+      });
+
+      if (response.data.responseType === "SUCCESS") {
+        alert("소속이 성공적으로 변경되었습니다.");
+        navigate(-1);
+      } else {
+        alert(`소속 변경 실패: ${response.data.error.message}`);
+      }
+    } catch (error) {
+      const errorMessage =
+        error.response?.data?.error?.message ||
+        "소속 변경 중 오류가 발생했습니다.";
+      console.error("소속 변경 중 오류 발생:", errorMessage);
+      alert(errorMessage);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleSubmit = () => {
+    if (!isButtonDisabled) {
+      updateTeam();
+    }
+  };
 
   return (
     <Container>
       <Header>
-        <BackButton onClick={() => navigate("/admin/manage")}>
+        <BackButton onClick={() => navigate(-1)}>
           <img src={backBtn} alt="뒤로가기" />
         </BackButton>
         <Title>소속 변경</Title>
@@ -35,31 +88,19 @@ const ManageWorkplace = () => {
               isOpen={isDropdownOpen}
               hasSelected={hasSelected}
             >
-              {selectedAffiliation || "소속 데이터"}
+              {selectedAffiliation || "소속 선택"}
               <DropdownArrow src={dropdownArrow} isOpen={isDropdownOpen} />
             </DropdownHeader>
             {isDropdownOpen && (
               <DropdownList>
-                <DropdownItem
-                  onClick={() => handleDropdownSelect("음성 1센터")}
-                >
-                  음성 1센터
-                </DropdownItem>
-                <DropdownItem
-                  onClick={() => handleDropdownSelect("음성 2센터")}
-                >
-                  음성 2센터
-                </DropdownItem>
-                <DropdownItem
-                  onClick={() => handleDropdownSelect("용인백암센터")}
-                >
-                  용인백암센터
-                </DropdownItem>
-                <DropdownItem
-                  onClick={() => handleDropdownSelect("남양주센터")}
-                >
-                  남양주센터
-                </DropdownItem>
+                {teamList.map((team, index) => (
+                  <DropdownItem
+                    key={index}
+                    onClick={() => handleDropdownSelect(team)}
+                  >
+                    {team}
+                  </DropdownItem>
+                ))}
               </DropdownList>
             )}
           </DropdownContainer>
@@ -68,7 +109,7 @@ const ManageWorkplace = () => {
       <SubmitButton
         type="button"
         disabled={isButtonDisabled}
-        onClick={() => !isButtonDisabled && navigate("/admin/manage")}
+        onClick={handleSubmit}
       >
         변경하기
       </SubmitButton>
@@ -143,8 +184,7 @@ const DropdownHeader = styled.div`
   font-size: 14px;
   color: ${(props) =>
     props.hasSelected ? props.theme.colors.black3 : props.theme.colors.gray2};
-  background-color: ${(props) =>
-    props.hasError ? "#FFEEEB" : props.theme.colors.gray};
+  background-color: ${(props) => props.theme.colors.gray};
   border-radius: 10px;
   display: flex;
   justify-content: space-between;

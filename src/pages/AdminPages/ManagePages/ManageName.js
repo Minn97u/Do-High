@@ -1,24 +1,52 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import backBtn from "../../../assets/backBtn.svg";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { Axios } from "../../../api/Axios";
 
 const ManageName = () => {
   const navigate = useNavigate();
+  const { id } = useParams();
   const [name, setName] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const isButtonDisabled = name.trim().length === 0;
+  const isButtonDisabled = name.trim().length === 0 || isSubmitting;
+
+  const updateName = async () => {
+    try {
+      setIsSubmitting(true);
+      const response = await Axios.post(`/admin/mod/name`, {
+        memberId: id,
+        name: name.trim(),
+      });
+
+      if (response.data.responseType === "SUCCESS") {
+        alert("이름이 성공적으로 변경되었습니다.");
+        navigate(-1);
+      } else {
+        alert(`이름 변경 실패: ${response.data.error.message}`);
+      }
+    } catch (error) {
+      const errorMessage =
+        error.response?.data?.error?.message ||
+        "이름 변경 중 오류가 발생했습니다.";
+      console.error("이름 변경 중 오류 발생:", errorMessage);
+      alert(errorMessage);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   const handleSubmit = () => {
     if (!isButtonDisabled) {
-      navigate("/admin/manage");
+      updateName();
     }
   };
 
   return (
     <Container>
       <Header>
-        <BackButton onClick={() => navigate("/admin/manage")}>
+        <BackButton onClick={() => navigate(-1)}>
           <img src={backBtn} alt="뒤로가기" />
         </BackButton>
         <Title>이름 변경</Title>
@@ -28,7 +56,7 @@ const ManageName = () => {
           <Label>새로운 이름을 입력해주세요</Label>
           <Input
             type="text"
-            placeholder="허재민"
+            placeholder="이름을 입력해주세요"
             value={name}
             onChange={(e) => setName(e.target.value)}
           />
