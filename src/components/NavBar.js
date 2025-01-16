@@ -5,7 +5,7 @@ import homeIcon from "../assets/NavBar/home.svg";
 import starIcon from "../assets/NavBar/star.svg";
 import stackIcon from "../assets/NavBar/stack.svg";
 import boardIcon from "../assets/NavBar/board.svg";
-import myIcon from "../assets/NavBar/my.png";
+import myIcon from "../assets/NavBar/my.svg";
 
 const NavBar = () => {
   const location = useLocation();

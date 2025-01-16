@@ -1,15 +1,16 @@
 import React, { useState, useRef, useEffect } from "react";
 import styled from "styled-components";
-import backBtn from "../assets/backBtn.svg";
-import { useNavigate } from "react-router-dom";
+import infoIcon from "../assets/info.svg";
+import expListInfo from "../assets/questInfo.svg";
 import FlippableCard from "../components/FlippableCard";
 import FlippableCardWithMonth from "../components/FlippableCardWithMonth";
 
 const Quest = () => {
-  const navigate = useNavigate();
   const cardContainerRef = useRef(null);
   const monthContainerRef = useRef(null);
   const [selectedTab, setSelectedTab] = useState("직무 퀘스트");
+  const [infoOpen, setInfoOpen] = useState(false);
+
   const [selectedYear, setSelectedYear] = useState("2025년");
   const [selectedMonth, setSelectedMonth] = useState(1);
 
@@ -70,11 +71,15 @@ const Quest = () => {
 
   const years = Object.keys(questData[selectedTab]);
 
+  const handleInfoClick = () => {
+    setInfoOpen((prev) => !prev);
+  };
+
   const handleTabClick = (tab) => {
     setSelectedTab(tab);
     const years = Object.keys(questData[tab]);
     setSelectedYear(years[0]);
-    setSelectedMonth(1); // 월 초기화
+    setSelectedMonth(1);
   };
 
   const handleYearChange = (direction) => {
@@ -119,9 +124,6 @@ const Quest = () => {
   return (
     <Container>
       <Header>
-        <BackButton onClick={() => navigate("/")}>
-          <img src={backBtn} alt="뒤로가기" />
-        </BackButton>
         <Title>퀘스트</Title>
       </Header>
 
@@ -136,51 +138,56 @@ const Quest = () => {
           </Tab>
         ))}
       </TabBar>
+      <SubContainer>
+        <Selector>
+          <Arrow onClick={() => handleYearChange(-1)}>{"<"}</Arrow>
+          <Year>{selectedYear}</Year>
+          <Arrow onClick={() => handleYearChange(1)}>{">"}</Arrow>
+          <InfoIconWrapper>
+            <InfoIcon src={infoIcon} alt="정보" onClick={handleInfoClick} />
+            {infoOpen && <InfoImage src={expListInfo} alt="정보 설명" />}
+          </InfoIconWrapper>
+        </Selector>
 
-      <Selector>
-        <Arrow onClick={() => handleYearChange(-1)}>{"<"}</Arrow>
-        <Year>{selectedYear}</Year>
-        <Arrow onClick={() => handleYearChange(1)}>{">"}</Arrow>
-      </Selector>
+        <CardContainer ref={cardContainerRef}>
+          {Object.entries(questData[selectedTab]).map(([year, quest]) => (
+            <CardWrapper key={quest.id}>
+              <FlippableCard quest={quest} />
+            </CardWrapper>
+          ))}
+        </CardContainer>
 
-      <CardContainer ref={cardContainerRef}>
-        {Object.entries(questData[selectedTab]).map(([year, quest]) => (
-          <CardWrapper key={quest.id}>
-            <FlippableCard quest={quest} />
-          </CardWrapper>
-        ))}
-      </CardContainer>
+        <CriteriaContainer>
+          Max 기준: 4회 이상, 월 100 do 획득
+          <br />
+          Med 기준: 2회 이상, 월 50 do 획득
+        </CriteriaContainer>
 
-      <CriteriaContainer>
-        Max 기준: 4회 이상, 월 100 do 획득
-        <br />
-        Med 기준: 2회 이상, 월 50 do 획득
-      </CriteriaContainer>
+        <Selector>
+          <Arrow onClick={() => handleMonthChange(-1)}>{"<"}</Arrow>
+          <Year>{selectedMonth}월</Year>
+          <Arrow onClick={() => handleMonthChange(1)}>{">"}</Arrow>
+        </Selector>
 
-      <Selector>
-        <Arrow onClick={() => handleMonthChange(-1)}>{"<"}</Arrow>
-        <Year>{selectedMonth}월</Year>
-        <Arrow onClick={() => handleMonthChange(1)}>{">"}</Arrow>
-      </Selector>
+        <CardContainer ref={monthContainerRef}>
+          {Array.from({ length: 12 }, (_, index) => (
+            <CardWrapper key={index}>
+              <FlippableCardWithMonth
+                quest={{
+                  ...questData[selectedTab][selectedYear],
+                  title: `${index + 1}월 작업`,
+                }}
+              />
+            </CardWrapper>
+          ))}
+        </CardContainer>
 
-      <CardContainer ref={monthContainerRef}>
-        {Array.from({ length: 12 }, (_, index) => (
-          <CardWrapper key={index}>
-            <FlippableCardWithMonth
-              quest={{
-                ...questData[selectedTab][selectedYear],
-                title: `${index + 1}월 작업`,
-              }}
-            />
-          </CardWrapper>
-        ))}
-      </CardContainer>
-
-      <CriteriaContainer>
-        Max 기준: 업무프로세스 개선 리드자, 월 67 do 획득
-        <br />
-        Med 기준: 업무프로세스 개선 참여자, 월 33 do 획득
-      </CriteriaContainer>
+        <CriteriaContainer>
+          Max 기준: 업무프로세스 개선 리드자, 월 67 do 획득
+          <br />
+          Med 기준: 업무프로세스 개선 참여자, 월 33 do 획득
+        </CriteriaContainer>
+      </SubContainer>
     </Container>
   );
 };
@@ -191,7 +198,7 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-  min-height: 100vh;
+  height: 90vh;
   background-color: ${(props) => props.theme.colors.gray};
 `;
 
@@ -202,23 +209,23 @@ const Header = styled.div`
   position: relative;
 `;
 
-const BackButton = styled.button`
-  background: none;
-  border: none;
-  position: absolute;
-  left: 20px;
-`;
-
 const Title = styled.h1`
+  ${(props) => props.theme.fonts.semiBold};
+  font-size: 18px;
   text-align: center;
   flex: 1;
-  font-size: 18px;
 `;
 
 const TabBar = styled.div`
   display: flex;
   justify-content: space-around;
   border-bottom: 1px solid #e6e7e8;
+`;
+
+const SubContainer = styled.div`
+  overflow-y: scroll;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 `;
 
 const Tab = styled.button`
@@ -238,7 +245,8 @@ const Selector = styled.div`
   justify-content: center;
   align-items: center;
   margin-top: 36px;
-  margin-bottom: 18px;
+  margin-bottom: 8px;
+  position: relative;
 `;
 
 const Arrow = styled.button`
@@ -253,6 +261,31 @@ const Year = styled.div`
   font-size: 18px;
   margin: 0 30px;
   color: ${(props) => props.theme.colors.black2};
+  position: relative;
+`;
+
+const InfoIconWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  margin-right: auto;
+  position: absolute;
+  right: 40px;
+`;
+
+const InfoIcon = styled.img`
+  cursor: pointer;
+  width: 20px;
+  height: 20px;
+`;
+
+const InfoImage = styled.img`
+  position: absolute;
+  top: 25px;
+  right: -24px;
+  width: 250px;
+  z-index: 100;
+  border-radius: 8px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
 `;
 
 const CardContainer = styled.div`
@@ -279,4 +312,5 @@ const CriteriaContainer = styled.div`
   ${(props) => props.theme.fonts.medium};
   color: ${(props) => props.theme.colors.gray2};
   padding: 0 44px;
+  margin-bottom: 10px;
 `;
