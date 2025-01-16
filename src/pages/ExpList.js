@@ -1,8 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { getExpList } from "../api/ExpApi";
-import backBtn from "../assets/backBtn.svg";
 import dropdownArrow from "../assets/dropdown.svg";
 import infoIcon from "../assets/info.svg";
 import expListInfo from "../assets/expListInfo.svg";
@@ -33,7 +31,6 @@ const coinMap = {
 };
 
 const ExpList = () => {
-  const navigate = useNavigate();
   const [sortOpen, setSortOpen] = useState(false);
   const [infoOpen, setInfoOpen] = useState(false);
   const [sortOption, setSortOption] = useState("최신순");
@@ -89,9 +86,6 @@ const ExpList = () => {
   return (
     <Container>
       <Header>
-        <BackButton onClick={() => navigate("/")}>
-          <img src={backBtn} alt="뒤로가기" />
-        </BackButton>
         <Title>경험치 내역</Title>
       </Header>
 
@@ -188,7 +182,7 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-  min-height: 100vh;
+  height: 90vh;
   background-color: ${(props) => props.theme.colors.gray};
 `;
 
@@ -198,16 +192,6 @@ const Header = styled.div`
   width: 100%;
   padding: 15px 0;
   position: relative;
-`;
-
-const BackButton = styled.button`
-  background: none;
-  border: none;
-  font-size: 24px;
-  cursor: pointer;
-  position: absolute;
-  left: 20px;
-  top: 12px;
 `;
 
 const Title = styled.h1`
@@ -338,7 +322,9 @@ const Description = styled.div`
   }
 `;
 
-const ListContainer = styled.div``;
+const ListContainer = styled.div`
+  overflow-y: auto;
+`;
 
 const ListItem = styled.div`
   display: flex;

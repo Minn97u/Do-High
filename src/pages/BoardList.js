@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import backBtn from "../assets/backBtn.svg";
 import dropdownArrow from "../assets/dropdown.svg";
 import writeIcon from "../assets/write.svg";
 import { getPosts } from "../api/BoardApi";
@@ -44,9 +43,6 @@ const BoardList = () => {
   return (
     <Container>
       <Header>
-        <BackButton onClick={() => navigate(-1)}>
-          <img src={backBtn} alt="뒤로가기" />
-        </BackButton>
         <Title>게시글 목록</Title>
       </Header>
 
@@ -95,7 +91,7 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-  min-height: 100vh;
+  height: 90vh;
   background-color: ${(props) => props.theme.colors.gray};
 `;
 
@@ -105,16 +101,6 @@ const Header = styled.div`
   width: 100%;
   padding: 15px 0;
   position: relative;
-`;
-
-const BackButton = styled.button`
-  background: none;
-  border: none;
-  font-size: 24px;
-  cursor: pointer;
-  position: absolute;
-  left: 20px;
-  top: 12px;
 `;
 
 const Title = styled.h1`
@@ -176,6 +162,8 @@ const DropDownItem = styled.div`
 
 const ListContainer = styled.div`
   width: 100%;
+  height: 100%;
+  overflow-y: scroll;
 `;
 
 const ListItem = styled.div`
@@ -209,7 +197,7 @@ const ItemDate = styled.p`
 
 const WriteButton = styled.button`
   position: fixed;
-  bottom: 72px;
+  bottom: 132px;
   right: 20px;
   width: 48px;
   height: 48px;

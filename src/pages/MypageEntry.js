@@ -69,7 +69,7 @@ const MypageEntry = () => {
     <Container>
       <Header>
         <Title>마이페이지</Title>
-        <NotificationContainer>
+        <NotificationContainer onClick={() => navigate("/alarm")}>
           <NotificationIcon src={notification} alt="notification" />
           {hasNotification && <NotificationBadge />}
         </NotificationContainer>
@@ -128,7 +128,6 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-  height: 100vh;
   background-color: ${(props) => props.theme.colors.gray};
 `;
 
