@@ -82,7 +82,7 @@ const MyPage = () => {
   return (
     <Container>
       <Header>
-        <BackButton onClick={() => navigate(-1)}>
+        <BackButton onClick={() => navigate("/mypage-entry")}>
           <img src={backBtn} alt="뒤로가기" />
         </BackButton>
         <Title>내 정보 수정</Title>

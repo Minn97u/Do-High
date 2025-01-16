@@ -33,8 +33,9 @@ const ManageIdPw = () => {
 
     const checkPasswordDuplicate = async () => {
       try {
-        const response = await Axios.post("/admin/pwd", {
-          password,
+        const response = await Axios.post("/admin/pwd/check", {
+          memberId: id,
+          pwd: password,
         });
 
         if (response.data.responseType === "SUCCESS") {
@@ -49,10 +50,10 @@ const ManageIdPw = () => {
     };
 
     checkPasswordDuplicate();
-  }, [password]);
+  }, [password, id]);
 
   const onSubmit = async (data) => {
-    if (isPasswordDuplicate === false) {
+    if (isPasswordDuplicate === true) {
       alert("기존 비밀번호와 동일합니다. 다른 비밀번호를 입력해주세요.");
       return;
     }
@@ -96,7 +97,7 @@ const ManageIdPw = () => {
             <Input
               type={showPassword ? "text" : "password"}
               placeholder="영문, 숫자 포함 8자 이상"
-              hasError={!!errors.password || isPasswordDuplicate === false}
+              hasError={!!errors.password || isPasswordDuplicate === true}
               {...register("password", {
                 required: "비밀번호를 입력해주세요.",
                 pattern: {
@@ -111,9 +112,9 @@ const ManageIdPw = () => {
           </PasswordContainer>
           {errors.password ? (
             <ErrorMessage>{errors.password.message}</ErrorMessage>
-          ) : isPasswordDuplicate === false ? (
-            <ErrorMessage>기존 비밀번호와 동일합니다.</ErrorMessage>
           ) : isPasswordDuplicate === true ? (
+            <ErrorMessage>기존 비밀번호와 동일합니다.</ErrorMessage>
+          ) : isPasswordDuplicate === false ? (
             <SuccessMessage>사용 가능한 비밀번호입니다.</SuccessMessage>
           ) : null}
         </InputContainer>
@@ -145,7 +146,7 @@ const ManageIdPw = () => {
 
         <SubmitButton
           type="submit"
-          disabled={!isValid || isSubmitting || isPasswordDuplicate === false}
+          disabled={!isValid || isSubmitting || isPasswordDuplicate === true}
         >
           변경하기
         </SubmitButton>
