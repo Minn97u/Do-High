@@ -198,7 +198,7 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-  min-height: 90vh;
+  height: 90vh;
   background-color: ${(props) => props.theme.colors.gray};
 `;
 
@@ -224,6 +224,8 @@ const TabBar = styled.div`
 
 const SubContainer = styled.div`
   overflow-y: scroll;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 `;
 
 const Tab = styled.button`
@@ -243,7 +245,8 @@ const Selector = styled.div`
   justify-content: center;
   align-items: center;
   margin-top: 36px;
-  margin-bottom: 18px;
+  margin-bottom: 8px;
+  position: relative;
 `;
 
 const Arrow = styled.button`
@@ -309,4 +312,5 @@ const CriteriaContainer = styled.div`
   ${(props) => props.theme.fonts.medium};
   color: ${(props) => props.theme.colors.gray2};
   padding: 0 44px;
+  margin-bottom: 10px;
 `;

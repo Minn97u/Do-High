@@ -95,7 +95,8 @@ const ExperienceSection = () => {
           </CardValue>
         </RecentDoCard>
       )}
-      <SectionHeader onClick={() => navigate("/exp")}>
+
+      <SectionHeader onClick={() => navigate("/quest")}>
         <SectionTitle>{memberName}님이 수행한 퀘스트예요!</SectionTitle>
         <ArrowIcon src={backBtn} alt="More" onClick={handleQuestClick} />
       </SectionHeader>

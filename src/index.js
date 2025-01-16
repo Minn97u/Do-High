@@ -5,20 +5,24 @@ import { ThemeProvider } from "styled-components";
 import GlobalStyle from "./styles/GlobalStyle";
 import { Theme } from "./styles/Theme";
 import { BrowserRouter } from "react-router-dom";
-import { getFCMToken } from "./firebase";
+import { handleAllowNotification } from "./NotificationFunc";
 
-if ("serviceWorker" in navigator) {
-  navigator.serviceWorker
-    .register("/firebase-messaging-sw.js")
-    .then(function (registration) {
+// 서비스 워커 등록 함수
+const registerServiceWorker = async () => {
+  if ("serviceWorker" in navigator) {
+    try {
+      const registration = await navigator.serviceWorker.register(
+        "../firebase-messaging-sw.js"
+      );
       console.log("Service Worker registered with scope:", registration.scope);
-    })
-    .catch(function (error) {
-      console.log("Service Worker registration failed:", error);
-    });
-}
+    } catch (error) {
+      console.error("Service Worker registration failed:", error);
+    }
+  }
+};
 
-getFCMToken();
+handleAllowNotification();
+registerServiceWorker();
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(

@@ -324,6 +324,8 @@ const Description = styled.div`
 
 const ListContainer = styled.div`
   overflow-y: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 `;
 
 const ListItem = styled.div`
