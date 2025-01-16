@@ -5,6 +5,13 @@ import styled from "styled-components";
 const Admin = () => {
   const navigate = useNavigate();
 
+  const handleLogout = () => {
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("isAdmin");
+
+    navigate("/auth/login");
+  };
+
   return (
     <Container>
       <Header>
@@ -17,11 +24,11 @@ const Admin = () => {
         <ActionButton onClick={() => navigate("/admin/search")}>
           기존 계정 설정
         </ActionButton>
-        <ActionButton onClick={() => navigate("/admin/boardpost")}>
+        <ActionButton onClick={() => navigate("/boardpost")}>
           게시글 작성
         </ActionButton>
         <Logout>
-          <LogoutText onClick={() => navigate("/logout")}>로그아웃</LogoutText>
+          <LogoutText onClick={handleLogout}>로그아웃</LogoutText>
         </Logout>
       </ButtonContainer>
     </Container>

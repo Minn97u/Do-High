@@ -3,23 +3,44 @@ import styled from "styled-components";
 import { IoEye, IoEyeOff } from "react-icons/io5";
 import logo from "../assets/logo.svg";
 import { useNavigate } from "react-router-dom";
+import { Axios } from "../api/Axios";
 
 const Login = () => {
   const navigate = useNavigate();
   const [userType, setUserType] = useState("general");
   const [showPassword, setShowPassword] = useState(false);
+  const [id, setId] = useState("");
+  const [password, setPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
-  const handleLogin = () => {
-    if (userType === "admin") {
-      const fakeToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...";
-      localStorage.setItem("accessToken", fakeToken);
-      localStorage.setItem("isAdmin", "true");
-    } else {
-      localStorage.removeItem("accessToken");
-      localStorage.removeItem("isAdmin");
+  const handleLogin = async () => {
+    const endpoint =
+      userType === "admin" ? "/auth/admin/login" : "/auth/member/login";
+
+    try {
+      const response = await Axios.post(endpoint, {
+        loginRequestId: id,
+        password: password,
+      });
+
+      const { responseType, success, error } = response.data;
+
+      if (responseType === "SUCCESS") {
+        localStorage.setItem("accessToken", success.jwtToken);
+        localStorage.setItem("isAdmin", userType === "admin");
+
+        if (userType === "admin") {
+          navigate("/admin");
+        } else {
+          navigate("/");
+        }
+      } else if (responseType === "ERROR") {
+        setErrorMessage(error.message || "로그인에 실패했습니다.");
+      }
+    } catch (error) {
+      alert("로그인에 실패했습니다. 다시 시도해주세요");
+      console.error(error);
     }
-
-    navigate("/");
   };
 
   return (
@@ -28,26 +49,45 @@ const Login = () => {
       <TabContainer>
         <Tab
           active={userType === "general"}
-          onClick={() => setUserType("general")}
+          onClick={() => {
+            setUserType("general");
+            setId("");
+            setPassword("");
+          }}
         >
           일반 사원
         </Tab>
-        <Tab active={userType === "admin"} onClick={() => setUserType("admin")}>
+        <Tab
+          active={userType === "admin"}
+          onClick={() => {
+            setUserType("admin");
+            setId("");
+            setPassword("");
+          }}
+        >
           관리자
         </Tab>
       </TabContainer>
       <InputContainer>
-        <Input type="text" placeholder="아이디" />
+        <Input
+          type="text"
+          placeholder="아이디"
+          value={id}
+          onChange={(e) => setId(e.target.value)}
+        />
         <PasswordContainer>
           <Input
             type={showPassword ? "text" : "password"}
             placeholder="비밀번호"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
           />
           <ToggleButton onClick={() => setShowPassword(!showPassword)}>
             {showPassword ? <IoEye /> : <IoEyeOff />}
           </ToggleButton>
         </PasswordContainer>
       </InputContainer>
+      {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
       <LoginButton onClick={handleLogin}>로그인</LoginButton>
       <Inquiry>관리자에게 찾기 문의하기</Inquiry>
     </Container>
@@ -140,4 +180,10 @@ const Inquiry = styled.div`
   color: ${(props) => props.theme.colors.gray2};
   cursor: pointer;
   text-decoration: underline;
+`;
+
+const ErrorMessage = styled.div`
+  color: ${(props) => props.theme.colors.mainC};
+  font-size: 14px;
+  margin-bottom: 16px;
 `;
