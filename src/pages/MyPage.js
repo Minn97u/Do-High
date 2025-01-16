@@ -1,23 +1,48 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import backBtn from "../assets/backBtn.svg";
 import profile from "../assets/profile.svg";
 import plus from "../assets/plus.svg";
 import check from "../assets/check.svg";
-import character1 from "../assets/characters/character1.svg";
-import character2 from "../assets/characters/character2.svg";
-import character3 from "../assets/characters/character3.svg";
-import character4 from "../assets/characters/character4.svg";
-import character5 from "../assets/characters/character5.svg";
-import character6 from "../assets/characters/character6.svg";
-import character7 from "../assets/characters/character7.svg";
 import dropdownArrow from "../assets/dropdown.svg";
 import { useNavigate } from "react-router-dom";
+import {
+  getMemberInfo,
+  getAvailableProfiles,
+  updateSelectedProfile,
+} from "../api/UserApi";
 
 const MyPage = () => {
   const navigate = useNavigate();
   const [isPopupVisible, setPopupVisible] = useState(false);
-  const [selectedCharacter, setSelectedCharacter] = useState(0);
+  const [selectedCharacter, setSelectedCharacter] = useState(null);
+  const [availableProfiles, setAvailableProfiles] = useState([]);
+  const [memberInfo, setMemberInfo] = useState(null);
+
+  useEffect(() => {
+    const fetchMemberInfo = async () => {
+      try {
+        const data = await getMemberInfo();
+        setMemberInfo(data.success);
+        setSelectedCharacter(data.success.character || null);
+      } catch (error) {
+        console.error("멤버 정보 불러오기 오류:", error.message);
+      }
+    };
+    fetchMemberInfo();
+  }, []);
+
+  useEffect(() => {
+    const fetchAvailableProfiles = async () => {
+      try {
+        const data = await getAvailableProfiles();
+        setAvailableProfiles(data.success || []);
+      } catch (error) {
+        console.error("프로필 목록 불러오기 오류:", error.message);
+      }
+    };
+    fetchAvailableProfiles();
+  }, []);
 
   const handleEditButtonClick = () => {
     setPopupVisible(true);
@@ -27,24 +52,32 @@ const MyPage = () => {
     setPopupVisible(false);
   };
 
-  const handleCharacterSelect = (index) => {
-    setSelectedCharacter(index);
+  const handleCharacterSelect = (url) => {
+    setSelectedCharacter(url);
+  };
+
+  const handleSaveProfile = async () => {
+    if (!selectedCharacter) {
+      alert("선택된 프로필 이미지가 없습니다.");
+      return;
+    }
+
+    try {
+      await updateSelectedProfile(selectedCharacter);
+      setPopupVisible(false);
+
+      const updatedMemberInfo = await getMemberInfo();
+      setMemberInfo(updatedMemberInfo.success);
+      setSelectedCharacter(updatedMemberInfo.success.character || profile);
+    } catch (error) {
+      console.error("프로필 저장 오류:", error.message);
+      alert("프로필 저장에 실패했습니다.");
+    }
   };
 
   const handlePasswordChange = () => {
     navigate("/mypage/pwchange");
   };
-
-  const characters = [
-    profile,
-    character1,
-    character2,
-    character3,
-    character4,
-    character5,
-    character6,
-    character7,
-  ];
 
   return (
     <Container>
@@ -56,7 +89,7 @@ const MyPage = () => {
       </Header>
       <Content>
         <ProfileImageWrapper>
-          <ProfileImage src={characters[selectedCharacter]} alt="profile" />
+          <ProfileImage src={memberInfo?.character || profile} alt="profile" />
           <EditButton onClick={handleEditButtonClick}>
             <img src={plus} alt="plus" />
           </EditButton>
@@ -64,23 +97,23 @@ const MyPage = () => {
         <InfoList>
           <InfoItem>
             <Label>이름</Label>
-            <Value>허재민</Value>
+            <Value>{memberInfo?.name}</Value>
           </InfoItem>
           <InfoItem>
             <Label>소속</Label>
-            <Value>음성 2센터</Value>
+            <Value>{memberInfo?.team}</Value>
           </InfoItem>
           <InfoItem>
             <Label>사번</Label>
-            <Value>2022080101</Value>
+            <Value>{memberInfo?.identificationNumber}</Value>
           </InfoItem>
           <InfoItem>
             <Label>레벨</Label>
-            <Value>F1-I</Value>
+            <Value>{memberInfo?.level}</Value>
           </InfoItem>
           <InfoItem>
             <Label>입사일</Label>
-            <Value>2023-10-01</Value>
+            <Value>{memberInfo?.effectiveDate}</Value>
           </InfoItem>
           <ChangePassword onClick={handlePasswordChange}>
             비밀번호 변경
@@ -94,18 +127,18 @@ const MyPage = () => {
             <Divider />
             <PopupTitle>캐릭터 선택</PopupTitle>
             <CharacterGrid>
-              {characters.map((character, index) => (
+              {availableProfiles.map((url, index) => (
                 <CharacterWrapper
                   key={index}
-                  onClick={() => handleCharacterSelect(index)}
+                  onClick={() => handleCharacterSelect(url)}
                 >
                   <CharacterImageWrapper>
                     <CharacterImage
-                      src={character}
+                      src={url}
                       alt={`character-${index}`}
-                      isSelected={selectedCharacter === index}
+                      isSelected={selectedCharacter === url}
                     />
-                    {selectedCharacter === index && (
+                    {selectedCharacter === url && (
                       <CheckMark>
                         <img src={check} alt="check" />
                       </CheckMark>
@@ -114,7 +147,7 @@ const MyPage = () => {
                 </CharacterWrapper>
               ))}
             </CharacterGrid>
-            <SaveButton onClick={handleClosePopup}>저장하기</SaveButton>
+            <SaveButton onClick={handleSaveProfile}>저장하기</SaveButton>{" "}
           </Popup>
         </PopupOverlay>
       )}
