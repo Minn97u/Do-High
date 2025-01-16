@@ -22,6 +22,10 @@ const ProfileCard = () => {
   const [thisYearExpTotal, setThisYearExpTotal] = useState(0);
   const [lastYearExpPercent, setLastYearExpPercent] = useState(0);
   const [lastYearExpTotal, setLastYearExpTotal] = useState(0);
+  const [animatedPercents, setAnimatedPercents] = useState({
+    1: 0,
+    2: 0,
+  });
   const [memberInfo, setMemberInfo] = useState({
     name: "",
     level: "",
@@ -102,6 +106,34 @@ const ProfileCard = () => {
     fetchMemberInfo();
   }, []);
 
+  useEffect(() => {
+    const targetPercent =
+      currentSlide === 1 ? thisYearExpPercent : lastYearExpPercent;
+
+    if (currentSlide === 1 || currentSlide === 2) {
+      setAnimatedPercents((prev) => ({
+        ...prev,
+        [currentSlide]: 0,
+      }));
+
+      let current = 0;
+
+      const interval = setInterval(() => {
+        current += 1;
+        if (current >= targetPercent) {
+          clearInterval(interval);
+          current = targetPercent;
+        }
+        setAnimatedPercents((prev) => ({
+          ...prev,
+          [currentSlide]: current,
+        }));
+      }, 10);
+
+      return () => clearInterval(interval);
+    }
+  }, [currentSlide, thisYearExpPercent, lastYearExpPercent]);
+
   const handleDotClick = (index) => {
     setCurrentSlide(index);
   };
@@ -167,7 +199,7 @@ const ProfileCard = () => {
             </Header>
             <ProgressContainer>
               <CircularProgressbar
-                value={thisYearExpPercent}
+                value={animatedPercents[1]}
                 styles={buildStyles({
                   rotation: 0,
                   strokeLinecap: "round",
@@ -201,7 +233,7 @@ const ProfileCard = () => {
             </Header>
             <ProgressContainer>
               <CircularProgressbar
-                value={lastYearExpPercent}
+                value={animatedPercents[2]}
                 styles={buildStyles({
                   rotation: 0,
                   strokeLinecap: "round",
@@ -332,7 +364,7 @@ const Progress = styled.div`
 const CoinWrapper = styled.div`
   position: absolute;
   top: -10px;
-  left: ${(props) => props.percent}%;
+  left: ${({ percent }) => (percent < 8 ? 8 : percent)}%;
   transform: translateX(-98%);
   transition: left 0.3s ease;
 `;
