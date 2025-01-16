@@ -1,11 +1,36 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import { getExpList } from "../api/ExpApi";
 import backBtn from "../assets/backBtn.svg";
 import dropdownArrow from "../assets/dropdown.svg";
-import coinIcon from "../assets/coin.svg";
 import infoIcon from "../assets/info.svg";
 import expListInfo from "../assets/expListInfo.svg";
+import dayjs from "dayjs";
+
+const categoryMap = {
+  전체: "all",
+  인사평가: "pf",
+  "직무 퀘스트": "job",
+  "리더 퀘스트": "ld",
+  "전사 프로젝트": "co",
+};
+
+const orderMap = {
+  최신순: "desc",
+  오래된순: "asc",
+};
+
+const coinMap = {
+  S: require("../assets/coin/S.svg").default,
+  A: require("../assets/coin/A.svg").default,
+  B: require("../assets/coin/B.svg").default,
+  C: require("../assets/coin/C.svg").default,
+  D: require("../assets/coin/D.svg").default,
+  BronzeDo: require("../assets/coin/BronzeDo.svg").default,
+  GoldDo: require("../assets/coin/GoldDo.svg").default,
+  SilverDo: require("../assets/coin/SilverDo.svg").default,
+};
 
 const ExpList = () => {
   const navigate = useNavigate();
@@ -13,68 +38,32 @@ const ExpList = () => {
   const [infoOpen, setInfoOpen] = useState(false);
   const [sortOption, setSortOption] = useState("최신순");
   const [selectedTab, setSelectedTab] = useState("전체");
+  const [expList, setExpList] = useState([]);
+  const [loading, setLoading] = useState(false);
 
-  const expData = {
-    전체: [
-      {
-        id: 1,
-        date: "2025.01.02",
-        type: "인사평가",
-        grade: "C등급",
-        points: 1500,
-      },
-      {
-        id: 2,
-        date: "2025.01.02",
-        type: "직무 퀘스트",
-        grade: "생산성 증진",
-        points: 80,
-      },
-      {
-        id: 3,
-        date: "2025.01.02",
-        type: "리더 퀘스트",
-        grade: "월특근",
-        points: 40,
-      },
-    ],
-    인사평가: [
-      {
-        id: 1,
-        date: "2025.01.02",
-        type: "인사평가",
-        grade: "C등급",
-        points: 1500,
-      },
-    ],
-    "직무 퀘스트": [
-      {
-        id: 2,
-        date: "2025.01.02",
-        type: "직무 퀘스트",
-        grade: "생산성 증진",
-        points: 80,
-      },
-    ],
-    "리더 퀘스트": [
-      {
-        id: 3,
-        date: "2025.01.02",
-        type: "리더 퀘스트",
-        grade: "월특근",
-        points: 40,
-      },
-    ],
-    "전사 프로젝트": [
-      {
-        id: 4,
-        date: "2025.01.02",
-        type: "전사 프로젝트",
-        grade: "A등급",
-        points: 2000,
-      },
-    ],
-  };
+  const fetchExpList = useCallback(async () => {
+    setLoading(true);
+    try {
+      const category = categoryMap[selectedTab];
+      const order = orderMap[sortOption];
+      const data = await getExpList(category, order);
+
+      if (data.responseType === "SUCCESS") {
+        setExpList(data.success);
+      } else {
+        console.error("데이터 로드 실패:", data.error?.message);
+        setExpList([]);
+      }
+    } catch (error) {
+      console.error("API 호출 오류:", error.message);
+    } finally {
+      setLoading(false);
+    }
+  }, [selectedTab, sortOption]);
+
+  useEffect(() => {
+    fetchExpList();
+  }, [fetchExpList]);
 
   const handleSortClick = () => {
     setSortOpen((prev) => !prev);
@@ -89,6 +78,14 @@ const ExpList = () => {
     setSelectedTab(tab);
   };
 
+  const handleInfoClick = () => {
+    setInfoOpen((prev) => !prev);
+  };
+
+  const formatDate = (dateString) => {
+    return dayjs(dateString).format("YYYY.MM.DD");
+  };
+
   return (
     <Container>
       <Header>
@@ -99,13 +96,7 @@ const ExpList = () => {
       </Header>
 
       <TabBar>
-        {[
-          "전체",
-          "인사평가",
-          "직무 퀘스트",
-          "리더 퀘스트",
-          "전사 프로젝트",
-        ].map((tab) => (
+        {Object.keys(categoryMap).map((tab) => (
           <Tab
             key={tab}
             selected={selectedTab === tab}
@@ -129,14 +120,14 @@ const ExpList = () => {
         </Description>
       )}
 
-      <SortBar>
+      <SortBar
+        hasInfoIcon={
+          selectedTab !== "인사평가" && selectedTab !== "전사 프로젝트"
+        }
+      >
         {selectedTab !== "인사평가" && selectedTab !== "전사 프로젝트" && (
           <InfoIconWrapper>
-            <InfoIcon
-              src={infoIcon}
-              alt="정보"
-              onClick={() => setInfoOpen(!infoOpen)}
-            />
+            <InfoIcon src={infoIcon} alt="정보" onClick={handleInfoClick} />
             {infoOpen && <InfoImage src={expListInfo} alt="정보 설명" />}
           </InfoIconWrapper>
         )}
@@ -156,28 +147,42 @@ const ExpList = () => {
         )}
       </SortBar>
 
-      <ListContainer>
-        {expData[selectedTab].map((item) => (
-          <ListItem key={item.id}>
-            <ItemLeft>
-              <ItemIcon src={coinIcon} alt="코인 아이콘" />
-              <ItemInfo>
-                <ItemDate>{item.date}</ItemDate>
-                <ItemType>{item.type}</ItemType>
-              </ItemInfo>
-            </ItemLeft>
-            <ItemRight>
-              <ItemGrade>{item.grade}</ItemGrade>
-              <ItemPoints>{item.points.toLocaleString()}</ItemPoints>
-            </ItemRight>
-          </ListItem>
-        ))}
-      </ListContainer>
+      {loading ? (
+        <LoadingMessage>로딩 중...</LoadingMessage>
+      ) : (
+        <ListContainer>
+          {expList.map((item, index) => (
+            <ListItem key={index}>
+              <ItemLeft>
+                <ItemIcon
+                  src={coinMap[item.coin] || coinMap["BronzeDo"]}
+                  alt={`${item.coin} 아이콘`}
+                />
+                <ItemInfo>
+                  <ItemDate>{formatDate(item.date)}</ItemDate>
+                  <ItemType>{item.expType}</ItemType>
+                </ItemInfo>
+              </ItemLeft>
+              <ItemRight>
+                <ItemGrade>{item.content}</ItemGrade>
+                <ItemPoints>{item.point.toLocaleString()}</ItemPoints>
+              </ItemRight>
+            </ListItem>
+          ))}
+        </ListContainer>
+      )}
     </Container>
   );
 };
 
 export default ExpList;
+
+const LoadingMessage = styled.div`
+  text-align: center;
+  margin-top: 20px;
+  ${(props) => props.theme.fonts.medium};
+  color: ${(props) => props.theme.colors.gray2};
+`;
 
 const Container = styled.div`
   display: flex;
@@ -247,7 +252,7 @@ const SortBar = styled.div`
   justify-content: ${(props) =>
     props.hasInfoIcon ? "space-between" : "flex-end"};
   align-items: center;
-  padding: 9px 20px;
+  padding: 9px 28px;
   border-bottom: 2px solid #e6e7e8;
   padding-top: 19px;
 `;
@@ -267,7 +272,7 @@ const InfoIcon = styled.img`
 const InfoImage = styled.img`
   position: absolute;
   top: 45px;
-  left: 5px;
+  left: 13px;
   width: 250px;
   z-index: 100;
   border-radius: 8px;
@@ -295,7 +300,7 @@ const SortIcon = styled.img`
 const DropDownMenu = styled.div`
   position: absolute;
   top: 40px;
-  right: 15px;
+  right: 23px;
   background-color: ${(props) => props.theme.colors.gray};
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
   border-radius: 4px;

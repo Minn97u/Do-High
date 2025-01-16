@@ -1,19 +1,70 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
+import { useNavigate } from "react-router-dom";
+import { getRecentExp } from "../api/ExpApi";
+import { getMemberInfo } from "../api/UserApi";
 import coinIcon from "../assets/coin/GoldDo.svg";
-import silverCoinIcon from "../assets/coin/SliverDo.svg";
+import silverCoinIcon from "../assets/coin/SilverDo.svg";
 import bronzeCoinIcon from "../assets//coin/BronzeDo.svg";
 import backBtn from "../assets/mainArrow.svg";
-import { useNavigate } from "react-router-dom";
+
+const coinMap = {
+  S: require("../assets/coin/S.svg").default,
+  A: require("../assets/coin/A.svg").default,
+  B: require("../assets/coin/B.svg").default,
+  C: require("../assets/coin/C.svg").default,
+  D: require("../assets/coin/D.svg").default,
+  BronzeDo: require("../assets/coin/BronzeDo.svg").default,
+  GoldDo: require("../assets/coin/GoldDo.svg").default,
+  SilverDo: require("../assets/coin/SilverDo.svg").default,
+};
 
 const ExperienceSection = () => {
   const navigate = useNavigate();
+  const [recentExp, setRecentExp] = useState(null);
+  const [memberName, setMemberName] = useState("");
 
   const quests = [
     { title: "8월 직무 퀘스트", subtitle: "생산성 증진", coinType: "gold" },
     { title: "32주 리더 퀘스트", subtitle: "월특근", coinType: "silver" },
     { title: "32주 리더 퀘스트", subtitle: "업무 효율", coinType: "bronze" },
   ];
+
+  useEffect(() => {
+    const fetchRecentExp = async () => {
+      try {
+        const data = await getRecentExp();
+        if (data.responseType === "SUCCESS") {
+          setRecentExp(data.success);
+        } else {
+          console.error("최근 경험치 데이터 로드 실패:", data.error.message);
+        }
+      } catch (error) {
+        console.error("API 호출 오류:", error.message);
+      }
+    };
+
+    const fetchMemberInfo = async () => {
+      try {
+        const data = await getMemberInfo();
+        if (data.responseType === "SUCCESS") {
+          setMemberName(data.success.name);
+        } else {
+          console.error("멤버 정보 로드 실패:", data.error.message);
+        }
+      } catch (error) {
+        console.error("API 호출 오류:", error.message);
+      }
+    };
+
+    fetchRecentExp();
+    fetchMemberInfo();
+  }, []);
+
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString("ko-KR").replace(/\./g, ".");
+  };
 
   const handleExpClick = () => {
     navigate("/exp");
@@ -25,22 +76,27 @@ const ExperienceSection = () => {
 
   return (
     <ExperienceSectionContainer>
-      <SectionHeader>
-        <SectionTitle>최근에 재민님이 받은 do예요!</SectionTitle>
+      <SectionHeader onClick={handleExpClick}>
+        <SectionTitle>최근에 {memberName}님이 받은 do예요!</SectionTitle>
         <ArrowIcon src={backBtn} alt="More" onClick={handleExpClick} />
       </SectionHeader>
-      <RecentDoCard>
-        <CardContent>
-          <CardDate>24.01.02</CardDate>
-          <CardTitle>인사평가 C등급</CardTitle>
-        </CardContent>
-        <CardValue>
-          <CoinIcon src={coinIcon} alt="Coin" />
-          1,500
-        </CardValue>
-      </RecentDoCard>
-      <SectionHeader>
-        <SectionTitle>재민님이 수행한 퀘스트예요!</SectionTitle>
+      {recentExp && (
+        <RecentDoCard onClick={handleExpClick}>
+          <CardContent>
+            <CardDate>{formatDate(recentExp.date)}</CardDate>
+            <CardTitle>{recentExp.content}</CardTitle>
+          </CardContent>
+          <CardValue>
+            <CoinIcon
+              src={coinMap[recentExp.coin] || coinMap["BronzeDo"]}
+              alt={`${recentExp.coin} Coin`}
+            />
+            {recentExp.exp.toLocaleString()}
+          </CardValue>
+        </RecentDoCard>
+      )}
+      <SectionHeader onClick={handleQuestClick}>
+        <SectionTitle>{memberName}님이 수행한 퀘스트예요!</SectionTitle>
         <ArrowIcon src={backBtn} alt="More" onClick={handleQuestClick} />
       </SectionHeader>
       <QuestList>
@@ -93,6 +149,7 @@ const SectionTitle = styled.h4`
   ${(props) => props.theme.fonts.semiBold};
   font-size: 18px;
   color: ${(props) => props.theme.colors.black2};
+  margin-left: 6px;
 `;
 
 const ArrowIcon = styled.img`

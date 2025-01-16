@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import profile from "../assets/profile.svg";
 import coinIcon from "../assets/coin.svg";
@@ -8,12 +8,99 @@ import speechBubble3 from "../assets/speechBubble3.svg";
 import info from "../assets/info.svg";
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
+import { getExpStatus, getThisYearExp, getLastYearExp } from "../api/ExpApi";
+import { getMemberInfo } from "../api/UserApi";
 
 const ProfileCard = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [tooltipVisible, setTooltipVisible] = useState(false);
-  const percentage = currentSlide === 1 ? 22 : 83;
+  const [totalExp, setTotalExp] = useState(0);
+  const [remainingExp, setRemainingExp] = useState(0);
+  const [nextLevel, setNextLevel] = useState("");
+  const [percent, setPercent] = useState(0);
+  const [thisYearExpPercent, setThisYearExpPercent] = useState(0);
+  const [thisYearExpTotal, setThisYearExpTotal] = useState(0);
+  const [lastYearExpPercent, setLastYearExpPercent] = useState(0);
+  const [lastYearExpTotal, setLastYearExpTotal] = useState(0);
+  const [memberInfo, setMemberInfo] = useState({
+    name: "",
+    level: "",
+    team: "",
+    identificationNumber: "",
+    character: profile,
+  });
+
   const slides = [0, 1, 2];
+
+  useEffect(() => {
+    const fetchExpStatus = async () => {
+      try {
+        const response = await getExpStatus();
+        if (response.responseType === "SUCCESS") {
+          setTotalExp(response.success.totalExp);
+          setRemainingExp(response.success.remainingExp);
+          setNextLevel(response.success.nextLevel);
+          setPercent(response.success.percent);
+        } else {
+          console.error("경험치 현황 조회 오류:", response.error.message);
+        }
+      } catch (error) {
+        console.error("경험치 현황 조회 오류:", error.message);
+      }
+    };
+
+    const fetchThisYearExp = async () => {
+      try {
+        const response = await getThisYearExp();
+        if (response.responseType === "SUCCESS") {
+          setThisYearExpPercent(response.success.percent);
+          setThisYearExpTotal(response.success.totalExp);
+        } else {
+          console.error("올해 누적 경험치 조회 오류:", response.error.message);
+        }
+      } catch (error) {
+        console.error("올해 누적 경험치 조회 오류:", error.message);
+      }
+    };
+
+    const fetchLastYearExp = async () => {
+      try {
+        const response = await getLastYearExp();
+        if (response.responseType === "SUCCESS") {
+          setLastYearExpPercent(response.success.percent);
+          setLastYearExpTotal(response.success.totalExp);
+        } else {
+          console.error("작년 누적 경험치 조회 오류:", response.error.message);
+        }
+      } catch (error) {
+        console.error("작년 누적 경험치 조회 오류:", error.message);
+      }
+    };
+
+    const fetchMemberInfo = async () => {
+      try {
+        const response = await getMemberInfo();
+        if (response.responseType === "SUCCESS") {
+          setMemberInfo({
+            name: response.success.name,
+            level: response.success.level,
+            team: response.success.team,
+            identificationNumber: response.success.identificationNumber,
+            character: response.success.character || profile,
+          });
+        } else {
+          console.error("멤버 정보 조회 오류:", response.error.message);
+        }
+      } catch (error) {
+        console.error("멤버 정보 조회 오류:", error.message);
+      }
+    };
+
+    fetchExpStatus();
+    fetchThisYearExp();
+    fetchLastYearExp();
+    fetchMemberInfo();
+  }, []);
 
   const handleDotClick = (index) => {
     setCurrentSlide(index);
@@ -23,73 +110,64 @@ const ProfileCard = () => {
     setTooltipVisible(!tooltipVisible);
   };
 
-  // const calculateCoinPosition = (percentage) => {
-  //   const angle = (percentage / 100) * 360 - 90;
-  //   const radius = 70;
-  //   const x = radius * Math.cos((angle * Math.PI) / 180);
-  //   const y = radius * Math.sin((angle * Math.PI) / 180);
-  //   return { x, y };
-  // };
-
-  // const { x, y } = calculateCoinPosition(percentage);
-
   return (
     <Container>
-      {currentSlide === 0 ? (
+      {currentSlide === 0 && (
         <ProfileCardContainer>
           <ProfileHeader>
             <ProfileInfo>
               <div>
-                <h3>허재민</h3>
-                <p>LV. F1-I</p>
+                <h3>{memberInfo.name}</h3>
+                <p>LV. {memberInfo.level}</p>
               </div>
-              <p>음성 2센터</p>
-              <p>2022080101</p>
+              <p>{memberInfo.team}</p>
+              <p>{memberInfo.identificationNumber}</p>
             </ProfileInfo>
             <ProfileImageWrapper>
-              <ProfileImage src={profile} alt="profile" />
+              <ProfileImage src={memberInfo.character} alt="profile" />
             </ProfileImageWrapper>
           </ProfileHeader>
           <ExperienceSection>
             <h4>총 누적 경험치</h4>
-            <ExperienceValue>10,500</ExperienceValue>
+            <ExperienceValue>{totalExp.toLocaleString()}</ExperienceValue>
             <ProgressBar>
-              <Progress />
-              <CoinWrapper>
+              <Progress percent={percent} />
+              <CoinWrapper percent={percent}>
                 <CoinIcon src={coinIcon} alt="coin" />
               </CoinWrapper>
-              <SpeechBubble src={speechBubble} alt="speech bubble" />
+              {percent >= 55 && percent <= 90 && (
+                <SpeechBubble
+                  percent={percent}
+                  src={speechBubble}
+                  alt="speech bubble"
+                />
+              )}
             </ProgressBar>
-            <ProgressText>
-              <span>잘하고 있어요!</span>
-            </ProgressText>
-            <p>다음 F1-II 레벨까지 3,000 남음</p>
+            <p>
+              다음 {nextLevel}레벨까지 {remainingExp} 남음
+            </p>
           </ExperienceSection>
         </ProfileCardContainer>
-      ) : (
+      )}
+      {currentSlide === 1 && (
         <ProfileCardContainer>
           <SecondThirdSlide>
             <Header>
               <Title>
-                {currentSlide === 1
-                  ? "3,000do를 달성하셨어요!"
-                  : "7,500do를 달성하셨어요!"}
+                {thisYearExpTotal.toLocaleString()}do를 달성하셨어요!
               </Title>
               <InfoIconWrapper onClick={handleInfoClick}>
                 <InfoIcon src={info} alt="info" />
                 {tooltipVisible && (
                   <Tooltip>
-                    <img
-                      src={currentSlide === 1 ? speechBubble2 : speechBubble3}
-                      alt="speech bubble"
-                    />
+                    <img src={speechBubble2} alt="speech bubble" />
                   </Tooltip>
                 )}
               </InfoIconWrapper>
             </Header>
             <ProgressContainer>
               <CircularProgressbar
-                value={percentage}
+                value={thisYearExpPercent}
                 styles={buildStyles({
                   rotation: 0,
                   strokeLinecap: "round",
@@ -98,20 +176,43 @@ const ProfileCard = () => {
                 })}
               />
               <ProgressTextContainer>
-                <SlideText>
-                  {currentSlide === 1
-                    ? "올해 획득 경험치"
-                    : "작년까지 누적 경험치"}
-                </SlideText>
-                <Percentage>{percentage}%</Percentage>
+                <SlideText>올해 획득 경험치</SlideText>
+                <Percentage>{thisYearExpPercent}%</Percentage>
               </ProgressTextContainer>
-              {/* <Coin
-                style={{
-                  transform: `translate(${x}px, ${y}px)`,
-                }}
-              >
-                <img src={coinIcon} alt="coin" />
-              </Coin> */}
+            </ProgressContainer>
+          </SecondThirdSlide>
+        </ProfileCardContainer>
+      )}
+      {currentSlide === 2 && (
+        <ProfileCardContainer>
+          <SecondThirdSlide>
+            <Header>
+              <Title>
+                {lastYearExpTotal.toLocaleString()}do를 달성하셨어요!
+              </Title>
+              <InfoIconWrapper onClick={handleInfoClick}>
+                <InfoIcon src={info} alt="info" />
+                {tooltipVisible && (
+                  <Tooltip>
+                    <img src={speechBubble3} alt="speech bubble" />
+                  </Tooltip>
+                )}
+              </InfoIconWrapper>
+            </Header>
+            <ProgressContainer>
+              <CircularProgressbar
+                value={lastYearExpPercent}
+                styles={buildStyles({
+                  rotation: 0,
+                  strokeLinecap: "round",
+                  trailColor: "#E6E6E6",
+                  pathColor: "#FC5833",
+                })}
+              />
+              <ProgressTextContainer>
+                <SlideText>작년 누적 경험치</SlideText>
+                <Percentage>{lastYearExpPercent}%</Percentage>
+              </ProgressTextContainer>
             </ProgressContainer>
           </SecondThirdSlide>
         </ProfileCardContainer>
@@ -221,17 +322,19 @@ const ProgressBar = styled.div`
 `;
 
 const Progress = styled.div`
-  width: 70%;
+  width: ${(props) => props.percent}%;
   background-color: ${(props) => props.theme.colors.mainC};
   height: 100%;
   border-radius: 20px;
+  transition: width 0.3s ease;
 `;
 
 const CoinWrapper = styled.div`
   position: absolute;
   top: -10px;
-  left: calc(70% - 10px);
-  transform: translateX(-50%);
+  left: ${(props) => props.percent}%;
+  transform: translateX(-98%);
+  transition: left 0.3s ease;
 `;
 
 const CoinIcon = styled.img`
@@ -242,27 +345,12 @@ const CoinIcon = styled.img`
 const SpeechBubble = styled.img`
   position: absolute;
   top: -43px;
-  left: calc(70% - 13px);
-  transform: translateX(-50%);
+  left: ${(props) => props.percent}%;
+  transform: translateX(-67%);
   width: 100px;
   height: auto;
   z-index: 10;
-`;
-
-const ProgressText = styled.div`
-  position: absolute;
-  top: -43px;
-  left: calc(70% - 13px);
-  transform: translateX(-50%);
-  z-index: 10;
-  span {
-    background-color: ${(props) => props.theme.colors.black};
-    color: ${(props) => props.theme.colors.white};
-    padding: 4px 8px;
-    border-radius: 20px;
-    font-size: 12px;
-    white-space: nowrap;
-  }
+  transition: left 0.3s ease;
 `;
 
 const SecondThirdSlide = styled.div`
@@ -334,17 +422,6 @@ const Percentage = styled.div`
   color: ${(props) => props.theme.colors.mainC};
   margin-top: 4px;
 `;
-
-// const Coin = styled.div`
-//   position: absolute;
-//   top: 50%;
-//   left: 50%;
-//   transform: translate(-50%, -50%);
-//   img {
-//     width: 34px;
-//     height: 34px;
-//   }
-// `;
 
 const Carousel = styled.div`
   border-radius: 50px;
