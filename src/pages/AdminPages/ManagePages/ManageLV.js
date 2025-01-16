@@ -1,57 +1,106 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import backBtn from "../../../assets/backBtn.svg";
 import dropdownArrow from "../../../assets/dropdown.svg";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { fetchJobTypeList } from "../../../api/AdminApi";
+import { Axios } from "../../../api/Axios";
 
 const ManageLV = () => {
   const navigate = useNavigate();
+  const { id } = useParams();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [selectedLevel, setSelectedLevel] = useState("");
+  const [selectedJobType, setSelectedJobType] = useState("");
+  const [jobTypeList, setJobTypeList] = useState([]);
   const [hasSelected, setHasSelected] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    const fetchJobTypes = async () => {
+      try {
+        const response = await fetchJobTypeList();
+        if (response.responseType === "SUCCESS") {
+          setJobTypeList(response.success);
+        } else {
+          console.error("직군 목록 조회 실패:", response.error.message);
+        }
+      } catch (error) {
+        console.error("직군 목록 조회 중 오류 발생:", error);
+      }
+    };
+
+    fetchJobTypes();
+  }, []);
 
   const handleDropdownSelect = (value) => {
-    setSelectedLevel(value);
+    setSelectedJobType(value);
     setHasSelected(true);
     setIsDropdownOpen(false);
   };
 
-  const isButtonDisabled = !hasSelected;
+  const isButtonDisabled = !hasSelected || isSubmitting;
+
+  const updateJobType = async () => {
+    try {
+      setIsSubmitting(true);
+      const response = await Axios.post(`/admin/mod/jobType`, {
+        memberId: id,
+        jobType: selectedJobType,
+      });
+
+      if (response.data.responseType === "SUCCESS") {
+        alert("직군이 성공적으로 변경되었습니다.");
+        navigate(-1);
+      } else {
+        alert(`직군 변경 실패: ${response.data.error.message}`);
+      }
+    } catch (error) {
+      const errorMessage =
+        error.response?.data?.error?.message ||
+        "직군 변경 중 오류가 발생했습니다.";
+      console.error("직군 변경 중 오류 발생:", errorMessage);
+      alert(errorMessage);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleSubmit = () => {
+    if (!isButtonDisabled) {
+      updateJobType();
+    }
+  };
 
   return (
     <Container>
       <Header>
-        <BackButton onClick={() => navigate("/admin/manage")}>
+        <BackButton onClick={() => navigate(-1)}>
           <img src={backBtn} alt="뒤로가기" />
         </BackButton>
-        <Title>레벨 변경</Title>
+        <Title>직군 변경</Title>
       </Header>
       <Content>
         <InputContainer>
-          <Label>새로운 레벨을 선택해주세요</Label>
+          <Label>새로운 직군을 선택해주세요</Label>
           <DropdownContainer>
             <DropdownHeader
               onClick={() => setIsDropdownOpen(!isDropdownOpen)}
               isOpen={isDropdownOpen}
               hasSelected={hasSelected}
             >
-              {selectedLevel || "레벨 데이터"}
+              {selectedJobType || "직군 선택"}
               <DropdownArrow src={dropdownArrow} isOpen={isDropdownOpen} />
             </DropdownHeader>
             {isDropdownOpen && (
               <DropdownList>
-                <DropdownItem onClick={() => handleDropdownSelect("F1")}>
-                  F1
-                </DropdownItem>
-                <DropdownItem onClick={() => handleDropdownSelect("F2")}>
-                  F2
-                </DropdownItem>
-                <DropdownItem onClick={() => handleDropdownSelect("F3")}>
-                  F3
-                </DropdownItem>
-                <DropdownItem onClick={() => handleDropdownSelect("F4")}>
-                  F4
-                </DropdownItem>
+                {jobTypeList.map((jobType, index) => (
+                  <DropdownItem
+                    key={index}
+                    onClick={() => handleDropdownSelect(jobType)}
+                  >
+                    {jobType}
+                  </DropdownItem>
+                ))}
               </DropdownList>
             )}
           </DropdownContainer>
@@ -60,7 +109,7 @@ const ManageLV = () => {
       <SubmitButton
         type="button"
         disabled={isButtonDisabled}
-        onClick={() => !isButtonDisabled && navigate("/admin/manage")}
+        onClick={handleSubmit}
       >
         변경하기
       </SubmitButton>

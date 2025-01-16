@@ -54,3 +54,14 @@ export const searchMembersByTeam = async (team) => {
     throw error;
   }
 };
+
+//아이디 중복 여부
+export const checkUsernameAvailability = async (id) => {
+  try {
+    const response = await Axios.get(`/admin/id/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error("아이디 중복 체크 실패:", error);
+    throw error;
+  }
+};

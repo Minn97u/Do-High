@@ -1,14 +1,18 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { useForm } from "react-hook-form";
 import { IoEye, IoEyeOff } from "react-icons/io5";
 import backBtn from "../../../assets/backBtn.svg";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { Axios } from "../../../api/Axios";
 
 const ManageIdPw = () => {
   const navigate = useNavigate();
+  const { id } = useParams();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isPasswordDuplicate, setIsPasswordDuplicate] = useState(null);
 
   const {
     register,
@@ -19,53 +23,80 @@ const ManageIdPw = () => {
     mode: "onChange",
   });
 
-  const username = watch("username");
+  const password = watch("password");
 
-  const onSubmit = () => {
-    navigate("/admin/manage");
+  useEffect(() => {
+    if (!password) {
+      setIsPasswordDuplicate(null);
+      return;
+    }
+
+    const checkPasswordDuplicate = async () => {
+      try {
+        const response = await Axios.post("/admin/pwd", {
+          password,
+        });
+
+        if (response.data.responseType === "SUCCESS") {
+          setIsPasswordDuplicate(response.data.success);
+        } else {
+          setIsPasswordDuplicate(false);
+        }
+      } catch (error) {
+        console.error("비밀번호 중복 확인 실패:", error);
+        setIsPasswordDuplicate(false);
+      }
+    };
+
+    checkPasswordDuplicate();
+  }, [password]);
+
+  const onSubmit = async (data) => {
+    if (isPasswordDuplicate === false) {
+      alert("기존 비밀번호와 동일합니다. 다른 비밀번호를 입력해주세요.");
+      return;
+    }
+
+    try {
+      setIsSubmitting(true);
+      const response = await Axios.post(`/admin/mod/password`, {
+        memberId: id,
+        pwd: data.password,
+      });
+
+      if (response.data.responseType === "SUCCESS") {
+        alert("비밀번호가 성공적으로 변경되었습니다.");
+        navigate(-1);
+      } else {
+        alert(`비밀번호 변경 실패: ${response.data.error.message}`);
+      }
+    } catch (error) {
+      const errorMessage =
+        error.response?.data?.error?.message ||
+        "비밀번호 변경 중 오류가 발생했습니다.";
+      console.error("비밀번호 변경 중 오류 발생:", errorMessage);
+      alert(errorMessage);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
-
-  const isUsernameValid = username && /^[a-zA-Z]+$/.test(username);
 
   return (
     <Container>
       <Header>
-        <BackButton onClick={() => navigate("/admin/manage")}>
+        <BackButton onClick={() => navigate(-1)}>
           <img src={backBtn} alt="뒤로가기" />
         </BackButton>
-        <Title>아이디, 비밀번호</Title>
+        <Title>비밀번호 변경</Title>
       </Header>
       <Form onSubmit={handleSubmit(onSubmit)}>
-        <InputContainer>
-          <Label>새로운 아이디를 입력해주세요</Label>
-          <Input
-            type="text"
-            placeholder="영문 이름으로 입력"
-            hasError={!!errors.username}
-            {...register("username", {
-              required: "아이디를 입력해주세요.",
-              pattern: {
-                value: /^[a-zA-Z]+$/,
-                message: "영문으로만 입력해주세요.",
-              },
-            })}
-          />
-          {errors.username ? (
-            <ErrorMessage>{errors.username.message}</ErrorMessage>
-          ) : (
-            isUsernameValid && (
-              <SuccessMessage>사용 가능한 아이디입니다.</SuccessMessage>
-            )
-          )}
-        </InputContainer>
-
         <InputContainer>
           <Label>새로운 비밀번호를 입력해주세요</Label>
           <PasswordContainer>
             <Input
               type={showPassword ? "text" : "password"}
               placeholder="영문, 숫자 포함 8자 이상"
-              hasError={!!errors.password}
+              hasError={!!errors.password || isPasswordDuplicate === false}
               {...register("password", {
                 required: "비밀번호를 입력해주세요.",
                 pattern: {
@@ -78,9 +109,13 @@ const ManageIdPw = () => {
               {showPassword ? <IoEye /> : <IoEyeOff />}
             </ToggleButton>
           </PasswordContainer>
-          {errors.password && (
+          {errors.password ? (
             <ErrorMessage>{errors.password.message}</ErrorMessage>
-          )}
+          ) : isPasswordDuplicate === false ? (
+            <ErrorMessage>기존 비밀번호와 동일합니다.</ErrorMessage>
+          ) : isPasswordDuplicate === true ? (
+            <SuccessMessage>사용 가능한 비밀번호입니다.</SuccessMessage>
+          ) : null}
         </InputContainer>
 
         <InputContainer>
@@ -108,7 +143,10 @@ const ManageIdPw = () => {
           )}
         </InputContainer>
 
-        <SubmitButton type="submit" disabled={!isValid}>
+        <SubmitButton
+          type="submit"
+          disabled={!isValid || isSubmitting || isPasswordDuplicate === false}
+        >
           변경하기
         </SubmitButton>
       </Form>

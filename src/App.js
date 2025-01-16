@@ -37,13 +37,16 @@ function App() {
         <Route path="/admin/create" element={<CreateAccount />} />
         <Route path="/admin/create-next" element={<CreateAccountNext />} />
         <Route path="/admin/search" element={<SearchAccount />} />
-        <Route path="/admin/manage" element={<ManageAccount />} />
-        <Route path="/admin/manage/name" element={<ManageName />} />
-        <Route path="/admin/manage/workplace" element={<ManageWorkplace />} />
-        <Route path="/admin/manage/number" element={<ManageNum />} />
-        <Route path="/admin/manage/level" element={<ManageLV />} />
-        <Route path="/admin/manage/date" element={<ManageDate />} />
-        <Route path="/admin/manage/account" element={<ManageIdPw />} />
+        <Route path="/admin/manage/:number" element={<ManageAccount />} />
+        <Route path="/admin/manage/name/:id" element={<ManageName />} />
+        <Route
+          path="/admin/manage/workplace/:id"
+          element={<ManageWorkplace />}
+        />
+        <Route path="/admin/manage/number/:id" element={<ManageNum />} />
+        <Route path="/admin/manage/level/:id" element={<ManageLV />} />
+        <Route path="/admin/manage/date/:id" element={<ManageDate />} />
+        <Route path="/admin/manage/account/:id" element={<ManageIdPw />} />
 
         <Route path="/mypage-entry" element={<MypageEntry />} />
         <Route path="/mypage" element={<MyPage />} />

@@ -1,14 +1,18 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import backBtn from "../../../assets/backBtn.svg";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { Axios } from "../../../api/Axios";
 
 const ManageNum = () => {
   const navigate = useNavigate();
+  const { id } = useParams();
   const [employeeNumber, setEmployeeNumber] = useState("");
   const [hasError, setHasError] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const isButtonDisabled = employeeNumber.length !== 10 || hasError;
+  const isButtonDisabled =
+    employeeNumber.length !== 10 || hasError || isSubmitting;
 
   const handleInputChange = (e) => {
     const value = e.target.value;
@@ -25,10 +29,41 @@ const ManageNum = () => {
       ? "입사일(8자리)+입사번호(2자리)로 입력해주세요"
       : "";
 
+  const updateEmployeeNumber = async () => {
+    try {
+      setIsSubmitting(true);
+      const response = await Axios.post(`/admin/mod/num`, {
+        memberId: id,
+        number: employeeNumber.trim(),
+      });
+
+      if (response.data.responseType === "SUCCESS") {
+        alert("사번이 성공적으로 변경되었습니다.");
+        navigate(`/admin/manage/${employeeNumber.trim()}`);
+      } else {
+        alert(`사번 변경 실패: ${response.data.error.message}`);
+      }
+    } catch (error) {
+      const errorMessage =
+        error.response?.data?.error?.message ||
+        "사번 변경 중 오류가 발생했습니다.";
+      console.error("사번 변경 중 오류 발생:", errorMessage);
+      alert(errorMessage);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleSubmit = () => {
+    if (!isButtonDisabled) {
+      updateEmployeeNumber();
+    }
+  };
+
   return (
     <Container>
       <Header>
-        <BackButton onClick={() => navigate("/admin/manage")}>
+        <BackButton onClick={() => navigate(-1)}>
           <img src={backBtn} alt="뒤로가기" />
         </BackButton>
         <Title>사번 변경</Title>
@@ -38,7 +73,7 @@ const ManageNum = () => {
           <Label>변경할 사번을 입력해주세요</Label>
           <Input
             type="text"
-            placeholder="사번 데이터"
+            placeholder="입사일(8자리)+입사번호(2자리)"
             value={employeeNumber}
             onChange={handleInputChange}
             maxLength={10}
@@ -54,7 +89,7 @@ const ManageNum = () => {
       <SubmitButton
         type="button"
         disabled={isButtonDisabled}
-        onClick={() => !isButtonDisabled && navigate("/admin/manage")}
+        onClick={handleSubmit}
       >
         변경하기
       </SubmitButton>

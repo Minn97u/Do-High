@@ -3,17 +3,53 @@ import styled from "styled-components";
 import backBtn from "../../../assets/backBtn.svg";
 import calendar from "../../../assets/calendar.svg";
 import CalendarComponent from "../../../components/Calendar";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { Axios } from "../../../api/Axios";
 
 const ManageDate = () => {
   const navigate = useNavigate();
+  const { id } = useParams();
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState("0000-00-00");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const isButtonDisabled = selectedDate === "0000-00-00" || isSubmitting;
+
+  const updateDate = async () => {
+    try {
+      setIsSubmitting(true);
+      const response = await Axios.post(`/admin/mod/date`, {
+        memberId: id,
+        date: selectedDate,
+      });
+
+      if (response.data.responseType === "SUCCESS") {
+        alert("입사일이 성공적으로 변경되었습니다.");
+        navigate(-1);
+      } else {
+        alert(`입사일 변경 실패: ${response.data.error.message}`);
+      }
+    } catch (error) {
+      const errorMessage =
+        error.response?.data?.error?.message ||
+        "입사일 변경 중 오류가 발생했습니다.";
+      console.error("입사일 변경 중 오류 발생:", errorMessage);
+      alert(errorMessage);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleSubmit = () => {
+    if (!isButtonDisabled) {
+      updateDate();
+    }
+  };
 
   return (
     <Container>
       <Header>
-        <BackButton onClick={() => navigate("/admin/manage")}>
+        <BackButton onClick={() => navigate(-1)}>
           <img src={backBtn} alt="뒤로가기" />
         </BackButton>
         <Title>입사일 변경</Title>
@@ -27,7 +63,7 @@ const ManageDate = () => {
               isOpen={isCalendarOpen}
               hasValue={selectedDate !== "0000-00-00"}
             >
-              {selectedDate !== "0000-00-00" ? selectedDate : "입사일 데이터"}
+              {selectedDate !== "0000-00-00" ? selectedDate : "입사일 선택"}
               <CalendarIcon src={calendar} alt="달력" />
             </DropdownHeader>
             {isCalendarOpen && (
@@ -44,8 +80,8 @@ const ManageDate = () => {
       </Content>
       <SubmitButton
         type="button"
-        disabled={selectedDate === "0000-00-00"}
-        onClick={() => navigate("/admin/manage")}
+        disabled={isButtonDisabled}
+        onClick={handleSubmit}
       >
         변경하기
       </SubmitButton>
