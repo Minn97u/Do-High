@@ -1,17 +1,61 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import profile from "../assets/profile.svg";
 import coin from "../assets/coin.svg";
 import dropdownArrow from "../assets/dropdown.svg";
 import notification from "../assets/notification.svg";
 import { useNavigate } from "react-router-dom";
+import { getMemberInfo } from "../api/UserApi";
+import { getExpStatus } from "../api/ExpApi";
 
 const MypageEntry = () => {
-  const hasNotification = true;
+  const [memberInfo, setMemberInfo] = useState({
+    name: "",
+    identificationNumber: "",
+    team: "",
+    level: "",
+    character: profile,
+  });
+  const [totalExp, setTotalExp] = useState(0);
   const navigate = useNavigate();
+  const hasNotification = true;
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const memberResponse = await getMemberInfo();
+        if (memberResponse.responseType === "SUCCESS") {
+          setMemberInfo({
+            name: memberResponse.success.name,
+            identificationNumber: memberResponse.success.identificationNumber,
+            team: memberResponse.success.team,
+            level: memberResponse.success.level,
+            character: memberResponse.success.character || profile,
+          });
+        } else {
+          console.error("멤버 정보 조회 오류:", memberResponse.error.message);
+        }
+
+        const expResponse = await getExpStatus();
+        if (expResponse.responseType === "SUCCESS") {
+          setTotalExp(expResponse.success.totalExp);
+        } else {
+          console.error("경험치 정보 조회 오류:", expResponse.error.message);
+        }
+      } catch (error) {
+        console.error("API 호출 오류:", error.message);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   const handleProfileClick = () => {
     navigate("/mypage");
+  };
+
+  const handleLVClick = () => {
+    navigate("/exp");
   };
 
   const handleLogout = () => {
@@ -33,23 +77,26 @@ const MypageEntry = () => {
       <Content>
         <Section>
           <Row onClick={handleProfileClick}>
-            <ProfileImage src={profile} alt="profile" />
+            <ProfileImage src={memberInfo.character} alt="profile" />
             <Info>
-              <Name>허재민</Name>
+              <Name>{memberInfo.name}</Name>
               <SubInfo>
-                <p>2022080101 </p> 음성 2센터 1
+                <p>{memberInfo.identificationNumber}</p>
+                {memberInfo.team}
               </SubInfo>
             </Info>
             <ArrowIcon src={dropdownArrow} alt="arrow" />
           </Row>
         </Section>
         <Section>
-          <Row>
+          <Row onClick={handleLVClick}>
             <CoinImage src={coin} alt="coin" />
             <Info>
-              <Name>재민님은 F1-I 레벨 입니다</Name>
+              <Name>
+                {memberInfo.name}님은 {memberInfo.level} 레벨 입니다
+              </Name>
               <SubInfo>
-                총 누적 경험치 <p>10,500</p>
+                총 누적 경험치 <p>{totalExp}</p>
               </SubInfo>
             </Info>
             <ArrowIcon src={dropdownArrow} alt="arrow" />
