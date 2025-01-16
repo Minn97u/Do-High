@@ -1,10 +1,13 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { useForm } from "react-hook-form";
 import { IoEye, IoEyeOff } from "react-icons/io5";
 import backBtn from "../../assets/backBtn.svg";
 import { useLocation, useNavigate } from "react-router-dom";
-import { createNewEmployee } from "../../api/AdminApi";
+import {
+  createNewEmployee,
+  checkUsernameAvailability,
+} from "../../api/AdminApi";
 
 const CreateAccountNext = () => {
   const navigate = useNavigate();
@@ -13,6 +16,7 @@ const CreateAccountNext = () => {
 
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [isUsernameAvailable, setIsUsernameAvailable] = useState(null);
 
   const {
     register,
@@ -25,7 +29,35 @@ const CreateAccountNext = () => {
 
   const username = watch("username");
 
+  useEffect(() => {
+    if (!username) {
+      setIsUsernameAvailable(null);
+      return;
+    }
+
+    const checkAvailability = async () => {
+      try {
+        const response = await checkUsernameAvailability(username);
+        if (response.responseType === "SUCCESS") {
+          setIsUsernameAvailable(response.success);
+        } else {
+          setIsUsernameAvailable(false);
+        }
+      } catch (error) {
+        console.error("아이디 중복 체크 실패:", error);
+        setIsUsernameAvailable(false);
+      }
+    };
+
+    checkAvailability();
+  }, [username]);
+
   const onSubmit = async (data) => {
+    if (!isUsernameAvailable) {
+      alert("사용할 수 없는 아이디입니다.");
+      return;
+    }
+
     const employeeData = {
       ...initialData,
       id: data.username,
@@ -42,8 +74,6 @@ const CreateAccountNext = () => {
     }
   };
 
-  const isUsernameValid = username && /^[a-zA-Z]+$/.test(username);
-
   return (
     <Container>
       <Header>
@@ -58,7 +88,7 @@ const CreateAccountNext = () => {
           <Input
             type="text"
             placeholder="영문 이름으로 입력"
-            hasError={!!errors.username}
+            hasError={!!errors.username || isUsernameAvailable === false}
             {...register("username", {
               required: "아이디를 입력해주세요.",
               pattern: {
@@ -69,11 +99,11 @@ const CreateAccountNext = () => {
           />
           {errors.username ? (
             <ErrorMessage>{errors.username.message}</ErrorMessage>
-          ) : (
-            isUsernameValid && (
-              <SuccessMessage>사용 가능한 아이디입니다.</SuccessMessage>
-            )
-          )}
+          ) : isUsernameAvailable === true ? (
+            <SuccessMessage>사용 가능한 아이디입니다.</SuccessMessage>
+          ) : isUsernameAvailable === false ? (
+            <ErrorMessage>중복된 아이디입니다.</ErrorMessage>
+          ) : null}
         </InputContainer>
 
         <InputContainer>
@@ -125,7 +155,10 @@ const CreateAccountNext = () => {
           )}
         </InputContainer>
 
-        <SubmitButton type="submit" disabled={!isValid}>
+        <SubmitButton
+          type="submit"
+          disabled={!isValid || isUsernameAvailable === false}
+        >
           생성하기
         </SubmitButton>
       </Form>
