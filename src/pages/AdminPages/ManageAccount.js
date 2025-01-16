@@ -1,16 +1,50 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import backBtn from "../../assets/backBtn.svg";
 import profile from "../../assets/profile.svg";
 import dropdownArrow from "../../assets/dropdown.svg";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { searchMembers } from "../../api/AdminApi";
 
 const ManageAccount = () => {
   const navigate = useNavigate();
+  const { number } = useParams();
+  const [accountDetails, setAccountDetails] = useState(null);
+
+  useEffect(() => {
+    const fetchAccountDetails = async () => {
+      try {
+        const response = await searchMembers(number);
+        if (response.responseType === "SUCCESS") {
+          setAccountDetails(response.success[0]);
+        } else {
+          console.error("구성원 정보 검색 실패:", response.error.message);
+        }
+      } catch (error) {
+        console.error("구성원 정보 검색 중 오류 발생:", error);
+      }
+    };
+
+    fetchAccountDetails();
+  }, [number]);
 
   const handleNavigation = (path) => {
     navigate(path);
   };
+
+  if (!accountDetails) {
+    return <div>로딩 중...</div>;
+  }
+
+  const {
+    memberId,
+    name,
+    team,
+    identificationNumber,
+    jobType,
+    effectiveDate,
+    character,
+  } = accountDetails;
 
   return (
     <Container>
@@ -22,46 +56,65 @@ const ManageAccount = () => {
       </Header>
       <Content>
         <ProfileImageWrapper>
-          <ProfileImage src={profile} alt="Profile" />
+          <ProfileImage src={character || profile} alt="Profile" />
         </ProfileImageWrapper>
         <InfoList>
-          <InfoItem onClick={() => handleNavigation("/admin/manage/name")}>
+          <InfoItem
+            onClick={() => handleNavigation(`/admin/manage/name/${memberId}`)}
+          >
             <Label>이름</Label>
             <ValueWrapper>
-              <Value>허재민</Value>
+              <Value>{name}</Value>
               <Arrow src={dropdownArrow} alt="arrow" />
             </ValueWrapper>
           </InfoItem>
-          <InfoItem onClick={() => handleNavigation("/admin/manage/workplace")}>
+          <InfoItem
+            onClick={() =>
+              handleNavigation(`/admin/manage/workplace/${memberId}`)
+            }
+          >
             <Label>소속</Label>
             <ValueWrapper>
-              <Value>음성 2센터 2</Value>
+              <Value>{team}</Value>
               <Arrow src={dropdownArrow} alt="arrow" />
             </ValueWrapper>
           </InfoItem>
-          <InfoItem onClick={() => handleNavigation("/admin/manage/number")}>
+          <InfoItem
+            onClick={() => handleNavigation(`/admin/manage/level/${memberId}`)}
+          >
+            <Label>직군</Label>
+            <ValueWrapper>
+              <Value>{jobType || "N/A"}</Value>
+              <Arrow src={dropdownArrow} alt="arrow" />
+            </ValueWrapper>
+          </InfoItem>
+          <InfoItem
+            onClick={() => handleNavigation(`/admin/manage/number/${memberId}`)}
+          >
             <Label>사번</Label>
             <ValueWrapper>
-              <Value>2022080101</Value>
+              <Value>{identificationNumber}</Value>
               <Arrow src={dropdownArrow} alt="arrow" />
             </ValueWrapper>
           </InfoItem>
-          <InfoItem onClick={() => handleNavigation("/admin/manage/level")}>
-            <Label>레벨</Label>
-            <ValueWrapper>
-              <Value>F1-I</Value>
-              <Arrow src={dropdownArrow} alt="arrow" />
-            </ValueWrapper>
-          </InfoItem>
-          <InfoItem onClick={() => handleNavigation("/admin/manage/date")}>
+
+          <InfoItem
+            onClick={() => handleNavigation(`/admin/manage/date/${memberId}`)}
+          >
             <Label>입사일</Label>
             <ValueWrapper>
-              <Value>2023-10-01</Value>
+              <Value>
+                {effectiveDate ? effectiveDate.slice(0, 10) : "N/A"}
+              </Value>
               <Arrow src={dropdownArrow} alt="arrow" />
             </ValueWrapper>
           </InfoItem>
-          <InfoItem onClick={() => handleNavigation("/admin/manage/account")}>
-            <Label>아이디, 비밀번호</Label>
+          <InfoItem
+            onClick={() =>
+              handleNavigation(`/admin/manage/account/${memberId}`)
+            }
+          >
+            <Label>비밀번호 변경</Label>
             <ValueWrapper>
               <Arrow src={dropdownArrow} alt="arrow" />
             </ValueWrapper>
