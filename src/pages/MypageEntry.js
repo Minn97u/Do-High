@@ -14,6 +14,13 @@ const MypageEntry = () => {
     navigate("/mypage");
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("isAdmin");
+
+    navigate("/auth/login");
+  };
+
   return (
     <Container>
       <Header>
@@ -58,7 +65,7 @@ const MypageEntry = () => {
             관리자 문의하기
             <ArrowIcon src={dropdownArrow} alt="arrow" />
           </ServiceItem>
-          <ServiceItem>
+          <ServiceItem onClick={handleLogout}>
             로그아웃
             <ArrowIcon src={dropdownArrow} alt="arrow" />
           </ServiceItem>
