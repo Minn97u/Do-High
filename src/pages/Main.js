@@ -1,18 +1,64 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import logo from "../assets/logo.svg";
 import notification from "../assets/notification.svg";
 import ProfileCard from "../components/ProfileCard";
 import ExperienceSection from "../components/ExperienceSection";
+import { useNavigate } from "react-router-dom";
 
 const Main = () => {
-  const hasNotification = true;
+  const navigate = useNavigate();
+  const [hasNotification, setHasNotification] = useState(false);
+  const [notificationList, setNotificationList] = useState([]);
+
+  useEffect(() => {
+    // Service Worker 메시지 수신 핸들러
+    const handleServiceWorkerMessage = (event) => {
+      if (event.data.type === "NOTIFICATION_RECEIVED") {
+        console.log(event.data.payload);
+
+        setNotificationList((prev) => [
+          ...prev,
+          {
+            id: new Date().getTime(),
+            title: event.data.payload.title,
+            content: event.data.payload.body,
+          },
+        ]);
+        setHasNotification(true);
+      }
+    };
+
+    navigator.serviceWorker.addEventListener(
+      "message",
+      handleServiceWorkerMessage
+    );
+
+    return () => {
+      navigator.serviceWorker.removeEventListener(
+        "message",
+        handleServiceWorkerMessage
+      );
+    };
+  }, []);
+
+  useEffect(() => {
+    if (Notification.permission !== "granted") {
+      Notification.requestPermission().then((permission) => {
+        if (permission === "granted") {
+          console.log("알림 권한이 허용되었습니다.");
+        } else {
+          console.log("알림 권한이 거부되었습니다.");
+        }
+      });
+    }
+  }, []);
 
   return (
     <Container>
       <Header>
         <Logo src={logo} alt="logo" />
-        <NotificationContainer>
+        <NotificationContainer onClick={() => navigate("/alarm")}>
           <NotificationIcon src={notification} alt="notification" />
           {hasNotification && <NotificationBadge />}
         </NotificationContainer>
@@ -20,6 +66,14 @@ const Main = () => {
       <Content>
         <ProfileCard />
         <ExperienceSection />
+        <NotificationSection>
+          {notificationList.map((notif) => (
+            <NotificationCard key={notif.id}>
+              <Title>{notif.title}</Title>
+              <Message>{notif.content}</Message>
+            </NotificationCard>
+          ))}
+        </NotificationSection>
       </Content>
     </Container>
   );
@@ -46,6 +100,7 @@ const Header = styled.div`
   /* height: 50px; */
   padding: 15px 20px;
   z-index: 10;
+  background-color: ${(props) => props.theme.colors.gray};
 `;
 
 const Logo = styled.img`
@@ -79,4 +134,29 @@ const Content = styled.div`
   margin-top: 50px;
   flex: 1;
   overflow-y: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+`;
+
+const NotificationSection = styled.div`
+  margin-top: 20px;
+  padding: 0 20px;
+`;
+
+const NotificationCard = styled.div`
+  background: #f9f9f9;
+  padding: 10px 15px;
+  margin-bottom: 10px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+`;
+
+const Title = styled.div`
+  font-weight: bold;
+  margin-bottom: 5px;
+`;
+
+const Message = styled.div`
+  font-size: 14px;
+  color: ${(props) => props.theme.colors.gray3};
 `;

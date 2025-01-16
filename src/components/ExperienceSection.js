@@ -76,12 +76,12 @@ const ExperienceSection = () => {
 
   return (
     <ExperienceSectionContainer>
-      <SectionHeader onClick={handleExpClick}>
+      <SectionHeader onClick={() => navigate("/exp")}>
         <SectionTitle>최근에 {memberName}님이 받은 do예요!</SectionTitle>
         <ArrowIcon src={backBtn} alt="More" onClick={handleExpClick} />
       </SectionHeader>
       {recentExp && (
-        <RecentDoCard onClick={handleExpClick}>
+        <RecentDoCard onClick={() => navigate("/exp")}>
           <CardContent>
             <CardDate>{formatDate(recentExp.date)}</CardDate>
             <CardTitle>{recentExp.content}</CardTitle>
@@ -95,7 +95,7 @@ const ExperienceSection = () => {
           </CardValue>
         </RecentDoCard>
       )}
-      <SectionHeader onClick={handleQuestClick}>
+      <SectionHeader onClick={() => navigate("/quest")}>
         <SectionTitle>{memberName}님이 수행한 퀘스트예요!</SectionTitle>
         <ArrowIcon src={backBtn} alt="More" onClick={handleQuestClick} />
       </SectionHeader>
