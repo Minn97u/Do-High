@@ -1,15 +1,18 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { useForm } from "react-hook-form";
 import backBtn from "../assets/backBtn.svg";
 import { IoEye, IoEyeOff } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
+import { Axios } from "../api/Axios";
 
 const PwChange = () => {
   const navigate = useNavigate();
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [isPasswordDuplicate, setIsPasswordDuplicate] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const {
     register,
@@ -20,14 +23,60 @@ const PwChange = () => {
     mode: "onChange",
   });
 
-  const onSubmit = (data) => {
-    console.log("Form Submitted:", data);
+  const newPassword = watch("newPassword");
+
+  useEffect(() => {
+    if (!newPassword) {
+      setIsPasswordDuplicate(null);
+      return;
+    }
+
+    const checkPasswordDuplicate = async () => {
+      try {
+        const response = await Axios.post("/member/pwd/check", {
+          password: newPassword,
+        });
+
+        if (response.data.responseType === "SUCCESS") {
+          setIsPasswordDuplicate(response.data.success);
+        } else {
+          setIsPasswordDuplicate(null);
+        }
+      } catch (error) {
+        console.error("비밀번호 중복 확인 실패:", error);
+        setIsPasswordDuplicate(null);
+      }
+    };
+
+    checkPasswordDuplicate();
+  }, [newPassword]);
+
+  const onSubmit = async (data) => {
+    try {
+      setIsSubmitting(true);
+      const response = await Axios.post("/member/pwd", {
+        originPwd: data.currentPassword,
+        newPwd: data.newPassword,
+      });
+
+      if (response.data.responseType === "SUCCESS") {
+        alert("비밀번호가 성공적으로 변경되었습니다.");
+        navigate("/mypage");
+      } else {
+        alert(`비밀번호 변경 실패: ${response.data.error.message}`);
+      }
+    } catch (error) {
+      console.error("비밀번호 변경 실패:", error);
+      alert("비밀번호 변경 중 오류가 발생했습니다.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
     <Container>
       <Header>
-        <BackButton onClick={() => navigate(-1)}>
+        <BackButton onClick={() => navigate("/mypage")}>
           <img src={backBtn} alt="뒤로가기" />
         </BackButton>
         <Title>비밀번호 변경</Title>
@@ -61,7 +110,7 @@ const PwChange = () => {
             <Input
               type={showNewPassword ? "text" : "password"}
               placeholder="영문, 숫자 포함 8자 이상"
-              hasError={!!errors.newPassword}
+              hasError={!!errors.newPassword || isPasswordDuplicate === true}
               {...register("newPassword", {
                 required: "신규 비밀번호를 입력해주세요.",
                 pattern: {
@@ -75,9 +124,13 @@ const PwChange = () => {
               {showNewPassword ? <IoEye /> : <IoEyeOff />}
             </ToggleButton>
           </PasswordContainer>
-          {errors.newPassword && (
+          {errors.newPassword ? (
             <ErrorMessage>{errors.newPassword.message}</ErrorMessage>
-          )}
+          ) : isPasswordDuplicate === true ? (
+            <ErrorMessage>기존 비밀번호와 동일합니다.</ErrorMessage>
+          ) : isPasswordDuplicate === false ? (
+            <></>
+          ) : null}
         </InputContainer>
 
         <InputContainer>
@@ -105,7 +158,10 @@ const PwChange = () => {
           )}
         </InputContainer>
 
-        <SaveButton type="submit" disabled={!isValid}>
+        <SaveButton
+          type="submit"
+          disabled={!isValid || isSubmitting || isPasswordDuplicate === true}
+        >
           변경하기
         </SaveButton>
       </Form>
