@@ -175,7 +175,7 @@ const Quest = () => {
               <FlippableCardWithMonth
                 quest={{
                   ...questData[selectedTab][selectedYear],
-                  title: `${index + 1}월 작업`,
+                  title: `${index + 1}월 퀘스트`,
                 }}
               />
             </CardWrapper>
@@ -311,6 +311,6 @@ const CardWrapper = styled.div`
 const CriteriaContainer = styled.div`
   ${(props) => props.theme.fonts.medium};
   color: ${(props) => props.theme.colors.gray2};
-  padding: 0 44px;
+  padding: 0 34px;
   margin-bottom: 10px;
 `;

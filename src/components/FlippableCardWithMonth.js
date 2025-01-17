@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import coinIcon from "../assets/coin.svg";
+import silverCoin from "../assets/coin/SilverDo.svg";
+import NoCoin from "../assets/coin/noCoin.svg";
 
 const FlippableCardWithMonth = ({ quest }) => {
   const [isFlipped, setIsFlipped] = useState(false);
@@ -16,7 +17,7 @@ const FlippableCardWithMonth = ({ quest }) => {
           <CardHeader>
             <CardLeft>
               <Status>{quest.status}</Status>
-              <Icon src={coinIcon} alt="coin" />
+              <Icon src={silverCoin} alt="coin" />
             </CardLeft>
             <CardContent>
               <CardTitle>{quest.title}</CardTitle>
@@ -32,7 +33,7 @@ const FlippableCardWithMonth = ({ quest }) => {
             {Array.from({ length: 5 }, (_, i) => (
               <Week key={i} achieved={i < 2}>
                 <WeekText>{32 + i}주</WeekText>
-                <Icon2 src={coinIcon} alt="coin" />
+                <Icon2 src={i < 2 ? silverCoin : NoCoin} alt="coin" />
               </Week>
             ))}
           </WeekGrid>
@@ -169,7 +170,7 @@ const Icon2 = styled.img`
   width: 38px;
   height: 38px;
   margin-bottom: 5px;
-  filter: ${({ achieved }) => (achieved ? "none" : "grayscale(100%)")};
+  filter: ${({ achieved }) => (achieved ? "none" : "grayscale(1000%)")};
 `;
 
 const TotalEarned = styled.div`

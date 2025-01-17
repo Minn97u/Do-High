@@ -1,7 +1,7 @@
 // import React, { useEffect, useState } from "react";
 import React from "react";
 import styled from "styled-components";
-import logo from "../assets/logo.svg";
+import logo from "../assets/logo.png";
 import notification from "../assets/notification.svg";
 import ProfileCard from "../components/ProfileCard";
 import ExperienceSection from "../components/ExperienceSection";

@@ -72,7 +72,7 @@ const NavItem = styled(Link)`
   align-items: center;
   text-decoration: none;
 
-  margin-bottom: 23px;
+  /* margin-bottom: 23px; */
 `;
 
 const NavIcon = styled.img`

@@ -23,5 +23,5 @@ const Wrapper = styled.div`
 
 const Content = styled.main`
   flex: 1;
-  padding-bottom: 90px;
+  padding-bottom: 70px;
 `;

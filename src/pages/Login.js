@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import { IoEye, IoEyeOff } from "react-icons/io5";
-import logo from "../assets/logo.svg";
+import logo from "../assets/logo.png";
 import { useNavigate } from "react-router-dom";
 import { Axios } from "../api/Axios";
 
