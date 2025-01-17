@@ -339,6 +339,7 @@ const ListItem = styled.div`
 const ItemLeft = styled.div`
   display: flex;
   align-items: center;
+  max-width: 200px;
 `;
 
 const ItemIcon = styled.img`

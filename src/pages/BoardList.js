@@ -164,6 +164,8 @@ const ListContainer = styled.div`
   width: 100%;
   height: 100%;
   overflow-y: scroll;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 `;
 
 const ListItem = styled.div`
