@@ -42,7 +42,7 @@ const Alarm = () => {
         navigate("/exp");
         break;
       case "LEVELUP":
-        navigate("/");
+        navigate("/main");
         break;
       case "MQUEST":
         navigate("/quest");

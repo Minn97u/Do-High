@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import profile from "../assets/profile.svg";
 import coinIcon from "../assets/coin.svg";
 import speechBubble from "../assets/speechBubble.svg";
@@ -391,6 +391,15 @@ const CoinIcon = styled.img`
   height: 30px;
 `;
 
+const fadeIn = keyframes`
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+`;
+
 const SpeechBubble = styled.img`
   position: absolute;
   top: -43px;
@@ -399,7 +408,8 @@ const SpeechBubble = styled.img`
   width: 100px;
   height: auto;
   z-index: 10;
-  transition: left 0.3s ease;
+  animation: ${fadeIn} 1.1s ease-in-out;
+  opacity: 1;
 `;
 
 const SecondThirdSlide = styled.div`

@@ -1,9 +1,19 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import coinIcon from "../assets/coin.svg";
+import goldCoin from "../assets/coin/GoldDo.svg";
+import silverCoin from "../assets/coin/SilverDo.svg";
+import bronzeCoin from "../assets/coin/BronzeDo.svg";
 
 const FlippableCard = ({ quest }) => {
   const [isFlipped, setIsFlipped] = useState(false);
+
+  const coinIcons = [goldCoin, silverCoin, bronzeCoin];
+
+  const getRandomCoinIcon = () => {
+    const randomIndex = Math.floor(Math.random() * coinIcons.length);
+    return coinIcons[randomIndex];
+  };
 
   const handleFlip = () => {
     setIsFlipped(!isFlipped);
@@ -32,11 +42,11 @@ const FlippableCard = ({ quest }) => {
             {Array.from({ length: 12 }, (_, i) => (
               <Month key={i} achieved={i < 8}>
                 <MonthText>{i + 1}월</MonthText>
-                <Icon2 src={coinIcon} alt="coin" />
+                <Icon2 src={getRandomCoinIcon()} alt="coin" />
               </Month>
             ))}
           </MonthGrid>
-          <TotalEarned>8 / 12월</TotalEarned>
+          <TotalEarned>12 / 12월</TotalEarned>
         </CardBack>
       </Card>
     </CardWrapper>
