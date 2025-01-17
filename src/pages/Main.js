@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+// import React, { useEffect, useState } from "react";
+import React from "react";
 import styled from "styled-components";
 import logo from "../assets/logo.svg";
 import notification from "../assets/notification.svg";
@@ -8,51 +9,51 @@ import { useNavigate } from "react-router-dom";
 
 const Main = () => {
   const navigate = useNavigate();
-  const [hasNotification, setHasNotification] = useState(false);
-  const [notificationList, setNotificationList] = useState([]);
+  // const [hasNotification, setHasNotification] = useState(false);
+  // const [notificationList, setNotificationList] = useState([]);
 
-  useEffect(() => {
-    // Service Worker 메시지 수신 핸들러
-    const handleServiceWorkerMessage = (event) => {
-      if (event.data.type === "NOTIFICATION_RECEIVED") {
-        console.log(event.data.payload);
+  //   useEffect(() => {
+  //     // Service Worker 메시지 수신 핸들러
+  //     const handleServiceWorkerMessage = (event) => {
+  //       if (event.data.type === "NOTIFICATION_RECEIVED") {
+  //         console.log(event.data.payload);
 
-        setNotificationList((prev) => [
-          ...prev,
-          {
-            id: new Date().getTime(),
-            title: event.data.payload.title,
-            content: event.data.payload.body,
-          },
-        ]);
-        setHasNotification(true);
-      }
-    };
+  //         setNotificationList((prev) => [
+  //           ...prev,
+  //           {
+  //             id: new Date().getTime(),
+  //             title: event.data.payload.title,
+  //             content: event.data.payload.body,
+  //           },
+  //         ]);
+  //         setHasNotification(true);
+  //       }
+  //     };
 
-    navigator.serviceWorker.addEventListener(
-      "message",
-      handleServiceWorkerMessage
-    );
+  //     navigator.serviceWorker.addEventListener(
+  //       "message",
+  //       handleServiceWorkerMessage
+  //     );
 
-    return () => {
-      navigator.serviceWorker.removeEventListener(
-        "message",
-        handleServiceWorkerMessage
-      );
-    };
-  }, []);
+  //     return () => {
+  //       navigator.serviceWorker.removeEventListener(
+  //         "message",
+  //         handleServiceWorkerMessage
+  //       );
+  //     };
+  //   }, []);
 
-  useEffect(() => {
-    if (Notification.permission !== "granted") {
-      Notification.requestPermission().then((permission) => {
-        if (permission === "granted") {
-          console.log("알림 권한이 허용되었습니다.");
-        } else {
-          console.log("알림 권한이 거부되었습니다.");
-        }
-      });
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (Notification.permission !== "granted") {
+  //     Notification.requestPermission().then((permission) => {
+  //       if (permission === "granted") {
+  //         console.log("알림 권한이 허용되었습니다.");
+  //       } else {
+  //         console.log("알림 권한이 거부되었습니다.");
+  //       }
+  //     });
+  //   }
+  // }, []);
 
   return (
     <Container>
@@ -60,20 +61,20 @@ const Main = () => {
         <Logo src={logo} alt="logo" />
         <NotificationContainer onClick={() => navigate("/alarm")}>
           <NotificationIcon src={notification} alt="notification" />
-          {hasNotification && <NotificationBadge />}
+          {/* {hasNotification && <NotificationBadge />} */}
         </NotificationContainer>
       </Header>
       <Content>
         <ProfileCard />
         <ExperienceSection />
-        <NotificationSection>
+        {/* <NotificationSection>
           {notificationList.map((notif) => (
             <NotificationCard key={notif.id}>
               <Title>{notif.title}</Title>
               <Message>{notif.content}</Message>
             </NotificationCard>
           ))}
-        </NotificationSection>
+        </NotificationSection> */}
       </Content>
     </Container>
   );
@@ -120,15 +121,15 @@ const NotificationIcon = styled.img`
   cursor: pointer;
 `;
 
-const NotificationBadge = styled.div`
-  position: absolute;
-  top: -3px;
-  right: -3px;
-  width: 4px;
-  height: 4px;
-  background-color: ${(props) => props.theme.colors.mainC};
-  border-radius: 50%;
-`;
+// const NotificationBadge = styled.div`
+//   position: absolute;
+//   top: -3px;
+//   right: -3px;
+//   width: 4px;
+//   height: 4px;
+//   background-color: ${(props) => props.theme.colors.mainC};
+//   border-radius: 50%;
+// `;
 
 const Content = styled.div`
   margin-top: 50px;
@@ -138,25 +139,25 @@ const Content = styled.div`
   -ms-overflow-style: none;
 `;
 
-const NotificationSection = styled.div`
-  margin-top: 20px;
-  padding: 0 20px;
-`;
+// const NotificationSection = styled.div`
+//   margin-top: 20px;
+//   padding: 0 20px;
+// `;
 
-const NotificationCard = styled.div`
-  background: #f9f9f9;
-  padding: 10px 15px;
-  margin-bottom: 10px;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-`;
+// const NotificationCard = styled.div`
+//   background: #f9f9f9;
+//   padding: 10px 15px;
+//   margin-bottom: 10px;
+//   border-radius: 8px;
+//   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+// `;
 
-const Title = styled.div`
-  font-weight: bold;
-  margin-bottom: 5px;
-`;
+// const Title = styled.div`
+//   font-weight: bold;
+//   margin-bottom: 5px;
+// `;
 
-const Message = styled.div`
-  font-size: 14px;
-  color: ${(props) => props.theme.colors.gray3};
-`;
+// const Message = styled.div`
+//   font-size: 14px;
+//   color: ${(props) => props.theme.colors.gray3};
+// `;
