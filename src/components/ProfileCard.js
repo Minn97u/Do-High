@@ -10,6 +10,7 @@ import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
 import { getExpStatus, getThisYearExp, getLastYearExp } from "../api/ExpApi";
 import { getMemberInfo } from "../api/UserApi";
+import { useSwipeable } from "react-swipeable";
 
 const ProfileCard = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -134,16 +135,31 @@ const ProfileCard = () => {
     }
   }, [currentSlide, thisYearExpPercent, lastYearExpPercent]);
 
-  const handleDotClick = (index) => {
-    setCurrentSlide(index);
-  };
+  // const handleDotClick = (index) => {
+  //   setCurrentSlide(index);
+  // };
 
   const handleInfoClick = () => {
     setTooltipVisible(!tooltipVisible);
   };
 
+  const changeSlide = (direction) => {
+    if (direction === "left") {
+      setCurrentSlide((prev) => (prev === 0 ? slides.length - 1 : prev - 1));
+    } else if (direction === "right") {
+      setCurrentSlide((prev) => (prev === slides.length - 1 ? 0 : prev + 1));
+    }
+  };
+
+  const handlers = useSwipeable({
+    onSwipedLeft: () => changeSlide("right"),
+    onSwipedRight: () => changeSlide("left"),
+    preventDefaultTouchmoveEvent: true,
+    trackMouse: true,
+  });
+
   return (
-    <Container>
+    <Container currentSlide={currentSlide} {...handlers}>
       {currentSlide === 0 && (
         <ProfileCardContainer>
           <ProfileHeader>
@@ -255,7 +271,7 @@ const ProfileCard = () => {
           <Dot
             key={index}
             active={index === currentSlide}
-            onClick={() => handleDotClick(index)}
+            onClick={() => setCurrentSlide(index)}
           />
         ))}
       </Carousel>
