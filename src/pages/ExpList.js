@@ -85,61 +85,63 @@ const ExpList = () => {
 
   return (
     <Container>
-      <Header>
-        <Title>경험치 내역</Title>
-      </Header>
+      <TopContainer>
+        <Header>
+          <Title>경험치 내역</Title>
+        </Header>
 
-      <TabBar>
-        {Object.keys(categoryMap).map((tab) => (
-          <Tab
-            key={tab}
-            selected={selectedTab === tab}
-            onClick={() => handleTabClick(tab)}
-          >
-            {tab}
-          </Tab>
-        ))}
-      </TabBar>
-      {selectedTab === "인사평가" && (
-        <Description>
-          <div>
-            <p>
-              <span>S등급 6,500</span> <span>A등급 4,500 </span>
-              <span>B등급 3,000</span>
-            </p>
-            <p>
-              <span>C등급 1,500</span> <span>D등급 0</span>
-            </p>
-          </div>
-        </Description>
-      )}
+        <TabBar>
+          {Object.keys(categoryMap).map((tab) => (
+            <Tab
+              key={tab}
+              selected={selectedTab === tab}
+              onClick={() => handleTabClick(tab)}
+            >
+              {tab}
+            </Tab>
+          ))}
+        </TabBar>
+        {selectedTab === "인사평가" && (
+          <Description>
+            <div>
+              <p>
+                <span>S등급 6,500</span> <span>A등급 4,500 </span>
+                <span>B등급 3,000</span>
+              </p>
+              <p>
+                <span>C등급 1,500</span> <span>D등급 0</span>
+              </p>
+            </div>
+          </Description>
+        )}
 
-      <SortBar
-        hasInfoIcon={
-          selectedTab !== "인사평가" && selectedTab !== "전사 프로젝트"
-        }
-      >
-        {selectedTab !== "인사평가" && selectedTab !== "전사 프로젝트" && (
-          <InfoIconWrapper>
-            <InfoIcon src={infoIcon} alt="정보" onClick={handleInfoClick} />
-            {infoOpen && <InfoImage src={expListInfo} alt="정보 설명" />}
-          </InfoIconWrapper>
-        )}
-        <SortButton onClick={handleSortClick}>
-          <SortText>{sortOption}</SortText>
-          <SortIcon src={dropdownArrow} alt="정렬" />
-        </SortButton>
-        {sortOpen && (
-          <DropDownMenu>
-            <DropDownItem onClick={() => handleSortSelect("최신순")}>
-              최신순
-            </DropDownItem>
-            <DropDownItem onClick={() => handleSortSelect("오래된순")}>
-              오래된순
-            </DropDownItem>
-          </DropDownMenu>
-        )}
-      </SortBar>
+        <SortBar
+          hasInfoIcon={
+            selectedTab !== "인사평가" && selectedTab !== "전사 프로젝트"
+          }
+        >
+          {selectedTab !== "인사평가" && selectedTab !== "전사 프로젝트" && (
+            <InfoIconWrapper>
+              <InfoIcon src={infoIcon} alt="정보" onClick={handleInfoClick} />
+              {infoOpen && <InfoImage src={expListInfo} alt="정보 설명" />}
+            </InfoIconWrapper>
+          )}
+          <SortButton onClick={handleSortClick}>
+            <SortText>{sortOption}</SortText>
+            <SortIcon src={dropdownArrow} alt="정렬" />
+          </SortButton>
+          {sortOpen && (
+            <DropDownMenu>
+              <DropDownItem onClick={() => handleSortSelect("최신순")}>
+                최신순
+              </DropDownItem>
+              <DropDownItem onClick={() => handleSortSelect("오래된순")}>
+                오래된순
+              </DropDownItem>
+            </DropDownMenu>
+          )}
+        </SortBar>
+      </TopContainer>
 
       {loading ? (
         <LoadingMessage>로딩 중...</LoadingMessage>
@@ -182,7 +184,14 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-  height: 90vh;
+  height: 100%;
+  background-color: ${(props) => props.theme.colors.gray};
+`;
+
+const TopContainer = styled.div`
+  position: sticky;
+  top: 0;
+  z-index: 100;
   background-color: ${(props) => props.theme.colors.gray};
 `;
 
@@ -223,7 +232,7 @@ const Tab = styled.button`
   border: none;
   background: none;
   cursor: pointer;
-  border-bottom: ${(props) => (props.selected ? "4px solid #FC5833" : "none")};
+  border-bottom: ${(props) => (props.selected ? "5px solid #FC5833" : "none")};
   color: ${(props) =>
     props.selected ? props.theme.colors.black3 : props.theme.colors.gray2};
   min-width: 110px;
@@ -304,7 +313,7 @@ const DropDownItem = styled.div`
 `;
 
 const Description = styled.div`
-  padding: 34px 20px 0 20px;
+  padding: 34px 10px 0 10px;
 
   background-color: ${(props) => props.theme.colors.white};
 
