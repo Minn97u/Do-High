@@ -6,6 +6,8 @@ import notification from "../assets/notification.svg";
 import ProfileCard from "../components/ProfileCard";
 import ExperienceSection from "../components/ExperienceSection";
 import { useNavigate } from "react-router-dom";
+import levelUpIcon from "../assets/levelUp.svg";
+import Celebration from "../components/Celebration";
 
 const Main = () => {
   const navigate = useNavigate();
@@ -57,6 +59,7 @@ const Main = () => {
 
   return (
     <Container>
+      <Celebration />
       <Header>
         <Logo src={logo} alt="logo" />
         <NotificationContainer onClick={() => navigate("/alarm")}>
@@ -65,6 +68,10 @@ const Main = () => {
         </NotificationContainer>
       </Header>
       <Content>
+        <Alarm>
+          <img src={levelUpIcon} alt="levelUpIcon"></img>
+          F1-II로 레벨업 했어요! 🚀 축하드려요!
+        </Alarm>
         <ProfileCard />
         <ExperienceSection />
         {/* <NotificationSection>
@@ -137,6 +144,20 @@ const Content = styled.div`
   overflow-y: auto;
   scrollbar-width: none;
   -ms-overflow-style: none;
+`;
+
+const Alarm = styled.div`
+  ${(props) => props.theme.fonts.semiBold};
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  background-color: ${(props) => props.theme.colors.white};
+  margin: 16px;
+  padding: 12px 24px;
+  border-radius: 20px;
+  img {
+    margin-right: 9px;
+  }
 `;
 
 // const NotificationSection = styled.div`

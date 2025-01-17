@@ -9,6 +9,7 @@ import myIcon from "../assets/NavBar/my.svg";
 
 const NavBar = () => {
   const location = useLocation();
+  const isAdmin = localStorage.getItem("isAdmin") === "false";
 
   const navItems = [
     { name: "홈", path: "/main", icon: homeIcon },
@@ -24,24 +25,30 @@ const NavBar = () => {
   ];
 
   return (
-    <Nav>
-      {navItems.map((item) => {
-        const isActive = item.activePaths
-          ? item.activePaths.some((path) => location.pathname.startsWith(path))
-          : location.pathname.startsWith(item.path);
+    <>
+      {isAdmin && (
+        <Nav>
+          {navItems.map((item) => {
+            const isActive = item.activePaths
+              ? item.activePaths.some((path) =>
+                  location.pathname.startsWith(path)
+                )
+              : location.pathname.startsWith(item.path);
 
-        return (
-          <NavItem to={item.path} key={item.name} isActive={isActive}>
-            <NavIcon
-              src={item.icon}
-              alt={`${item.name} 아이콘`}
-              isActive={isActive}
-            />
-            <NavLabel isActive={isActive}>{item.name}</NavLabel>
-          </NavItem>
-        );
-      })}
-    </Nav>
+            return (
+              <NavItem to={item.path} key={item.name} isActive={isActive}>
+                <NavIcon
+                  src={item.icon}
+                  alt={`${item.name} 아이콘`}
+                  isActive={isActive}
+                />
+                <NavLabel isActive={isActive}>{item.name}</NavLabel>
+              </NavItem>
+            );
+          })}
+        </Nav>
+      )}
+    </>
   );
 };
 

@@ -192,7 +192,7 @@ const ProfileCard = () => {
               )}
             </ProgressBar>
             <p>
-              다음 {nextLevel}레벨까지 {remainingExp} 남음
+              다음 {nextLevel}레벨까지 {remainingExp.toLocaleString()} 남음
             </p>
           </ExperienceSection>
         </ProfileCardContainer>
@@ -318,6 +318,7 @@ const ProfileInfo = styled.div`
     font-size: 14px;
     color: ${(props) => props.theme.colors.gray2};
     ${(props) => props.theme.fonts.Nanum};
+    text-decoration: none;
   }
 `;
 

@@ -4,6 +4,7 @@ import styled from "styled-components";
 import dropdownArrow from "../assets/dropdown.svg";
 import writeIcon from "../assets/write.svg";
 import { getPosts } from "../api/BoardApi";
+import backBtn from "../assets/backBtn.svg";
 import dayjs from "dayjs";
 
 const BoardList = () => {
@@ -44,6 +45,11 @@ const BoardList = () => {
     <Container>
       <Header>
         <Title>게시글 목록</Title>
+        {isAdmin && (
+          <BackButton onClick={() => navigate("/admin")}>
+            <img src={backBtn} alt="뒤로가기" />
+          </BackButton>
+        )}
       </Header>
 
       <SortBar>
@@ -91,7 +97,7 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-  height: 90vh;
+  height: ${(props) => (props.isAdmin ? "100vh" : "100vh")};
   background-color: ${(props) => props.theme.colors.gray};
 `;
 
@@ -109,6 +115,16 @@ const Title = styled.h1`
   text-align: center;
   flex: 1;
   margin: 0;
+`;
+
+const BackButton = styled.button`
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  position: absolute;
+  left: 20px;
+  top: 12px;
 `;
 
 const SortBar = styled.div`
@@ -199,7 +215,7 @@ const ItemDate = styled.p`
 
 const WriteButton = styled.button`
   position: fixed;
-  bottom: 132px;
+  bottom: 60px;
   right: 20px;
   width: 48px;
   height: 48px;

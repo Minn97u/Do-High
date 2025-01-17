@@ -24,7 +24,7 @@ const Admin = () => {
         <ActionButton onClick={() => navigate("/admin/search")}>
           기존 계정 설정
         </ActionButton>
-        <ActionButton onClick={() => navigate("/boardpost")}>
+        <ActionButton onClick={() => navigate("/boardlist")}>
           게시글 작성
         </ActionButton>
         <Logout>

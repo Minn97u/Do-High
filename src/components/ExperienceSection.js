@@ -102,7 +102,7 @@ const ExperienceSection = () => {
       </SectionHeader>
       <QuestList>
         {quests.map((quest, index) => (
-          <QuestCard key={index}>
+          <QuestCard key={index} onClick={() => navigate("/quest")}>
             <QuestTitle>{quest.title}</QuestTitle>
             <DottedLine />
             <QuestIcon
