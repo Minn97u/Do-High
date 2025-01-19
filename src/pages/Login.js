@@ -1,9 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { IoEye, IoEyeOff } from "react-icons/io5";
 import logo from "../assets/logo.svg";
 import { useNavigate } from "react-router-dom";
 import { Axios } from "../api/Axios";
+import { getFCMToken } from "../firebase";
+import { handleAllowNotification } from "../NotificationFunc";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -12,6 +14,13 @@ const Login = () => {
   const [id, setId] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+
+  useEffect(() => {
+    const token = localStorage.getItem("accessToken");
+    if (token) {
+      navigate("/main");
+    }
+  }, [navigate]);
 
   const handleLogin = async () => {
     const endpoint =
@@ -26,8 +35,19 @@ const Login = () => {
       const { responseType, success, error } = response.data;
 
       if (responseType === "SUCCESS") {
+        await handleAllowNotification();
+
         localStorage.setItem("accessToken", success.jwtToken);
         localStorage.setItem("isAdmin", userType === "admin");
+
+        if (userType === "general") {
+          const fcmToken = await getFCMToken();
+          if (fcmToken) {
+            await Axios.post("/member/uuid", {
+              token: fcmToken,
+            });
+          }
+        }
 
         if (userType === "admin") {
           navigate("/admin");
