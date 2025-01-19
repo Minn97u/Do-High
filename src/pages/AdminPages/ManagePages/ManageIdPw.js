@@ -266,7 +266,7 @@ const SuccessMessage = styled.div`
 `;
 
 const SubmitButton = styled.button`
-  width: 100%;
+  width: 90%;
   max-width: 400px;
   padding: 14px;
   ${(props) => props.theme.fonts.medium};

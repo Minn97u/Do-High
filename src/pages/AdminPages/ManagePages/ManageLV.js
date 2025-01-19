@@ -241,7 +241,7 @@ const DropdownItem = styled.li`
 `;
 
 const SubmitButton = styled.button`
-  width: 100%;
+  width: 90%;
   margin: auto;
   padding: 14px;
   max-width: 400px;
