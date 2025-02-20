@@ -3,16 +3,15 @@ import styled from "styled-components";
 import infoIcon from "../assets/info.svg";
 import expListInfo from "../assets/questInfo.svg";
 import FlippableCard from "../components/FlippableCard";
-import FlippableCardWithMonth from "../components/FlippableCardWithMonth";
 
 const Quest = () => {
   const cardContainerRef = useRef(null);
-  const monthContainerRef = useRef(null);
+  // const monthContainerRef = useRef(null);
   const [selectedTab, setSelectedTab] = useState("직무 퀘스트");
   const [infoOpen, setInfoOpen] = useState(false);
 
   const [selectedYear, setSelectedYear] = useState("2025년");
-  const [selectedMonth, setSelectedMonth] = useState(1);
+  // const [selectedMonth, setSelectedMonth] = useState(1);
 
   const questData = {
     "직무 퀘스트": {
@@ -79,7 +78,7 @@ const Quest = () => {
     setSelectedTab(tab);
     const years = Object.keys(questData[tab]);
     setSelectedYear(years[0]);
-    setSelectedMonth(1);
+    // setSelectedMonth(1);
   };
 
   const handleYearChange = (direction) => {
@@ -97,18 +96,18 @@ const Quest = () => {
     }
   };
 
-  const handleMonthChange = (direction) => {
-    const newMonth = ((selectedMonth + direction + 12 - 1) % 12) + 1; // 월 범위: 1 ~ 12
-    setSelectedMonth(newMonth);
+  // const handleMonthChange = (direction) => {
+  //   const newMonth = ((selectedMonth + direction + 12 - 1) % 12) + 1; // 월 범위: 1 ~ 12
+  //   setSelectedMonth(newMonth);
 
-    if (monthContainerRef.current) {
-      const monthWidth = monthContainerRef.current.firstChild.offsetWidth;
-      monthContainerRef.current.scrollTo({
-        left: monthWidth * (newMonth - 1),
-        behavior: "smooth",
-      });
-    }
-  };
+  //   if (monthContainerRef.current) {
+  //     const monthWidth = monthContainerRef.current.firstChild.offsetWidth;
+  //     monthContainerRef.current.scrollTo({
+  //       left: monthWidth * (newMonth - 1),
+  //       behavior: "smooth",
+  //     });
+  //   }
+  // };
 
   useEffect(() => {
     const index = years.indexOf(selectedYear);
@@ -163,7 +162,7 @@ const Quest = () => {
           Med 기준: 2회 이상, 월 50 do 획득
         </CriteriaContainer>
 
-        <Selector>
+        {/* <Selector>
           <Arrow onClick={() => handleMonthChange(-1)}>{"<"}</Arrow>
           <Year>{selectedMonth}월</Year>
           <Arrow onClick={() => handleMonthChange(1)}>{">"}</Arrow>
@@ -186,7 +185,7 @@ const Quest = () => {
           Max 기준: 업무프로세스 개선 리드자, 월 67 do 획득
           <br />
           Med 기준: 업무프로세스 개선 참여자, 월 33 do 획득
-        </CriteriaContainer>
+        </CriteriaContainer> */}
       </SubContainer>
     </Container>
   );
