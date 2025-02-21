@@ -103,15 +103,6 @@ const MypageEntry = () => {
           </Row>
         </Section>
         <ServiceInfo>
-          <ServiceTitle>서비스 정보</ServiceTitle>
-          <ServiceItem>
-            공지사항
-            <ArrowIcon src={dropdownArrow} alt="arrow" />
-          </ServiceItem>
-          <ServiceItem>
-            관리자 문의하기
-            <ArrowIcon src={dropdownArrow} alt="arrow" />
-          </ServiceItem>
           <ServiceItem onClick={handleLogout}>
             로그아웃
             <ArrowIcon src={dropdownArrow} alt="arrow" />
@@ -240,13 +231,6 @@ const ServiceInfo = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-`;
-
-const ServiceTitle = styled.div`
-  ${(props) => props.theme.fonts.semiBold};
-  font-size: 14px;
-  margin-bottom: 10px;
-  color: ${(props) => props.theme.colors.gray2};
 `;
 
 const ServiceItem = styled.div`
