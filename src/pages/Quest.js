@@ -7,7 +7,6 @@ import FlippableCard from "../components/FlippableCard";
 const Quest = () => {
   const cardContainerRef = useRef(null);
   // const monthContainerRef = useRef(null);
-  const [selectedTab, setSelectedTab] = useState("직무 퀘스트");
   const [infoOpen, setInfoOpen] = useState(false);
 
   const [selectedYear, setSelectedYear] = useState("2025년");
@@ -40,49 +39,16 @@ const Quest = () => {
         earnedPoints: "총 누적 1,200 do 획득",
       },
     },
-    "리더 퀘스트": {
-      "2024년": {
-        id: 4,
-        status: "Med 달성",
-        title: "2024년 리더 프로젝트",
-        description: "음성 1센터 리더",
-        maxPoints: "연 최대 800 do 획득 가능",
-        earnedPoints: "총 누적 500 do 획득",
-      },
-      "2025년": {
-        id: 5,
-        status: "Max 달성",
-        title: "2025년 리더 프로젝트",
-        description: "음성 2센터 리더",
-        maxPoints: "연 최대 1,000 do 획득 가능",
-        earnedPoints: "총 누적 900 do 획득",
-      },
-      "2026년": {
-        id: 6,
-        status: "Max 달성",
-        title: "2026년 리더 프로젝트",
-        description: "음성 3센터 리더",
-        maxPoints: "연 최대 1,200 do 획득 가능",
-        earnedPoints: "총 누적 1,000 do 획득",
-      },
-    },
   };
 
-  const years = Object.keys(questData[selectedTab]);
+  const years = Object.keys(questData["직무 퀘스트"]);
 
   const handleInfoClick = () => {
     setInfoOpen((prev) => !prev);
   };
 
-  const handleTabClick = (tab) => {
-    setSelectedTab(tab);
-    const years = Object.keys(questData[tab]);
-    setSelectedYear(years[0]);
-    // setSelectedMonth(1);
-  };
-
   const handleYearChange = (direction) => {
-    const years = Object.keys(questData[selectedTab]);
+    const years = Object.keys(questData["직무 퀘스트"]);
     const currentIndex = years.indexOf(selectedYear);
     const newIndex = (currentIndex + direction + years.length) % years.length;
     setSelectedYear(years[newIndex]);
@@ -118,7 +84,7 @@ const Quest = () => {
         behavior: "smooth",
       });
     }
-  }, [selectedYear, selectedTab, years]);
+  }, [selectedYear, years]);
 
   return (
     <Container>
@@ -126,17 +92,6 @@ const Quest = () => {
         <Title>퀘스트</Title>
       </Header>
 
-      <TabBar>
-        {Object.keys(questData).map((tab) => (
-          <Tab
-            key={tab}
-            selected={selectedTab === tab}
-            onClick={() => handleTabClick(tab)}
-          >
-            {tab}
-          </Tab>
-        ))}
-      </TabBar>
       <SubContainer>
         <Selector>
           <Arrow onClick={() => handleYearChange(-1)}>{"<"}</Arrow>
@@ -149,7 +104,7 @@ const Quest = () => {
         </Selector>
 
         <CardContainer ref={cardContainerRef}>
-          {Object.entries(questData[selectedTab]).map(([year, quest]) => (
+          {Object.entries(questData["직무 퀘스트"]).map(([year, quest]) => (
             <CardWrapper key={quest.id}>
               <FlippableCard quest={quest} />
             </CardWrapper>
@@ -167,20 +122,20 @@ const Quest = () => {
           <Year>{selectedMonth}월</Year>
           <Arrow onClick={() => handleMonthChange(1)}>{">"}</Arrow>
         </Selector>
-
+        
         <CardContainer ref={monthContainerRef}>
           {Array.from({ length: 12 }, (_, index) => (
             <CardWrapper key={index}>
               <FlippableCardWithMonth
                 quest={{
-                  ...questData[selectedTab][selectedYear],
+                  ...questData["직무 퀘스트"][selectedYear],
                   title: `${index + 1}월 퀘스트`,
                 }}
               />
             </CardWrapper>
           ))}
         </CardContainer>
-
+        
         <CriteriaContainer>
           Max 기준: 업무프로세스 개선 리드자, 월 67 do 획득
           <br />
@@ -206,6 +161,7 @@ const Header = styled.div`
   align-items: center;
   padding: 15px;
   position: relative;
+  border-bottom: 1px solid #e6e7e8;
 `;
 
 const Title = styled.h1`
@@ -215,28 +171,10 @@ const Title = styled.h1`
   flex: 1;
 `;
 
-const TabBar = styled.div`
-  display: flex;
-  justify-content: space-around;
-  border-bottom: 1px solid #e6e7e8;
-`;
-
 const SubContainer = styled.div`
   overflow-y: scroll;
   scrollbar-width: none;
   -ms-overflow-style: none;
-`;
-
-const Tab = styled.button`
-  ${(props) => props.theme.fonts.semiBold};
-  width: 50%;
-  border: none;
-  background: none;
-  font-size: 16px;
-  padding: 10px 0;
-  color: ${(props) =>
-    props.selected ? props.theme.colors.black3 : props.theme.colors.gray2};
-  border-bottom: ${(props) => (props.selected ? "3px solid  #FC5833" : "none")};
 `;
 
 const Selector = styled.div`
