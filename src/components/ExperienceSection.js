@@ -84,7 +84,7 @@ const ExperienceSection = () => {
         <RecentDoCard onClick={() => navigate("/exp")}>
           <CardContent>
             <CardDate>{formatDate(recentExp.date)}</CardDate>
-            <CardTitle>{recentExp.content}</CardTitle>
+            <CardTitle>{recentExp.expName}</CardTitle>
           </CardContent>
           <CardValue>
             <CoinIcon
