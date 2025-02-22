@@ -182,7 +182,7 @@ const SubmitButton = styled.button`
   font-size: 16px;
   border-radius: 50px;
   background: ${(props) =>
-    props.disabled ? props.theme.colors.btnGray : props.theme.colors.mainC};
+    props.disabled ? props.theme.colors.btnGray : props.theme.colors.btn};
   color: ${(props) => (props.disabled ? "#d3d3d5" : "#FFFFFF")};
   cursor: ${(props) => (props.disabled ? "not-allowed" : "pointer")};
   margin-top: auto;
