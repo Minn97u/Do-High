@@ -38,7 +38,7 @@ const MypageEntry = () => {
 
         const expResponse = await getExpStatus();
         if (expResponse.responseType === "SUCCESS") {
-          setTotalExp(expResponse.success.totalExp);
+          setTotalExp(expResponse.success.exp);
         } else {
           console.error("경험치 정보 조회 오류:", expResponse.error.message);
         }

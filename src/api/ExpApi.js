@@ -19,7 +19,7 @@ export const getExpList = async (category, order) => {
 // 경험치 현황 조회
 export const getExpStatus = async () => {
   try {
-    const response = await Axios.get(`/exp`);
+    const response = await Axios.get(`/member/graph1`);
     return response.data;
   } catch (error) {
     console.error("경험치 현황 조회 API 호출 오류:", error.message);
