@@ -3,7 +3,7 @@ import { Axios } from "./Axios";
 // 유저 정보 조회
 export const getMemberInfo = async () => {
   try {
-    const response = await Axios.get(`/member`);
+    const response = await Axios.get(`/member/`);
     return response.data;
   } catch (error) {
     console.error("멤버 정보 API 호출 오류:", error.message);

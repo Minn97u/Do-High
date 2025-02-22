@@ -8,7 +8,7 @@ import speechBubble3 from "../assets/speechBubble3.svg";
 import info from "../assets/info.svg";
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
-import { getExpStatus, getThisYearExp, getLastYearExp } from "../api/ExpApi";
+import { Axios } from "../api/Axios";
 import { getMemberInfo } from "../api/UserApi";
 import { useSwipeable } from "react-swipeable";
 
@@ -38,44 +38,54 @@ const ProfileCard = () => {
   const slides = [0, 1, 2];
 
   useEffect(() => {
-    const fetchExpStatus = async () => {
+    const fetchGraphData = async () => {
       try {
-        const response = await getExpStatus();
-        if (response.responseType === "SUCCESS") {
-          setTotalExp(response.success.totalExp);
-          setRemainingExp(response.success.remainingExp);
-          setNextLevel(response.success.nextLevel);
-          setPercent(response.success.percent);
+        const response = await Axios.get("/member/graph1");
+        if (response.data.responseType === "SUCCESS") {
+          const { exp, percent, nextLevel, expForLevelUp } =
+            response.data.success;
+          setTotalExp(exp);
+          setPercent(percent);
+          setNextLevel(nextLevel);
+          setRemainingExp(expForLevelUp);
         } else {
-          console.error("경험치 현황 조회 오류:", response.error.message);
+          console.error("경험치 조회 오류:", response.data.error.message);
         }
       } catch (error) {
-        console.error("경험치 현황 조회 오류:", error.message);
+        console.error("경험치 조회 오류:", error.message);
       }
     };
 
-    const fetchThisYearExp = async () => {
+    const fetchGraph2Data = async () => {
       try {
-        const response = await getThisYearExp();
-        if (response.responseType === "SUCCESS") {
-          setThisYearExpPercent(response.success.percent);
-          setThisYearExpTotal(response.success.totalExp);
+        const response = await Axios.get("/member/graph2");
+        if (response.data.responseType === "SUCCESS") {
+          const { exp, percent } = response.data.success;
+          setThisYearExpTotal(exp);
+          setThisYearExpPercent(percent);
         } else {
-          console.error("올해 누적 경험치 조회 오류:", response.error.message);
+          console.error(
+            "올해 누적 경험치 조회 오류:",
+            response.data.error.message
+          );
         }
       } catch (error) {
         console.error("올해 누적 경험치 조회 오류:", error.message);
       }
     };
 
-    const fetchLastYearExp = async () => {
+    const fetchGraph3Data = async () => {
       try {
-        const response = await getLastYearExp();
-        if (response.responseType === "SUCCESS") {
-          setLastYearExpPercent(response.success.percent);
-          setLastYearExpTotal(response.success.totalExp);
+        const response = await Axios.get("/member/graph3");
+        if (response.data.responseType === "SUCCESS") {
+          const { exp, percent } = response.data.success;
+          setLastYearExpTotal(exp);
+          setLastYearExpPercent(percent);
         } else {
-          console.error("작년 누적 경험치 조회 오류:", response.error.message);
+          console.error(
+            "작년 누적 경험치 조회 오류:",
+            response.data.error.message
+          );
         }
       } catch (error) {
         console.error("작년 누적 경험치 조회 오류:", error.message);
@@ -101,9 +111,9 @@ const ProfileCard = () => {
       }
     };
 
-    fetchExpStatus();
-    fetchThisYearExp();
-    fetchLastYearExp();
+    fetchGraphData();
+    fetchGraph2Data();
+    fetchGraph3Data();
     fetchMemberInfo();
   }, []);
 
@@ -134,10 +144,6 @@ const ProfileCard = () => {
       return () => clearInterval(interval);
     }
   }, [currentSlide, thisYearExpPercent, lastYearExpPercent]);
-
-  // const handleDotClick = (index) => {
-  //   setCurrentSlide(index);
-  // };
 
   const handleInfoClick = () => {
     setTooltipVisible(!tooltipVisible);
@@ -446,7 +452,6 @@ const Tooltip = styled.div`
   top: 20px;
   right: -10px;
   z-index: 10;
-
   img {
     width: 210px;
     height: auto;
