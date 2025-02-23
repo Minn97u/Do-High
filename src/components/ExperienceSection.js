@@ -3,9 +3,7 @@ import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import { getRecentExp } from "../api/ExpApi";
 import { getMemberInfo } from "../api/UserApi";
-import coinIcon from "../assets/coin/GoldDo.svg";
-import silverCoinIcon from "../assets/coin/SilverDo.svg";
-import bronzeCoinIcon from "../assets//coin/BronzeDo.svg";
+import { getQuests } from "../api/QuestApi";
 import backBtn from "../assets/mainArrow.svg";
 
 const coinMap = {
@@ -14,21 +12,15 @@ const coinMap = {
   B: require("../assets/coin/B.svg").default,
   C: require("../assets/coin/C.svg").default,
   D: require("../assets/coin/D.svg").default,
-  BronzeDo: require("../assets/coin/BronzeDo.svg").default,
-  GoldDo: require("../assets/coin/GoldDo.svg").default,
-  SilverDo: require("../assets/coin/SilverDo.svg").default,
+  MAX: require("../assets/coin/GoldDo.svg").default,
+  MED: require("../assets/coin/SilverDo.svg").default,
 };
 
 const ExperienceSection = () => {
   const navigate = useNavigate();
   const [recentExp, setRecentExp] = useState(null);
   const [memberName, setMemberName] = useState("");
-
-  const quests = [
-    { title: "8월 직무 퀘스트", subtitle: "생산성 증진", coinType: "gold" },
-    { title: "32주 리더 퀘스트", subtitle: "월특근", coinType: "silver" },
-    { title: "32주 리더 퀘스트", subtitle: "업무 효율", coinType: "bronze" },
-  ];
+  const [quests, setQuests] = useState([]);
 
   useEffect(() => {
     const fetchRecentExp = async () => {
@@ -57,8 +49,22 @@ const ExperienceSection = () => {
       }
     };
 
+    const fetchQuests = async () => {
+      try {
+        const data = await getQuests();
+        if (data.responseType === "SUCCESS") {
+          setQuests(data.success);
+        } else {
+          console.error("퀘스트 데이터 로드 실패:", data.error.message);
+        }
+      } catch (error) {
+        console.error("API 호출 오류:", error.message);
+      }
+    };
+
     fetchRecentExp();
     fetchMemberInfo();
+    fetchQuests();
   }, []);
 
   const formatDate = (dateString) => {
@@ -76,58 +82,55 @@ const ExperienceSection = () => {
 
   return (
     <ExperienceSectionContainer>
-      <SectionHeader onClick={() => navigate("/exp")}>
+      <SectionHeader onClick={handleExpClick}>
         <SectionTitle>최근에 {memberName}님이 받은 do예요!</SectionTitle>
         <ArrowIcon src={backBtn} alt="More" onClick={handleExpClick} />
       </SectionHeader>
       {recentExp && (
-        <RecentDoCard onClick={() => navigate("/exp")}>
+        <RecentDoCard onClick={handleExpClick}>
           <CardContent>
             <CardDate>{formatDate(recentExp.date)}</CardDate>
             <CardTitle>{recentExp.expName}</CardTitle>
           </CardContent>
           <CardValue>
             <CoinIcon
-              src={coinMap[recentExp.coin] || coinMap["BronzeDo"]}
-              alt={`${recentExp.coin} Coin`}
+              src={coinMap[recentExp.coin] || coinMap["MAX"]}
+              alt={`${recentExp.coin || "MAX"} Coin`}
             />
             {recentExp.exp.toLocaleString()}
           </CardValue>
         </RecentDoCard>
       )}
 
-      <SectionHeader onClick={() => navigate("/quest")}>
+      <SectionHeader onClick={handleQuestClick}>
         <SectionTitle>{memberName}님이 수행한 퀘스트예요!</SectionTitle>
         <ArrowIcon src={backBtn} alt="More" onClick={handleQuestClick} />
       </SectionHeader>
       <QuestList>
-        {quests.map((quest, index) => (
-          <QuestCard key={index} onClick={() => navigate("/quest")}>
-            <QuestTitle>{quest.title}</QuestTitle>
-            <DottedLine />
-            <QuestIcon
-              src={
-                quest.coinType === "gold"
-                  ? coinIcon
-                  : quest.coinType === "silver"
-                  ? silverCoinIcon
-                  : bronzeCoinIcon
-              }
-              alt={`${quest.coinType} Coin`}
-            />
-            <QuestSubtitle
-              color={
-                quest.coinType === "gold"
-                  ? "#FBB62C"
-                  : quest.coinType === "silver"
-                  ? "#BBC5CE"
-                  : "#BD8B51"
-              }
-            >
-              {quest.subtitle}
-            </QuestSubtitle>
-          </QuestCard>
-        ))}
+        {quests.map((quest, index) => {
+          const coinType = quest.coin || "MAX";
+          return (
+            <QuestCard key={index} onClick={handleQuestClick}>
+              <QuestTitle>{quest.expName}</QuestTitle>
+              <DottedLine />
+              <QuestIcon
+                src={coinMap[coinType] || coinMap["MAX"]}
+                alt={`${coinType} Coin`}
+              />
+              <QuestSubtitle
+                color={
+                  coinType === "MED"
+                    ? "#BBC5CE"
+                    : coinType === "MAX"
+                    ? "#FBB62C"
+                    : "#000"
+                }
+              >
+                {quest.questName}
+              </QuestSubtitle>
+            </QuestCard>
+          );
+        })}
       </QuestList>
     </ExperienceSectionContainer>
   );
@@ -236,5 +239,7 @@ const QuestIcon = styled.img`
 const QuestSubtitle = styled.div`
   ${(props) => props.theme.fonts.semiBold};
   font-size: 14px;
+  width: 90%;
+  margin: auto;
   color: ${(props) => props.color};
 `;

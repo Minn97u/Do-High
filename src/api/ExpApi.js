@@ -30,7 +30,7 @@ export const getExpStatus = async () => {
 // 최근 획득 경험치 조회
 export const getRecentExp = async () => {
   try {
-    const response = await Axios.get(`/member/latest`);
+    const response = await Axios.get(`/exp/latest`);
     return response.data;
   } catch (error) {
     console.error("최근 획득 경험치 조회 API 호출 오류:", error.message);
