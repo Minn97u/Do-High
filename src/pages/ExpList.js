@@ -1,18 +1,16 @@
 import React, { useState, useEffect, useCallback } from "react";
 import styled from "styled-components";
-import { getExpList } from "../api/ExpApi";
+import {
+  getExpList,
+  getPfExp,
+  getJqExp,
+  getLqExp,
+  getCpExp,
+} from "../api/ExpApi";
 import dropdownArrow from "../assets/dropdown.svg";
 import infoIcon from "../assets/info.svg";
 import expListInfo from "../assets/expListInfo.svg";
 import dayjs from "dayjs";
-
-const categoryMap = {
-  전체: "all",
-  인사평가: "pf",
-  "직무 퀘스트": "job",
-  "리더 퀘스트": "ld",
-  "전사 프로젝트": "co",
-};
 
 const orderMap = {
   최신순: "desc",
@@ -26,9 +24,17 @@ const coinMap = {
   C: require("../assets/coin/C.svg").default,
   D: require("../assets/coin/D.svg").default,
   BronzeDo: require("../assets/coin/BronzeDo.svg").default,
-  GoldDo: require("../assets/coin/GoldDo.svg").default,
-  SilverDo: require("../assets/coin/SilverDo.svg").default,
+  MAX: require("../assets/coin/GoldDo.svg").default,
+  MED: require("../assets/coin/SilverDo.svg").default,
 };
+
+const tabList = [
+  "전체",
+  "인사평가",
+  "직무 퀘스트",
+  "리더 퀘스트",
+  "전사 프로젝트",
+];
 
 const ExpList = () => {
   const [sortOpen, setSortOpen] = useState(false);
@@ -41,9 +47,19 @@ const ExpList = () => {
   const fetchExpList = useCallback(async () => {
     setLoading(true);
     try {
-      const category = categoryMap[selectedTab];
       const order = orderMap[sortOption];
-      const data = await getExpList(category, order);
+      let data;
+      if (selectedTab === "전체") {
+        data = await getExpList(order);
+      } else if (selectedTab === "인사평가") {
+        data = await getPfExp(order);
+      } else if (selectedTab === "직무 퀘스트") {
+        data = await getJqExp(order);
+      } else if (selectedTab === "리더 퀘스트") {
+        data = await getLqExp(order);
+      } else if (selectedTab === "전사 프로젝트") {
+        data = await getCpExp(order);
+      }
 
       if (data.responseType === "SUCCESS") {
         setExpList(data.success);
@@ -91,7 +107,7 @@ const ExpList = () => {
         </Header>
 
         <TabBar>
-          {Object.keys(categoryMap).map((tab) => (
+          {tabList.map((tab) => (
             <Tab
               key={tab}
               selected={selectedTab === tab}
