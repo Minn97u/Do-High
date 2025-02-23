@@ -1,25 +1,24 @@
 import { Axios } from "./Axios";
 
-// 경험치 목록 조회
-export const getExpList = async (category, order) => {
+// 전체 경험치 목록 조회
+export const getExpList = async (order) => {
   try {
     const response = await Axios.get(`/exp/list`, {
       params: {
-        category,
         order,
       },
     });
     return response.data;
   } catch (error) {
-    console.error("경험치 리스트 API 호출 오류:", error.message);
+    console.error("전체 경험치 리스트 API 호출 오류:", error.message);
     throw error;
   }
 };
 
-// 경험치 현황 조회
+// 총 누적 경험치
 export const getExpStatus = async () => {
   try {
-    const response = await Axios.get(`/exp`);
+    const response = await Axios.get(`/member/graph1`);
     return response.data;
   } catch (error) {
     console.error("경험치 현황 조회 API 호출 오류:", error.message);
@@ -30,7 +29,7 @@ export const getExpStatus = async () => {
 // 최근 획득 경험치 조회
 export const getRecentExp = async () => {
   try {
-    const response = await Axios.get(`/exp/recent`);
+    const response = await Axios.get(`/exp/latest`);
     return response.data;
   } catch (error) {
     console.error("최근 획득 경험치 조회 API 호출 오류:", error.message);
@@ -38,24 +37,54 @@ export const getRecentExp = async () => {
   }
 };
 
-// 작년 누적 경험치 조회
-export const getLastYearExp = async () => {
+// 인사평가 경험치 목록 조회
+export const getPfExp = async (order) => {
   try {
-    const response = await Axios.get(`/exp/bar`);
+    const response = await Axios.get(`/exp/pf`, {
+      params: { order },
+    });
     return response.data;
   } catch (error) {
-    console.error("작년 누적 경험치 조회 API 호출 오류:", error.message);
+    console.error("인사평가 경험치 조회 API 호출 오류:", error.message);
     throw error;
   }
 };
 
-// 올해 누적 경험치 조회
-export const getThisYearExp = async () => {
+// 리더부여퀘스트 경험치 목록 조회
+export const getLqExp = async (order) => {
   try {
-    const response = await Axios.get(`/exp/bar/today`);
+    const response = await Axios.get(`/exp/lq`, {
+      params: { order },
+    });
     return response.data;
   } catch (error) {
-    console.error("올해 누적 경험치 조회 API 호출 오류:", error.message);
+    console.error("리더부여퀘스트 경험치 조회 API 호출 오류:", error.message);
+    throw error;
+  }
+};
+
+// 직무퀘스트 경험치 목록 조회
+export const getJqExp = async (order) => {
+  try {
+    const response = await Axios.get(`/exp/jq`, {
+      params: { order },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("직무퀘스트 경험치 조회 API 호출 오류:", error.message);
+    throw error;
+  }
+};
+
+// 전사프로젝트 경험치 목록 조회
+export const getCpExp = async (order) => {
+  try {
+    const response = await Axios.get(`/exp/cp`, {
+      params: { order },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("전사프로젝트 경험치 조회 API 호출 오류:", error.message);
     throw error;
   }
 };

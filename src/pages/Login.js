@@ -109,7 +109,6 @@ const Login = () => {
       </InputContainer>
       {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
       <LoginButton onClick={handleLogin}>로그인</LoginButton>
-      <Inquiry>관리자에게 찾기 문의하기</Inquiry>
     </Container>
   );
 };
@@ -193,13 +192,6 @@ const LoginButton = styled.button`
   border-radius: 50px;
   cursor: pointer;
   margin-bottom: 22px;
-`;
-
-const Inquiry = styled.div`
-  font-size: 14px;
-  color: ${(props) => props.theme.colors.gray2};
-  cursor: pointer;
-  text-decoration: underline;
 `;
 
 const ErrorMessage = styled.div`

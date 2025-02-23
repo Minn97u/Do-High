@@ -4,13 +4,14 @@ import styled from "styled-components";
 import backBtn from "../assets/backBtn.svg";
 import menu from "../assets/menu.svg";
 import dayjs from "dayjs";
-
 import { getPostById, deletePostById } from "../api/BoardApi";
+import ConfirmModal from "../components/Modal";
 
 const BoardDetail = () => {
   const navigate = useNavigate();
   const { boardId } = useParams();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const isAdmin = localStorage.getItem("isAdmin") === "true";
 
   const [post, setPost] = useState({
@@ -26,7 +27,6 @@ const BoardDetail = () => {
       try {
         const postId = Number(boardId);
         const data = await getPostById(postId);
-
         setPost(data);
       } catch (error) {
         console.error("게시글 상세 조회 실패:", error.message);
@@ -47,16 +47,13 @@ const BoardDetail = () => {
   };
 
   const handleDelete = async () => {
-    const confirmDelete = window.confirm("정말 삭제하시겠습니까?");
-    if (confirmDelete) {
-      try {
-        await deletePostById(post.id);
-        alert("삭제되었습니다.");
-        navigate(-1);
-      } catch (error) {
-        console.error("게시글 삭제 실패:", error.message);
-        alert("삭제에 실패했습니다.");
-      }
+    try {
+      await deletePostById(post.id);
+      alert("삭제되었습니다.");
+      navigate(-1);
+    } catch (error) {
+      console.error("게시글 삭제 실패:", error.message);
+      alert("삭제에 실패했습니다.");
     }
   };
 
@@ -71,17 +68,22 @@ const BoardDetail = () => {
           <img src={backBtn} alt="뒤로가기" />
         </BackButton>
         <HeaderTitle>게시글 상세</HeaderTitle>
-
         {isAdmin && (
           <MenuButton onClick={handleMenuToggle}>
             <img src={menu} alt="메뉴" />
           </MenuButton>
         )}
-
         {menuOpen && (
           <DropdownMenu>
             <DropdownItem onClick={handleEdit}>수정하기</DropdownItem>
-            <DropdownItem onClick={handleDelete}>삭제하기</DropdownItem>
+            <DropdownItem
+              onClick={() => {
+                setMenuOpen(false);
+                setDeleteModalOpen(true);
+              }}
+            >
+              삭제하기
+            </DropdownItem>
           </DropdownMenu>
         )}
       </Header>
@@ -91,6 +93,17 @@ const BoardDetail = () => {
         <PostDate>작성일 {formatDate(post.createdAt)}</PostDate>
         <PostContent>{post.content}</PostContent>
       </DetailContainer>
+
+      <ConfirmModal
+        isOpen={deleteModalOpen}
+        onClose={() => setDeleteModalOpen(false)}
+        onConfirm={() => {
+          handleDelete();
+          setDeleteModalOpen(false);
+        }}
+        title="게시글을 삭제하시겠습니까?"
+        subtitle="삭제하면 복구하실 수 없습니다."
+      />
     </Container>
   );
 };

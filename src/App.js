@@ -2,16 +2,6 @@ import { Navigate, Route, Routes } from "react-router-dom";
 import Home from "./pages/Main";
 import Login from "./pages/Login";
 import Admin from "./pages/AdminPages/Admin";
-import CreateAccount from "./pages/AdminPages/CreateAccount";
-import CreateAccountNext from "./pages/AdminPages/CreateAccountNext";
-import SearchAccount from "./pages/AdminPages/SearchAccount";
-import ManageAccount from "./pages/AdminPages/ManageAccount";
-import ManageName from "./pages/AdminPages/ManagePages/ManageName";
-import ManageWorkplace from "./pages/AdminPages/ManagePages/ManageWorkplace";
-import ManageNum from "./pages/AdminPages/ManagePages/ManageNum";
-import ManageLV from "./pages/AdminPages/ManagePages/ManageLV";
-import ManageDate from "./pages/AdminPages/ManagePages/ManageDate";
-import ManageIdPw from "./pages/AdminPages/ManagePages/ManageIdPw";
 import BoardPost from "./pages/AdminPages/BoardPost";
 import BoardEdit from "./pages/AdminPages/BoardEdit";
 import Alarm from "./pages/Alarm";
@@ -50,19 +40,6 @@ function App() {
         <Route path="/auth/login" element={<Login />} />
 
         <Route path="/admin" element={<Admin />} />
-        <Route path="/admin/create" element={<CreateAccount />} />
-        <Route path="/admin/create-next" element={<CreateAccountNext />} />
-        <Route path="/admin/search" element={<SearchAccount />} />
-        <Route path="/admin/manage/:number" element={<ManageAccount />} />
-        <Route path="/admin/manage/name/:id" element={<ManageName />} />
-        <Route
-          path="/admin/manage/workplace/:id"
-          element={<ManageWorkplace />}
-        />
-        <Route path="/admin/manage/number/:id" element={<ManageNum />} />
-        <Route path="/admin/manage/level/:id" element={<ManageLV />} />
-        <Route path="/admin/manage/date/:id" element={<ManageDate />} />
-        <Route path="/admin/manage/account/:id" element={<ManageIdPw />} />
 
         <Route
           path="/mypage-entry"

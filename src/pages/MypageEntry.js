@@ -7,6 +7,7 @@ import notification from "../assets/notification.svg";
 import { useNavigate } from "react-router-dom";
 import { getMemberInfo } from "../api/UserApi";
 import { getExpStatus } from "../api/ExpApi";
+import LogoutModal from "../components/Modal";
 
 const MypageEntry = () => {
   const [memberInfo, setMemberInfo] = useState({
@@ -17,6 +18,7 @@ const MypageEntry = () => {
     character: profile,
   });
   const [totalExp, setTotalExp] = useState(0);
+  const [modalOpen, setModalOpen] = useState(false);
   const navigate = useNavigate();
   const hasNotification = true;
 
@@ -38,7 +40,7 @@ const MypageEntry = () => {
 
         const expResponse = await getExpStatus();
         if (expResponse.responseType === "SUCCESS") {
-          setTotalExp(expResponse.success.totalExp);
+          setTotalExp(expResponse.success.exp);
         } else {
           console.error("경험치 정보 조회 오류:", expResponse.error.message);
         }
@@ -61,7 +63,6 @@ const MypageEntry = () => {
   const handleLogout = () => {
     localStorage.removeItem("accessToken");
     localStorage.removeItem("isAdmin");
-
     navigate("/auth/login");
   };
 
@@ -103,21 +104,22 @@ const MypageEntry = () => {
           </Row>
         </Section>
         <ServiceInfo>
-          <ServiceTitle>서비스 정보</ServiceTitle>
-          <ServiceItem>
-            공지사항
-            <ArrowIcon src={dropdownArrow} alt="arrow" />
-          </ServiceItem>
-          <ServiceItem>
-            관리자 문의하기
-            <ArrowIcon src={dropdownArrow} alt="arrow" />
-          </ServiceItem>
-          <ServiceItem onClick={handleLogout}>
+          <ServiceItem onClick={() => setModalOpen(true)}>
             로그아웃
             <ArrowIcon src={dropdownArrow} alt="arrow" />
           </ServiceItem>
         </ServiceInfo>
       </Content>
+      <LogoutModal
+        isOpen={modalOpen}
+        onClose={() => setModalOpen(false)}
+        onConfirm={() => {
+          handleLogout();
+          setModalOpen(false);
+        }}
+        title="로그아웃 하시겠습니까?"
+        subtitle="로그아웃 시 로그인 화면으로 이동합니다"
+      />
     </Container>
   );
 };
@@ -236,17 +238,9 @@ const ServiceInfo = styled.div`
   border-radius: 10px;
   padding: 15px 20px;
   margin-top: 15px;
-  height: 212px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-`;
-
-const ServiceTitle = styled.div`
-  ${(props) => props.theme.fonts.semiBold};
-  font-size: 14px;
-  margin-bottom: 10px;
-  color: ${(props) => props.theme.colors.gray2};
 `;
 
 const ServiceItem = styled.div`
