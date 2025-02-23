@@ -111,10 +111,6 @@ const MyPage = () => {
             <Label>레벨</Label>
             <Value>{memberInfo?.level}</Value>
           </InfoItem>
-          <InfoItem>
-            <Label>입사일</Label>
-            <Value>{memberInfo?.effectiveDate}</Value>
-          </InfoItem>
           <ChangePassword onClick={handlePasswordChange}>
             비밀번호 변경
             <Arrow src={dropdownArrow} alt="arrow" />
