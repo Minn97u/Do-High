@@ -101,19 +101,6 @@ const ExpList = () => {
             </Tab>
           ))}
         </TabBar>
-        {selectedTab === "인사평가" && (
-          <Description>
-            <div>
-              <p>
-                <span>S등급 6,500</span> <span>A등급 4,500 </span>
-                <span>B등급 3,000</span>
-              </p>
-              <p>
-                <span>C등급 1,500</span> <span>D등급 0</span>
-              </p>
-            </div>
-          </Description>
-        )}
 
         <SortBar
           hasInfoIcon={
@@ -156,12 +143,12 @@ const ExpList = () => {
                 />
                 <ItemInfo>
                   <ItemDate>{formatDate(item.date)}</ItemDate>
-                  <ItemType>{item.expType}</ItemType>
+                  <ItemType>{item.questName}</ItemType>
                 </ItemInfo>
               </ItemLeft>
               <ItemRight>
-                <ItemGrade>{item.content}</ItemGrade>
-                <ItemPoints>{item.point.toLocaleString()}</ItemPoints>
+                <ItemGrade>{item.expName}</ItemGrade>
+                <ItemPoints>{item.exp?.toLocaleString() ?? "0"}</ItemPoints>
               </ItemRight>
             </ListItem>
           ))}
@@ -309,25 +296,6 @@ const DropDownItem = styled.div`
 
   &:hover {
     background-color: ${(props) => props.theme.colors.gray2};
-  }
-`;
-
-const Description = styled.div`
-  padding: 34px 10px 0 10px;
-
-  background-color: ${(props) => props.theme.colors.white};
-
-  div {
-    background-color: ${(props) => props.theme.colors.gray};
-    border-radius: 14px;
-    padding: 16px 29px;
-    padding: 16px 15px 16px 29px;
-  }
-
-  span {
-    font-size: 16px;
-    color: #636364;
-    margin-right: 16px;
   }
 `;
 
