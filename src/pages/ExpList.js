@@ -268,11 +268,8 @@ const InfoIcon = styled.img`
 const InfoImage = styled.img`
   position: absolute;
   top: 45px;
-  left: 13px;
-  width: 250px;
+  left: 15px;
   z-index: 100;
-  border-radius: 8px;
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
 `;
 
 const SortButton = styled.button`
