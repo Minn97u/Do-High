@@ -57,7 +57,7 @@ const MypageEntry = () => {
   };
 
   const handleLVClick = () => {
-    navigate("/exp");
+    navigate("/");
   };
 
   const handleLogout = () => {
