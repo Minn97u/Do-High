@@ -9,7 +9,9 @@ import {
 } from "../api/ExpApi";
 import dropdownArrow from "../assets/dropdown.svg";
 import infoIcon from "../assets/info.svg";
-import expListInfo from "../assets/expListInfo.svg";
+import expListInfo1 from "../assets/expListInfo1.svg";
+import expListInfo2 from "../assets/expListInfo2.svg";
+import expListInfo3 from "../assets/expListInfo3.svg";
 import dayjs from "dayjs";
 
 const orderMap = {
@@ -89,6 +91,7 @@ const ExpList = () => {
 
   const handleTabClick = (tab) => {
     setSelectedTab(tab);
+    setInfoOpen(false);
   };
 
   const handleInfoClick = () => {
@@ -97,6 +100,20 @@ const ExpList = () => {
 
   const formatDate = (dateString) => {
     return dayjs(dateString).format("YYYY.MM.DD");
+  };
+
+  const getInfoImage = () => {
+    switch (selectedTab) {
+      case "직무 퀘스트":
+        return expListInfo1;
+      case "인사평가":
+        return expListInfo2;
+      case "리더 퀘스트":
+      case "전사 프로젝트":
+        return expListInfo3;
+      default:
+        return null;
+    }
   };
 
   return (
@@ -118,15 +135,11 @@ const ExpList = () => {
           ))}
         </TabBar>
 
-        <SortBar
-          hasInfoIcon={
-            selectedTab !== "인사평가" && selectedTab !== "전사 프로젝트"
-          }
-        >
-          {selectedTab !== "인사평가" && selectedTab !== "전사 프로젝트" && (
+        <SortBar hasInfoIcon={selectedTab !== "전체"}>
+          {selectedTab !== "전체" && (
             <InfoIconWrapper>
               <InfoIcon src={infoIcon} alt="정보" onClick={handleInfoClick} />
-              {infoOpen && <InfoImage src={expListInfo} alt="정보 설명" />}
+              {infoOpen && <InfoImage src={getInfoImage()} alt="정보 설명" />}
             </InfoIconWrapper>
           )}
           <SortButton onClick={handleSortClick}>
