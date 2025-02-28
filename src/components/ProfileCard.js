@@ -120,27 +120,17 @@ const ProfileCard = () => {
   useEffect(() => {
     const targetPercent =
       currentSlide === 1 ? thisYearExpPercent : lastYearExpPercent;
-
     if (currentSlide === 1 || currentSlide === 2) {
-      setAnimatedPercents((prev) => ({
-        ...prev,
-        [currentSlide]: 0,
-      }));
-
+      setAnimatedPercents((prev) => ({ ...prev, [currentSlide]: 0 }));
       let current = 0;
-
       const interval = setInterval(() => {
         current += 1;
         if (current >= targetPercent) {
           clearInterval(interval);
           current = targetPercent;
         }
-        setAnimatedPercents((prev) => ({
-          ...prev,
-          [currentSlide]: current,
-        }));
+        setAnimatedPercents((prev) => ({ ...prev, [currentSlide]: current }));
       }, 10);
-
       return () => clearInterval(interval);
     }
   }, [currentSlide, thisYearExpPercent, lastYearExpPercent]);
@@ -151,9 +141,9 @@ const ProfileCard = () => {
 
   const changeSlide = (direction) => {
     if (direction === "left") {
-      setCurrentSlide((prev) => (prev === 0 ? slides.length - 1 : prev - 1));
+      setCurrentSlide((prev) => (prev === 0 ? prev : prev - 1));
     } else if (direction === "right") {
-      setCurrentSlide((prev) => (prev === slides.length - 1 ? 0 : prev + 1));
+      setCurrentSlide((prev) => (prev === slides.length - 1 ? prev : prev + 1));
     }
   };
 
@@ -165,130 +155,174 @@ const ProfileCard = () => {
   });
 
   return (
-    <Container currentSlide={currentSlide} {...handlers}>
-      {currentSlide === 0 && (
-        <ProfileCardContainer>
-          <ProfileHeader>
-            <ProfileInfo>
-              <div>
-                <h3>{memberInfo.name}</h3>
-                <p>LV. {memberInfo.level}</p>
-              </div>
-              <p>{memberInfo.team}</p>
-              <p>{memberInfo.identificationNumber}</p>
-            </ProfileInfo>
-            <ProfileImageWrapper>
-              <ProfileImage src={memberInfo.character} alt="profile" />
-            </ProfileImageWrapper>
-          </ProfileHeader>
-          <ExperienceSection>
-            <h4>총 누적 경험치</h4>
-            <ExperienceValue>{totalExp.toLocaleString()}</ExperienceValue>
-            <ProgressBar>
-              <Progress percent={percent} />
-              <CoinWrapper percent={percent}>
-                <CoinIcon src={coinIcon} alt="coin" />
-              </CoinWrapper>
-              {percent >= 55 && percent <= 90 && (
-                <SpeechBubble
-                  percent={percent}
-                  src={speechBubble}
-                  alt="speech bubble"
+    <SliderContainer {...handlers}>
+      <SlidesWrapper currentSlide={currentSlide}>
+        <Slide>
+          <CardContent>
+            <ProfileCardContainer>
+              <ProfileHeader>
+                <ProfileInfo>
+                  <div>
+                    <h3>{memberInfo.name}</h3>
+                    <p>LV. {memberInfo.level}</p>
+                  </div>
+                  <p>{memberInfo.team}</p>
+                  <p>{memberInfo.identificationNumber}</p>
+                </ProfileInfo>
+                <ProfileImageWrapper>
+                  <ProfileImage src={memberInfo.character} alt="profile" />
+                </ProfileImageWrapper>
+              </ProfileHeader>
+              <ExperienceSection>
+                <h4>총 누적 경험치</h4>
+                <ExperienceValue>{totalExp.toLocaleString()}</ExperienceValue>
+                <ProgressBar>
+                  <Progress percent={percent} />
+                  <CoinWrapper percent={percent}>
+                    <CoinIcon src={coinIcon} alt="coin" />
+                  </CoinWrapper>
+                  {percent >= 55 && percent <= 90 && (
+                    <SpeechBubble
+                      percent={percent}
+                      src={speechBubble}
+                      alt="speech bubble"
+                    />
+                  )}
+                </ProgressBar>
+                <p>
+                  다음 {nextLevel}레벨까지 {remainingExp.toLocaleString()} 남음
+                </p>
+              </ExperienceSection>
+            </ProfileCardContainer>
+            <Carousel>
+              {slides.map((_, index) => (
+                <Dot
+                  key={index}
+                  active={index === currentSlide}
+                  onClick={() => setCurrentSlide(index)}
                 />
-              )}
-            </ProgressBar>
-            <p>
-              다음 {nextLevel}레벨까지 {remainingExp.toLocaleString()} 남음
-            </p>
-          </ExperienceSection>
-        </ProfileCardContainer>
-      )}
-      {currentSlide === 1 && (
-        <ProfileCardContainer>
-          <SecondThirdSlide>
-            <Header>
-              <Title>
-                {thisYearExpTotal.toLocaleString()}do를 달성하셨어요!
-              </Title>
-              <InfoIconWrapper onClick={handleInfoClick}>
-                <InfoIcon src={info} alt="info" />
-                {tooltipVisible && (
-                  <Tooltip>
-                    <img src={speechBubble2} alt="speech bubble" />
-                  </Tooltip>
-                )}
-              </InfoIconWrapper>
-            </Header>
-            <ProgressContainer>
-              <CircularProgressbar
-                value={animatedPercents[1]}
-                styles={buildStyles({
-                  rotation: 0,
-                  strokeLinecap: "round",
-                  trailColor: "#E6E6E6",
-                  pathColor: "#FC5833",
-                })}
-              />
-              <ProgressTextContainer>
-                <SlideText>올해 획득 경험치</SlideText>
-                <Percentage>{thisYearExpPercent}%</Percentage>
-              </ProgressTextContainer>
-            </ProgressContainer>
-          </SecondThirdSlide>
-        </ProfileCardContainer>
-      )}
-      {currentSlide === 2 && (
-        <ProfileCardContainer>
-          <SecondThirdSlide>
-            <Header>
-              <Title>
-                {lastYearExpTotal.toLocaleString()}do를 달성하셨어요!
-              </Title>
-              <InfoIconWrapper onClick={handleInfoClick}>
-                <InfoIcon src={info} alt="info" />
-                {tooltipVisible && (
-                  <Tooltip>
-                    <img src={speechBubble3} alt="speech bubble" />
-                  </Tooltip>
-                )}
-              </InfoIconWrapper>
-            </Header>
-            <ProgressContainer>
-              <CircularProgressbar
-                value={animatedPercents[2]}
-                styles={buildStyles({
-                  rotation: 0,
-                  strokeLinecap: "round",
-                  trailColor: "#E6E6E6",
-                  pathColor: "#FC5833",
-                })}
-              />
-              <ProgressTextContainer>
-                <SlideText>작년 누적 경험치</SlideText>
-                <Percentage>{lastYearExpPercent}%</Percentage>
-              </ProgressTextContainer>
-            </ProgressContainer>
-          </SecondThirdSlide>
-        </ProfileCardContainer>
-      )}
+              ))}
+            </Carousel>
+          </CardContent>
+        </Slide>
 
-      <Carousel>
-        {slides.map((_, index) => (
-          <Dot
-            key={index}
-            active={index === currentSlide}
-            onClick={() => setCurrentSlide(index)}
-          />
-        ))}
-      </Carousel>
-    </Container>
+        <Slide>
+          <CardContent>
+            <ProfileCardContainer>
+              <SecondThirdSlide>
+                <Header>
+                  <Title>
+                    {thisYearExpTotal.toLocaleString()}do를 달성하셨어요!
+                  </Title>
+                  <InfoIconWrapper onClick={handleInfoClick}>
+                    <InfoIcon src={info} alt="info" />
+                    {tooltipVisible && (
+                      <Tooltip>
+                        <img src={speechBubble2} alt="speech bubble" />
+                      </Tooltip>
+                    )}
+                  </InfoIconWrapper>
+                </Header>
+                <ProgressContainer>
+                  <CircularProgressbar
+                    value={animatedPercents[1]}
+                    styles={buildStyles({
+                      rotation: 0,
+                      strokeLinecap: "round",
+                      trailColor: "#E6E6E6",
+                      pathColor: "#FC5833",
+                    })}
+                  />
+                  <ProgressTextContainer>
+                    <SlideText>올해 획득 경험치</SlideText>
+                    <Percentage>{thisYearExpPercent}%</Percentage>
+                  </ProgressTextContainer>
+                </ProgressContainer>
+              </SecondThirdSlide>
+            </ProfileCardContainer>
+            <Carousel>
+              {slides.map((_, index) => (
+                <Dot
+                  key={index}
+                  active={index === currentSlide}
+                  onClick={() => setCurrentSlide(index)}
+                />
+              ))}
+            </Carousel>
+          </CardContent>
+        </Slide>
+
+        <Slide>
+          <CardContent>
+            <ProfileCardContainer>
+              <SecondThirdSlide>
+                <Header>
+                  <Title>
+                    {lastYearExpTotal.toLocaleString()}do를 달성하셨어요!
+                  </Title>
+                  <InfoIconWrapper onClick={handleInfoClick}>
+                    <InfoIcon src={info} alt="info" />
+                    {tooltipVisible && (
+                      <Tooltip>
+                        <img src={speechBubble3} alt="speech bubble" />
+                      </Tooltip>
+                    )}
+                  </InfoIconWrapper>
+                </Header>
+                <ProgressContainer>
+                  <CircularProgressbar
+                    value={animatedPercents[2]}
+                    styles={buildStyles({
+                      rotation: 0,
+                      strokeLinecap: "round",
+                      trailColor: "#E6E6E6",
+                      pathColor: "#FC5833",
+                    })}
+                  />
+                  <ProgressTextContainer>
+                    <SlideText>작년 누적 경험치</SlideText>
+                    <Percentage>{lastYearExpPercent}%</Percentage>
+                  </ProgressTextContainer>
+                </ProgressContainer>
+              </SecondThirdSlide>
+            </ProfileCardContainer>
+            <Carousel>
+              {slides.map((_, index) => (
+                <Dot
+                  key={index}
+                  active={index === currentSlide}
+                  onClick={() => setCurrentSlide(index)}
+                />
+              ))}
+            </Carousel>
+          </CardContent>
+        </Slide>
+      </SlidesWrapper>
+    </SliderContainer>
   );
 };
 
 export default ProfileCard;
 
-const Container = styled.div`
+const SliderContainer = styled.div`
+  overflow: hidden;
   margin-bottom: 35px;
+`;
+
+const SlidesWrapper = styled.div`
+  display: flex;
+  transition: transform 0.5s ease;
+  transform: translateX(-${(props) => props.currentSlide * 100}%);
+`;
+
+const Slide = styled.div`
+  min-width: 100%;
+  box-sizing: border-box;
+`;
+
+const CardContent = styled.div`
+  display: flex;
+  flex-direction: column;
 `;
 
 const ProfileCardContainer = styled.div`
@@ -398,12 +432,8 @@ const CoinIcon = styled.img`
 `;
 
 const fadeIn = keyframes`
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
+  from { opacity: 0; }
+  to { opacity: 1; }
 `;
 
 const SpeechBubble = styled.img`

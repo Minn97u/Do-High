@@ -2,11 +2,13 @@ import React from "react";
 import NavBar from "./NavBar";
 import styled from "styled-components";
 
-const Layout = ({ children, hasNavBar }) => {
+const Layout = ({ children }) => {
+  const isAdmin = localStorage.getItem("isAdmin") === "true";
+
   return (
     <Wrapper>
-      <Content>{children}</Content>
-      {hasNavBar && <NavBar />}
+      <Content isAdmin={isAdmin}>{children}</Content>
+      {!isAdmin && <NavBar />}
     </Wrapper>
   );
 };
@@ -23,5 +25,5 @@ const Wrapper = styled.div`
 
 const Content = styled.main`
   flex: 1;
-  padding-bottom: 70px;
+  padding-bottom: ${({ isAdmin }) => (isAdmin ? "0" : "70px")};
 `;

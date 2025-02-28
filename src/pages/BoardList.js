@@ -42,32 +42,34 @@ const BoardList = () => {
   };
 
   return (
-    <Container>
-      <Header>
-        <Title>게시글 목록</Title>
-        {isAdmin && (
-          <BackButton onClick={() => navigate("/admin")}>
-            <img src={backBtn} alt="뒤로가기" />
-          </BackButton>
-        )}
-      </Header>
+    <Container isAdmin={isAdmin}>
+      <HeaderAndSortWrapper>
+        <Header>
+          <Title>게시글 목록</Title>
+          {isAdmin && (
+            <BackButton onClick={() => navigate("/admin")}>
+              <img src={backBtn} alt="뒤로가기" />
+            </BackButton>
+          )}
+        </Header>
 
-      <SortBar>
-        <SortButton onClick={handleSortClick}>
-          <SortText>{sortOption}</SortText>
-          <SortIcon src={dropdownArrow} alt="정렬" />
-        </SortButton>
-        {sortOpen && (
-          <DropDownMenu>
-            <DropDownItem onClick={() => handleSortSelect("최신순")}>
-              최신순
-            </DropDownItem>
-            <DropDownItem onClick={() => handleSortSelect("오래된순")}>
-              오래된순
-            </DropDownItem>
-          </DropDownMenu>
-        )}
-      </SortBar>
+        <SortBar>
+          <SortButton onClick={handleSortClick}>
+            <SortText>{sortOption}</SortText>
+            <SortIcon src={dropdownArrow} alt="정렬" />
+          </SortButton>
+          {sortOpen && (
+            <DropDownMenu>
+              <DropDownItem onClick={() => handleSortSelect("최신순")}>
+                최신순
+              </DropDownItem>
+              <DropDownItem onClick={() => handleSortSelect("오래된순")}>
+                오래된순
+              </DropDownItem>
+            </DropDownMenu>
+          )}
+        </SortBar>
+      </HeaderAndSortWrapper>
 
       <ListContainer>
         {posts.map((post) => (
@@ -97,7 +99,14 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-  height: ${(props) => (props.isAdmin ? "100vh" : "100vh")};
+  height: ${(props) => (props.isAdmin ? "100vh" : "93vh")};
+  background-color: ${(props) => props.theme.colors.gray};
+`;
+
+const HeaderAndSortWrapper = styled.div`
+  position: sticky;
+  top: 0;
+  z-index: 999;
   background-color: ${(props) => props.theme.colors.gray};
 `;
 
@@ -178,7 +187,7 @@ const DropDownItem = styled.div`
 
 const ListContainer = styled.div`
   width: 100%;
-  height: 100%;
+  flex: 1;
   overflow-y: scroll;
   scrollbar-width: none;
   -ms-overflow-style: none;
