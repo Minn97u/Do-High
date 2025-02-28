@@ -86,7 +86,7 @@ const ExperienceSection = () => {
         <SectionTitle>최근에 {memberName}님이 받은 do예요!</SectionTitle>
         <ArrowIcon src={backBtn} alt="More" onClick={handleExpClick} />
       </SectionHeader>
-      {recentExp && (
+      {recentExp ? (
         <RecentDoCard onClick={handleExpClick}>
           <CardContent>
             <CardDate>{formatDate(recentExp.date)}</CardDate>
@@ -100,38 +100,44 @@ const ExperienceSection = () => {
             {recentExp.exp.toLocaleString()}
           </CardValue>
         </RecentDoCard>
+      ) : (
+        <EmptyMessage>최근 경험치가 없습니다.</EmptyMessage>
       )}
 
       <SectionHeader onClick={handleQuestClick}>
         <SectionTitle>{memberName}님이 수행한 퀘스트예요!</SectionTitle>
         <ArrowIcon src={backBtn} alt="More" onClick={handleQuestClick} />
       </SectionHeader>
-      <QuestList>
-        {quests.map((quest, index) => {
-          const coinType = quest.coin || "MAX";
-          return (
-            <QuestCard key={index} onClick={handleQuestClick}>
-              <QuestTitle>{quest.expName}</QuestTitle>
-              <DottedLine />
-              <QuestIcon
-                src={coinMap[coinType] || coinMap["MAX"]}
-                alt={`${coinType} Coin`}
-              />
-              <QuestSubtitle
-                color={
-                  coinType === "MED"
-                    ? "#BBC5CE"
-                    : coinType === "MAX"
-                    ? "#FBB62C"
-                    : "#000"
-                }
-              >
-                {quest.questName}
-              </QuestSubtitle>
-            </QuestCard>
-          );
-        })}
-      </QuestList>
+      {quests && quests.length > 0 ? (
+        <QuestList>
+          {quests.map((quest, index) => {
+            const coinType = quest.coin || "MAX";
+            return (
+              <QuestCard key={index} onClick={handleQuestClick}>
+                <QuestTitle>{quest.expName}</QuestTitle>
+                <DottedLine />
+                <QuestIcon
+                  src={coinMap[coinType] || coinMap["MAX"]}
+                  alt={`${coinType} Coin`}
+                />
+                <QuestSubtitle
+                  color={
+                    coinType === "MED"
+                      ? "#BBC5CE"
+                      : coinType === "MAX"
+                      ? "#FBB62C"
+                      : "#000"
+                  }
+                >
+                  {quest.questName}
+                </QuestSubtitle>
+              </QuestCard>
+            );
+          })}
+        </QuestList>
+      ) : (
+        <EmptyMessage>수행한 퀘스트가 없습니다.</EmptyMessage>
+      )}
     </ExperienceSectionContainer>
   );
 };
@@ -242,4 +248,11 @@ const QuestSubtitle = styled.div`
   width: 90%;
   margin: auto;
   color: ${(props) => props.color};
+`;
+
+const EmptyMessage = styled.div`
+  text-align: center;
+  margin: 20px 0;
+  ${(props) => props.theme.fonts.medium};
+  color: ${(props) => props.theme.colors.gray2};
 `;
