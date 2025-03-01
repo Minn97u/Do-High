@@ -75,7 +75,7 @@ const Login = () => {
             setPassword("");
           }}
         >
-          일반 사원
+          두핸더
         </Tab>
         <Tab
           active={userType === "admin"}
@@ -85,7 +85,7 @@ const Login = () => {
             setPassword("");
           }}
         >
-          관리자
+          두하이관리자
         </Tab>
       </TabContainer>
       <InputContainer>
