@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import backBtn from "../assets/backBtn.svg";
-import profile from "../assets/profile.svg";
+import defaultProfile from "../assets/profile.svg";
 import plus from "../assets/plus.svg";
 import check from "../assets/check.svg";
 import dropdownArrow from "../assets/dropdown.svg";
@@ -24,7 +24,7 @@ const MyPage = () => {
       try {
         const data = await getMemberInfo();
         setMemberInfo(data.success);
-        setSelectedCharacter(data.success.character || null);
+        setSelectedCharacter(data.success.profile || defaultProfile);
       } catch (error) {
         console.error("멤버 정보 불러오기 오류:", error.message);
       }
@@ -62,14 +62,15 @@ const MyPage = () => {
       return;
     }
 
+    setMemberInfo((prev) => ({
+      ...prev,
+      profile: selectedCharacter,
+    }));
+
+    setPopupVisible(false);
+
     try {
       await updateSelectedProfile(selectedCharacter);
-      setPopupVisible(false);
-
-      setMemberInfo((prev) => ({
-        ...prev,
-        character: selectedCharacter,
-      }));
     } catch (error) {
       console.error("프로필 저장 오류:", error.message);
       alert("프로필 저장에 실패했습니다.");
@@ -90,7 +91,10 @@ const MyPage = () => {
       </Header>
       <Content>
         <ProfileImageWrapper>
-          <ProfileImage src={memberInfo?.profile || profile} alt="profile" />
+          <ProfileImage
+            src={memberInfo?.profile || defaultProfile}
+            alt="profile"
+          />
           <EditButton onClick={handleEditButtonClick}>
             <img src={plus} alt="plus" />
           </EditButton>
