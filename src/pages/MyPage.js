@@ -36,7 +36,7 @@ const MyPage = () => {
     const fetchAvailableProfiles = async () => {
       try {
         const data = await getAvailableProfiles();
-        setAvailableProfiles(data.success || []);
+        setAvailableProfiles(data || []);
       } catch (error) {
         console.error("프로필 목록 불러오기 오류:", error.message);
       }
@@ -66,9 +66,10 @@ const MyPage = () => {
       await updateSelectedProfile(selectedCharacter);
       setPopupVisible(false);
 
-      const updatedMemberInfo = await getMemberInfo();
-      setMemberInfo(updatedMemberInfo.success);
-      setSelectedCharacter(updatedMemberInfo.success.character || profile);
+      setMemberInfo((prev) => ({
+        ...prev,
+        character: selectedCharacter,
+      }));
     } catch (error) {
       console.error("프로필 저장 오류:", error.message);
       alert("프로필 저장에 실패했습니다.");
