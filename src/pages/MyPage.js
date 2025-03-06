@@ -89,7 +89,7 @@ const MyPage = () => {
       </Header>
       <Content>
         <ProfileImageWrapper>
-          <ProfileImage src={memberInfo?.character || profile} alt="profile" />
+          <ProfileImage src={memberInfo?.profile || profile} alt="profile" />
           <EditButton onClick={handleEditButtonClick}>
             <img src={plus} alt="plus" />
           </EditButton>

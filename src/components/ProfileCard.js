@@ -101,7 +101,7 @@ const ProfileCard = () => {
             level: response.success.level,
             team: response.success.team,
             identificationNumber: response.success.identificationNumber,
-            character: response.success.character || profile,
+            character: response.success.profile || profile,
           });
         } else {
           console.error("멤버 정보 조회 오류:", response.error.message);
