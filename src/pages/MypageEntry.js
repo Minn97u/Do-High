@@ -32,7 +32,7 @@ const MypageEntry = () => {
             identificationNumber: memberResponse.success.identificationNumber,
             team: memberResponse.success.team,
             level: memberResponse.success.level,
-            character: memberResponse.success.character || profile,
+            character: memberResponse.success.profile || profile,
           });
         } else {
           console.error("멤버 정보 조회 오류:", memberResponse.error.message);

@@ -3,88 +3,44 @@ import styled from "styled-components";
 import infoIcon from "../assets/info.svg";
 import expListInfo from "../assets/questInfo.svg";
 import FlippableCard from "../components/FlippableCard";
+import silverCoin from "../assets/coin/SilverDo.svg";
+
+const monthlyActivities = [
+  { month: 1, text: "생산성 증진", doPoint: 100 },
+  { month: 2, text: "생산성 증진", doPoint: 40 },
+  { month: 3, text: "생산성 증진", doPoint: 40 },
+  { month: 3, text: "생산성 증진", doPoint: 40 },
+  { month: 3, text: "생산성 증진", doPoint: 40 },
+  { month: 3, text: "생산성 증진", doPoint: 40 },
+];
 
 const Quest = () => {
   const cardContainerRef = useRef(null);
-  // const monthContainerRef = useRef(null);
   const [infoOpen, setInfoOpen] = useState(false);
-
   const [selectedYear, setSelectedYear] = useState("2025년");
-  // const [selectedMonth, setSelectedMonth] = useState(1);
 
-  const questData = {
-    "직무 퀘스트": {
-      "2024년": {
-        id: 1,
-        status: "Max 달성",
-        title: "2024년 월특근",
-        description: "음성 1센터 1",
-        maxPoints: "연 최대 1,000 do 획득 가능",
-        earnedPoints: "총 누적 800 do 획득",
-      },
-      "2025년": {
-        id: 2,
-        status: "Med 달성",
-        title: "2025년 월특근",
-        description: "음성 1센터 2",
-        maxPoints: "연 최대 1,200 do 획득 가능",
-        earnedPoints: "총 누적 900 do 획득",
-      },
-      "2026년": {
-        id: 3,
-        status: "Max 달성",
-        title: "2026년 월특근",
-        description: "음성 1센터 3",
-        maxPoints: "연 최대 1,500 do 획득 가능",
-        earnedPoints: "총 누적 1,200 do 획득",
-      },
-    },
+  const dummyQuest = {
+    year: "2025년",
+    title: "2025 직무 퀘스트",
+    description: "2025년 직무 퀘스트 전체 요약",
+    coin: "med",
+    status: "Med 달성",
+    exp: 2200,
   };
 
-  const years = Object.keys(questData["직무 퀘스트"]);
-
-  const handleInfoClick = () => {
-    setInfoOpen((prev) => !prev);
+  const handleYearChange = () => {
+    setSelectedYear((prev) => (prev === "2025년" ? "2024년" : "2025년"));
   };
-
-  const handleYearChange = (direction) => {
-    const years = Object.keys(questData["직무 퀘스트"]);
-    const currentIndex = years.indexOf(selectedYear);
-    const newIndex = (currentIndex + direction + years.length) % years.length;
-    setSelectedYear(years[newIndex]);
-
-    if (cardContainerRef.current) {
-      const cardWidth = cardContainerRef.current.firstChild.offsetWidth;
-      cardContainerRef.current.scrollTo({
-        left: cardWidth * newIndex,
-        behavior: "smooth",
-      });
-    }
-  };
-
-  // const handleMonthChange = (direction) => {
-  //   const newMonth = ((selectedMonth + direction + 12 - 1) % 12) + 1; // 월 범위: 1 ~ 12
-  //   setSelectedMonth(newMonth);
-
-  //   if (monthContainerRef.current) {
-  //     const monthWidth = monthContainerRef.current.firstChild.offsetWidth;
-  //     monthContainerRef.current.scrollTo({
-  //       left: monthWidth * (newMonth - 1),
-  //       behavior: "smooth",
-  //     });
-  //   }
-  // };
 
   useEffect(() => {
-    const index = years.indexOf(selectedYear);
-    if (cardContainerRef.current) {
+    if (cardContainerRef.current && cardContainerRef.current.firstChild) {
       const cardWidth = cardContainerRef.current.firstChild.offsetWidth;
       cardContainerRef.current.scrollTo({
-        left: cardWidth * index,
+        left: cardWidth,
         behavior: "smooth",
       });
     }
-  }, [selectedYear, years]);
+  }, [selectedYear]);
 
   return (
     <Container>
@@ -94,53 +50,40 @@ const Quest = () => {
 
       <SubContainer>
         <Selector>
-          <Arrow onClick={() => handleYearChange(-1)}>{"<"}</Arrow>
+          <Arrow onClick={handleYearChange}>{"<"}</Arrow>
           <Year>{selectedYear}</Year>
-          <Arrow onClick={() => handleYearChange(1)}>{">"}</Arrow>
+          <Arrow onClick={handleYearChange}>{">"}</Arrow>
           <InfoIconWrapper>
-            <InfoIcon src={infoIcon} alt="정보" onClick={handleInfoClick} />
+            <InfoIcon
+              src={infoIcon}
+              alt="정보"
+              onClick={() => setInfoOpen((prev) => !prev)}
+            />
             {infoOpen && <InfoImage src={expListInfo} alt="정보 설명" />}
           </InfoIconWrapper>
         </Selector>
 
         <CardContainer ref={cardContainerRef}>
-          {Object.entries(questData["직무 퀘스트"]).map(([year, quest]) => (
-            <CardWrapper key={quest.id}>
-              <FlippableCard quest={quest} />
-            </CardWrapper>
-          ))}
+          <CardWrapper>
+            <FlippableCard quest={dummyQuest} />
+          </CardWrapper>
         </CardContainer>
 
-        <CriteriaContainer>
-          Max 기준: 4회 이상, 월 100 do 획득
-          <br />
-          Med 기준: 2회 이상, 월 50 do 획득
-        </CriteriaContainer>
-
-        {/* <Selector>
-          <Arrow onClick={() => handleMonthChange(-1)}>{"<"}</Arrow>
-          <Year>{selectedMonth}월</Year>
-          <Arrow onClick={() => handleMonthChange(1)}>{">"}</Arrow>
-        </Selector>
-        
-        <CardContainer ref={monthContainerRef}>
-          {Array.from({ length: 12 }, (_, index) => (
-            <CardWrapper key={index}>
-              <FlippableCardWithMonth
-                quest={{
-                  ...questData["직무 퀘스트"][selectedYear],
-                  title: `${index + 1}월 퀘스트`,
-                }}
-              />
-            </CardWrapper>
-          ))}
-        </CardContainer>
-        
-        <CriteriaContainer>
-          Max 기준: 업무프로세스 개선 리드자, 월 67 do 획득
-          <br />
-          Med 기준: 업무프로세스 개선 참여자, 월 33 do 획득
-        </CriteriaContainer> */}
+        <BottomContainer>
+          <ActivityList>
+            {monthlyActivities.map((item) => (
+              <ActivityItem key={item.month}>
+                <CoinIcon src={silverCoin} alt="coin" />
+                <div>
+                  <ActivityTitle>
+                    {item.month}월 {item.text}
+                  </ActivityTitle>
+                  <ActivityDo>{item.doPoint}do 획득</ActivityDo>
+                </div>
+              </ActivityItem>
+            ))}
+          </ActivityList>
+        </BottomContainer>
       </SubContainer>
     </Container>
   );
@@ -171,18 +114,14 @@ const Title = styled.h1`
   flex: 1;
 `;
 
-const SubContainer = styled.div`
-  overflow-y: scroll;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-`;
+const SubContainer = styled.div``;
 
 const Selector = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-top: 36px;
-  margin-bottom: 8px;
+  margin-top: 38px;
+  margin-bottom: 22px;
   position: relative;
 `;
 
@@ -233,7 +172,6 @@ const CardContainer = styled.div`
   padding: 0 40px;
   scroll-snap-type: x mandatory;
   -webkit-overflow-scrolling: touch;
-
   &::-webkit-scrollbar {
     display: none;
   }
@@ -245,9 +183,38 @@ const CardWrapper = styled.div`
   scroll-snap-align: center;
 `;
 
-const CriteriaContainer = styled.div`
+const BottomContainer = styled.div`
+  margin-top: 31px;
+  padding: 0 28px;
+  border-radius: 10px;
+  max-height: 420px;
+  overflow-y: auto;
+`;
+
+const ActivityList = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
+const ActivityItem = styled.div`
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid #eee;
+  padding: 16px 0;
+`;
+
+const CoinIcon = styled.img`
+  width: 68px;
+  height: 68px;
+  margin-right: 31px;
+`;
+
+const ActivityTitle = styled.div`
+  ${(props) => props.theme.fonts.semiBold};
+  margin-bottom: 4px;
+`;
+
+const ActivityDo = styled.div`
   ${(props) => props.theme.fonts.medium};
-  color: ${(props) => props.theme.colors.gray2};
-  padding: 0 34px;
-  margin-bottom: 10px;
+  color: ${(props) => props.theme.colors.gray3};
 `;

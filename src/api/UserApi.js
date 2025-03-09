@@ -14,7 +14,7 @@ export const getMemberInfo = async () => {
 // 프로필 이미지 목록 조회
 export const getAvailableProfiles = async () => {
   try {
-    const response = await Axios.get(`/member/profile`);
+    const response = await Axios.get(`/profile/list`);
     return response.data;
   } catch (error) {
     console.error("프로필 이미지 목록 조회 오류:", error.message);
