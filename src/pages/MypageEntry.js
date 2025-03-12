@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { getMemberInfo } from "../api/UserApi";
 import { getExpStatus } from "../api/ExpApi";
 import LogoutModal from "../components/Modal";
+import { Axios } from "../api/Axios";
 
 const MypageEntry = () => {
   const [memberInfo, setMemberInfo] = useState({
@@ -60,10 +61,20 @@ const MypageEntry = () => {
     navigate("/main");
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("isAdmin");
-    navigate("/auth/login");
+  const handleLogout = async () => {
+    try {
+      const response = await Axios.get("/member/logout");
+
+      if (response.data.responseType === "SUCCESS") {
+        localStorage.removeItem("accessToken");
+        localStorage.removeItem("isAdmin");
+        navigate("/auth/login", { replace: true });
+      } else {
+        console.error("로그아웃 실패:", response.data.error.message);
+      }
+    } catch (error) {
+      console.error("로그아웃 요청 오류:", error);
+    }
   };
 
   return (
@@ -113,8 +124,8 @@ const MypageEntry = () => {
       <LogoutModal
         isOpen={modalOpen}
         onClose={() => setModalOpen(false)}
-        onConfirm={() => {
-          handleLogout();
+        onConfirm={async () => {
+          await handleLogout();
           setModalOpen(false);
         }}
         title="로그아웃 하시겠습니까?"

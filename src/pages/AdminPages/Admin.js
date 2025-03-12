@@ -2,15 +2,27 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import LogoutModal from "../../components/Modal";
+import { Axios } from "../../api/Axios";
 
 const Admin = () => {
   const navigate = useNavigate();
   const [modalOpen, setModalOpen] = useState(false);
 
-  const handleLogout = () => {
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("isAdmin");
-    navigate("/auth/login");
+  const handleLogout = async () => {
+    try {
+      const response = await Axios.get("/member/logout");
+
+      if (response.data.responseType === "SUCCESS") {
+        localStorage.removeItem("accessToken");
+        localStorage.removeItem("isAdmin");
+
+        navigate("/auth/login", { replace: true });
+      } else {
+        console.error("로그아웃 실패:", response.data.error.message);
+      }
+    } catch (error) {
+      console.error("로그아웃 요청 오류:", error);
+    }
   };
 
   return (
