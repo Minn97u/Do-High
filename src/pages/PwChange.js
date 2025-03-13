@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from "react";
-import styled from "styled-components";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import backBtn from "../assets/backBtn.svg";
 import { IoEye, IoEyeOff } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
+import styled from "styled-components";
 import { Axios } from "../api/Axios";
+import backBtn from "../assets/backBtn.svg";
 
 const PwChange = () => {
   const navigate = useNavigate();

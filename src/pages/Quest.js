@@ -1,9 +1,9 @@
-import React, { useState, useRef, useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
+import silverCoin from "../assets/coin/SilverDo.svg";
 import infoIcon from "../assets/info.svg";
 import expListInfo from "../assets/questInfo.svg";
 import FlippableCard from "../components/FlippableCard";
-import silverCoin from "../assets/coin/SilverDo.svg";
 
 const monthlyActivities = [
   { month: 1, text: "생산성 증진", doPoint: 100 },

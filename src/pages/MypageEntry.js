@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import profile from "../assets/profile.svg";
+import { getExpStatus } from "../api/ExpApi";
+import { getMemberInfo } from "../api/UserApi";
 import coin from "../assets/coin.svg";
 import dropdownArrow from "../assets/dropdown.svg";
 import notification from "../assets/notification.svg";
-import { useNavigate } from "react-router-dom";
-import { getMemberInfo } from "../api/UserApi";
-import { getExpStatus } from "../api/ExpApi";
+import profile from "../assets/profile.svg";
 import LogoutModal from "../components/Modal";
 
 const MypageEntry = () => {

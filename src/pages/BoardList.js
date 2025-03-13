@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from "react";
+import dayjs from "dayjs";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import dropdownArrow from "../assets/dropdown.svg";
-import writeIcon from "../assets/write.svg";
 import { getPosts } from "../api/BoardApi";
 import backBtn from "../assets/backBtn.svg";
-import dayjs from "dayjs";
+import dropdownArrow from "../assets/dropdown.svg";
+import writeIcon from "../assets/write.svg";
 
 const BoardList = () => {
   const navigate = useNavigate();

@@ -1,11 +1,10 @@
 // import React, { useEffect, useState } from "react";
-import React from "react";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import logo from "../assets/logo.png";
 import notification from "../assets/notification.svg";
-import ProfileCard from "../components/ProfileCard";
 import ExperienceSection from "../components/ExperienceSection";
-import { useNavigate } from "react-router-dom";
+import ProfileCard from "../components/ProfileCard";
 
 const Main = () => {
   const navigate = useNavigate();

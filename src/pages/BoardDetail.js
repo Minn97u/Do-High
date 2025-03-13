@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from "react";
+import dayjs from "dayjs";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
+import { deletePostById, getPostById } from "../api/BoardApi";
 import backBtn from "../assets/backBtn.svg";
 import menu from "../assets/menu.svg";
-import dayjs from "dayjs";
-import { getPostById, deletePostById } from "../api/BoardApi";
 import ConfirmModal from "../components/Modal";
 
 const BoardDetail = () => {

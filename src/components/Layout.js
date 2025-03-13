@@ -1,6 +1,5 @@
-import React from "react";
-import NavBar from "./NavBar";
 import styled from "styled-components";
+import NavBar from "./NavBar";
 
 const Layout = ({ children }) => {
   const isAdmin = localStorage.getItem("isAdmin") === "true";

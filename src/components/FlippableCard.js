@@ -1,9 +1,9 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import styled from "styled-components";
 import coinIcon from "../assets/coin.svg";
+import bronzeCoin from "../assets/coin/BronzeDo.svg";
 import goldCoin from "../assets/coin/GoldDo.svg";
 import silverCoin from "../assets/coin/SilverDo.svg";
-import bronzeCoin from "../assets/coin/BronzeDo.svg";
 
 const FlippableCard = ({ quest }) => {
   const [isFlipped, setIsFlipped] = useState(false);

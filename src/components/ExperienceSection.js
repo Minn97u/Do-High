@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from "react";
-import styled from "styled-components";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import styled from "styled-components";
 import { getRecentExp } from "../api/ExpApi";
-import { getMemberInfo } from "../api/UserApi";
 import { getQuests } from "../api/QuestApi";
+import { getMemberInfo } from "../api/UserApi";
 import backBtn from "../assets/mainArrow.svg";
 
 const coinMap = {

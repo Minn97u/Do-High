@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import styled from "styled-components";
 import silverCoin from "../assets/coin/SilverDo.svg";
 import NoCoin from "../assets/coin/noCoin.svg";

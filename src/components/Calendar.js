@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import styled from "styled-components";
 
 const Calendar = ({ selectedDate, setSelectedDate }) => {
@@ -55,7 +55,7 @@ const Calendar = ({ selectedDate, setSelectedDate }) => {
             isSelected={
               day &&
               `${currentYear}-${String(currentMonth).padStart(2, "0")}-${String(
-                day,
+                day
               ).padStart(2, "0")}` === selectedDate
             }
             onClick={() =>
@@ -63,8 +63,8 @@ const Calendar = ({ selectedDate, setSelectedDate }) => {
               setSelectedDate(
                 `${currentYear}-${String(currentMonth).padStart(
                   2,
-                  "0",
-                )}-${String(day).padStart(2, "0")}`,
+                  "0"
+                )}-${String(day).padStart(2, "0")}`
               )
             }
           >

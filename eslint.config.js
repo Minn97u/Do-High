@@ -31,6 +31,8 @@ export default [
       },
     },
     rules: {
+      "react/jsx-uses-vars": "error", // JSX 내부에서 사용되는 변수도 사용된 것으로 인식
+      "react/jsx-uses-react": "off",
       "react/react-in-jsx-scope": "off", // React 17+에서는 필요 없음
       "no-console": "off", // console 사용 가능하도록 변경
       "no-unused-vars": "warn", // 사용되지 않는 변수는 경고만 표시 (오류 아님)
