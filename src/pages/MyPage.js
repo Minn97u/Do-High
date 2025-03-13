@@ -1,16 +1,16 @@
-import React, { useState, useEffect } from "react";
-import styled from "styled-components";
-import backBtn from "../assets/backBtn.svg";
-import defaultProfile from "../assets/profile.svg";
-import plus from "../assets/plus.svg";
-import check from "../assets/check.svg";
-import dropdownArrow from "../assets/dropdown.svg";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import styled from "styled-components";
 import {
-  getMemberInfo,
   getAvailableProfiles,
+  getMemberInfo,
   updateSelectedProfile,
 } from "../api/UserApi";
+import backBtn from "../assets/backBtn.svg";
+import check from "../assets/check.svg";
+import dropdownArrow from "../assets/dropdown.svg";
+import plus from "../assets/plus.svg";
+import defaultProfile from "../assets/profile.svg";
 
 const MyPage = () => {
   const navigate = useNavigate();

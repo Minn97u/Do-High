@@ -1,16 +1,16 @@
-import React, { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
+import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
+import "react-circular-progressbar/dist/styles.css";
+import { useSwipeable } from "react-swipeable";
 import styled, { keyframes } from "styled-components";
-import profile from "../assets/profile.svg";
+import { Axios } from "../api/Axios";
+import { getMemberInfo } from "../api/UserApi";
 import coinIcon from "../assets/coin.svg";
+import info from "../assets/info.svg";
+import profile from "../assets/profile.svg";
 import speechBubble from "../assets/speechBubble.svg";
 import speechBubble2 from "../assets/speechBubble2.svg";
 import speechBubble3 from "../assets/speechBubble3.svg";
-import info from "../assets/info.svg";
-import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
-import "react-circular-progressbar/dist/styles.css";
-import { Axios } from "../api/Axios";
-import { getMemberInfo } from "../api/UserApi";
-import { useSwipeable } from "react-swipeable";
 
 const ProfileCard = () => {
   const [currentSlide, setCurrentSlide] = useState(0);

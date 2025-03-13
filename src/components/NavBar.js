@@ -1,4 +1,4 @@
-import React from "react";
+
 import { Link, useLocation } from "react-router-dom";
 import styled from "styled-components";
 import homeIcon from "../assets/NavBar/home.svg";
@@ -31,7 +31,7 @@ const NavBar = () => {
           {navItems.map((item) => {
             const isActive = item.activePaths
               ? item.activePaths.some((path) =>
-                  location.pathname.startsWith(path)
+                  location.pathname.startsWith(path),
                 )
               : location.pathname.startsWith(item.path);
 

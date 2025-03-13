@@ -17,7 +17,7 @@ Axios.interceptors.request.use(
   },
   (error) => {
     return Promise.reject(error);
-  }
+  },
 );
 
 Axios.interceptors.response.use(
@@ -28,5 +28,5 @@ Axios.interceptors.response.use(
       window.location.href = "/auth/login";
     }
     return Promise.reject(error);
-  }
+  },
 );

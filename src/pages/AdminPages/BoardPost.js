@@ -1,8 +1,8 @@
-import React, { useState } from "react";
-import styled from "styled-components";
-import backBtn from "../../assets/backBtn.svg";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import styled from "styled-components";
 import { createPost } from "../../api/BoardApi";
+import backBtn from "../../assets/backBtn.svg";
 
 const BoardPost = () => {
   const navigate = useNavigate();

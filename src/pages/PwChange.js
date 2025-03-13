@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from "react";
-import styled from "styled-components";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import backBtn from "../assets/backBtn.svg";
 import { IoEye, IoEyeOff } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
+import styled from "styled-components";
 import { Axios } from "../api/Axios";
+import backBtn from "../assets/backBtn.svg";
 
 const PwChange = () => {
   const navigate = useNavigate();
@@ -13,6 +13,8 @@ const PwChange = () => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isPasswordDuplicate, setIsPasswordDuplicate] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isCurrentPasswordValid, setIsCurrentPasswordValid] = useState(null); // true: 올바른 현재 비밀번호, false: 틀린 현재 비밀번호
+  const [checkingPassword, setCheckingPassword] = useState(false);
 
   const {
     register,
@@ -24,6 +26,35 @@ const PwChange = () => {
   });
 
   const newPassword = watch("newPassword");
+  const currentPassword = watch("currentPassword");
+
+  useEffect(() => {
+    if (!currentPassword) {
+      setIsCurrentPasswordValid(null);
+      return;
+    }
+    const delayDebounceFn = setTimeout(async () => {
+      setCheckingPassword(true);
+      try {
+        const response = await Axios.post("/member/pwd/check", {
+          password: currentPassword,
+        });
+
+        if (response.data.responseType === "SUCCESS") {
+          setIsCurrentPasswordValid(response.data.success);
+        } else {
+          setIsCurrentPasswordValid(null);
+        }
+      } catch (error) {
+        console.error("비밀번호 확인 실패:", error);
+        setIsCurrentPasswordValid(null);
+      } finally {
+        setCheckingPassword(false);
+      }
+    }, 500);
+
+    return () => clearTimeout(delayDebounceFn);
+  }, [currentPassword]);
 
   useEffect(() => {
     if (!newPassword) {
@@ -88,20 +119,25 @@ const PwChange = () => {
             <Input
               type={showCurrentPassword ? "text" : "password"}
               placeholder="기존 비밀번호 입력"
-              hasError={!!errors.currentPassword}
+              hasError={
+                !!errors.currentPassword || isCurrentPasswordValid === false
+              }
               {...register("currentPassword", {
                 required: "기존 비밀번호를 입력해주세요.",
               })}
             />
+
             <ToggleButton
               onClick={() => setShowCurrentPassword(!showCurrentPassword)}
             >
               {showCurrentPassword ? <IoEye /> : <IoEyeOff />}
             </ToggleButton>
           </PasswordContainer>
-          {errors.currentPassword && (
+          {errors.currentPassword ? (
             <ErrorMessage>{errors.currentPassword.message}</ErrorMessage>
-          )}
+          ) : isCurrentPasswordValid === false ? (
+            <ErrorMessage>기존 비밀번호와 일치하지 않습니다.</ErrorMessage>
+          ) : null}
         </InputContainer>
 
         <InputContainer>
@@ -160,7 +196,13 @@ const PwChange = () => {
 
         <SaveButton
           type="submit"
-          disabled={!isValid || isSubmitting || isPasswordDuplicate === true}
+          disabled={
+            !isValid ||
+            isSubmitting ||
+            checkingPassword ||
+            isPasswordDuplicate === true ||
+            isCurrentPasswordValid === false
+          }
         >
           변경하기
         </SaveButton>
