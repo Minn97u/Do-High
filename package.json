@@ -30,13 +30,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "format": "prettier --write 'src/**/*.{js,jsx,ts,tsx,css,scss,json,md}'"
-  },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
+    "format": "prettier --write 'src/**/*.{js,jsx,ts,tsx,css,scss,json,md}'",
+    "lint": "eslint 'src/**/*.{js,jsx,ts,tsx}'"
   },
   "browserslist": {
     "production": [
@@ -53,6 +48,14 @@
   "devDependencies": {
     "@babel/eslint-parser": "^7.26.10",
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
+    "@babel/preset-react": "^7.26.3",
+    "eslint": "^9.22.0",
+    "eslint-config-prettier": "^10.1.1",
+    "eslint-plugin-import": "^2.31.0",
+    "eslint-plugin-jsx-a11y": "^6.10.2",
+    "eslint-plugin-prettier": "^5.2.3",
+    "eslint-plugin-react": "^7.37.4",
+    "eslint-plugin-react-hooks": "^5.2.0",
     "prettier": "^3.5.3"
   }
 }
