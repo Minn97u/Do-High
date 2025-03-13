@@ -136,7 +136,7 @@ const PwChange = () => {
           {errors.currentPassword ? (
             <ErrorMessage>{errors.currentPassword.message}</ErrorMessage>
           ) : isCurrentPasswordValid === false ? (
-            <ErrorMessage>현재 비밀번호가 올바르지 않습니다.</ErrorMessage>
+            <ErrorMessage>기존 비밀번호와 일치하지 않습니다.</ErrorMessage>
           ) : null}
         </InputContainer>
 
