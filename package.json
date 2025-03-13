@@ -29,7 +29,10 @@
     "start:ssl": "HTTPS=true SSL_CRT_FILE=./cert/localhost.pem SSL_KEY_FILE=./cert/localhost-key.pem npm run start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "lint": "eslint 'src/**/*.{js,jsx,ts,tsx}'",
+    "lint:fix": "eslint 'src/**/*.{js,jsx,ts,tsx}' --fix",
+    "format": "prettier --write 'src/**/*.{js,jsx,ts,tsx,css,scss,json,md}'"
   },
   "eslintConfig": {
     "extends": [
@@ -50,6 +53,8 @@
     ]
   },
   "devDependencies": {
-    "@babel/plugin-proposal-private-property-in-object": "^7.21.11"
+    "@babel/eslint-parser": "^7.26.10",
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
+    "prettier": "^3.5.3"
   }
 }

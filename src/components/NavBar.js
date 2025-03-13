@@ -31,7 +31,7 @@ const NavBar = () => {
           {navItems.map((item) => {
             const isActive = item.activePaths
               ? item.activePaths.some((path) =>
-                  location.pathname.startsWith(path)
+                  location.pathname.startsWith(path),
                 )
               : location.pathname.startsWith(item.path);
 

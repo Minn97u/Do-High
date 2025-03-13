@@ -125,8 +125,8 @@ const ExperienceSection = () => {
                     coinType === "MED"
                       ? "#BBC5CE"
                       : coinType === "MAX"
-                      ? "#FBB62C"
-                      : "#000"
+                        ? "#FBB62C"
+                        : "#000"
                   }
                 >
                   {quest.questName}

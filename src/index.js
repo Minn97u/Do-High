@@ -33,5 +33,5 @@ root.render(
         <App />
       </BrowserRouter>
     </ThemeProvider>
-  </React.StrictMode>
+  </React.StrictMode>,
 );

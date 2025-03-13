@@ -32,7 +32,7 @@ const Alarm = () => {
       updated.add(id);
       localStorage.setItem(
         "clickedNotifications",
-        JSON.stringify([...updated])
+        JSON.stringify([...updated]),
       );
       return updated;
     });
@@ -66,7 +66,7 @@ const Alarm = () => {
           setNotifications(response.data.success);
         } else {
           setError(
-            response.data.error?.message || "알림을 불러오지 못했습니다."
+            response.data.error?.message || "알림을 불러오지 못했습니다.",
           );
         }
       } catch (err) {

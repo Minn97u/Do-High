@@ -66,7 +66,7 @@ const ProfileCard = () => {
         } else {
           console.error(
             "올해 누적 경험치 조회 오류:",
-            response.data.error.message
+            response.data.error.message,
           );
         }
       } catch (error) {
@@ -84,7 +84,7 @@ const ProfileCard = () => {
         } else {
           console.error(
             "작년 누적 경험치 조회 오류:",
-            response.data.error.message
+            response.data.error.message,
           );
         }
       } catch (error) {
