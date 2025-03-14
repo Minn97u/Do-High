@@ -53,12 +53,8 @@ const Quest = () => {
           <Arrow onClick={handleYearChange}>{"<"}</Arrow>
           <Year>{selectedYear}</Year>
           <Arrow onClick={handleYearChange}>{">"}</Arrow>
-          <InfoIconWrapper>
-            <InfoIcon
-              src={infoIcon}
-              alt="정보"
-              onClick={() => setInfoOpen((prev) => !prev)}
-            />
+          <InfoIconWrapper onClick={() => setInfoOpen((prev) => !prev)}>
+            <InfoIcon src={infoIcon} alt="정보" />
             {infoOpen && <InfoImage src={expListInfo} alt="정보 설명" />}
           </InfoIconWrapper>
         </Selector>
@@ -146,12 +142,27 @@ const InfoIconWrapper = styled.div`
   margin-right: auto;
   position: absolute;
   right: 40px;
+  width: 20px;
+  height: 20px;
+
+  &::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 40px;
+    height: 40px;
+    transform: translate(-50%, -50%);
+    background: transparent;
+    pointer-events: auto; /* 클릭 이벤트 감지 */
+  }
 `;
 
 const InfoIcon = styled.img`
   cursor: pointer;
   width: 20px;
   height: 20px;
+  z-index: 10;
 `;
 
 const InfoImage = styled.img`

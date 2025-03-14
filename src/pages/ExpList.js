@@ -1,5 +1,5 @@
 import dayjs from "dayjs";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import {
   getCpExp,
@@ -45,6 +45,20 @@ const ExpList = () => {
   const [selectedTab, setSelectedTab] = useState("전체");
   const [expList, setExpList] = useState([]);
   const [loading, setLoading] = useState(false);
+  const infoRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (infoRef.current && !infoRef.current.contains(event.target)) {
+        setInfoOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   const fetchExpList = useCallback(async () => {
     setLoading(true);
@@ -137,8 +151,8 @@ const ExpList = () => {
 
         <SortBar hasInfoIcon={selectedTab !== "전체"}>
           {selectedTab !== "전체" && (
-            <InfoIconWrapper>
-              <InfoIcon src={infoIcon} alt="정보" onClick={handleInfoClick} />
+            <InfoIconWrapper onClick={handleInfoClick}>
+              <InfoIcon src={infoIcon} alt="정보" />
               {infoOpen && <InfoImage src={getInfoImage()} alt="정보 설명" />}
             </InfoIconWrapper>
           )}
@@ -267,15 +281,32 @@ const SortBar = styled.div`
 `;
 
 const InfoIconWrapper = styled.div`
+  position: relative;
   display: flex;
   align-items: center;
-  margin-right: auto;
+  justify-content: center;
+  cursor: pointer;
+  width: 20px;
+  height: 20px;
+
+  &::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 40px;
+    height: 40px;
+    transform: translate(-50%, -50%);
+    background: transparent;
+    pointer-events: auto; /* 클릭 이벤트 감지 */
+  }
 `;
 
 const InfoIcon = styled.img`
   cursor: pointer;
   width: 20px;
   height: 20px;
+  z-index: 10;
 `;
 
 const InfoImage = styled.img`
