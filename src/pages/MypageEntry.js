@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import { Axios } from "../api/Axios";
 import { getExpStatus } from "../api/ExpApi";
 import { getMemberInfo } from "../api/UserApi";
 import coin from "../assets/coin.svg";
@@ -8,7 +9,6 @@ import dropdownArrow from "../assets/dropdown.svg";
 import notification from "../assets/notification.svg";
 import profile from "../assets/profile.svg";
 import LogoutModal from "../components/Modal";
-import { Axios } from "../api/Axios";
 
 const MypageEntry = () => {
   const [memberInfo, setMemberInfo] = useState({
@@ -58,7 +58,7 @@ const MypageEntry = () => {
   };
 
   const handleLVClick = () => {
-    navigate("/main");
+    navigate("/exp");
   };
 
   const handleLogout = async () => {
