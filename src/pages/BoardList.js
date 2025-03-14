@@ -166,7 +166,7 @@ const SortIcon = styled.img`
 const DropDownMenu = styled.div`
   position: absolute;
   top: 40px;
-  right: 23px;
+  right: 10px;
   background-color: ${(props) => props.theme.colors.gray};
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
   border-radius: 4px;
