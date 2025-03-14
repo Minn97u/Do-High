@@ -8,7 +8,6 @@ import { getMemberInfo } from "../api/UserApi";
 import coinIcon from "../assets/coin.svg";
 import info from "../assets/info.svg";
 import profile from "../assets/profile.svg";
-import speechBubble from "../assets/speechBubble.svg";
 import speechBubble2 from "../assets/speechBubble2.svg";
 import speechBubble3 from "../assets/speechBubble3.svg";
 
@@ -34,8 +33,6 @@ const ProfileCard = () => {
     identificationNumber: "",
     character: profile,
   });
-
-  const slides = [0, 1, 2];
 
   useEffect(() => {
     const fetchGraphData = async () => {
@@ -117,10 +114,40 @@ const ProfileCard = () => {
     fetchMemberInfo();
   }, []);
 
+  const isNewEmployee = memberInfo.level === "미평가";
+  const isMaxLevel = ["F5", "G8", "B8"].includes(memberInfo.level);
+
+  const displayTotalExp = isNewEmployee ? 0 : totalExp;
+  const displayPercent = isMaxLevel ? 100 : isNewEmployee ? 0 : percent;
+  const displayRemainingExp = isNewEmployee ? 0 : remainingExp;
+
+  const slides = isNewEmployee ? [0] : isMaxLevel ? [0, 1] : [0, 1, 2];
+
+  const handlers = useSwipeable({
+    onSwipedLeft: () => changeSlide("right"),
+    onSwipedRight: () => changeSlide("left"),
+    preventDefaultTouchmoveEvent: true,
+    trackMouse: true,
+  });
+
+  const changeSlide = (direction) => {
+    if (direction === "left") {
+      setCurrentSlide((prev) => (prev === 0 ? prev : prev - 1));
+    } else if (direction === "right") {
+      setCurrentSlide((prev) =>
+        prev === slides.length - 1 ? prev : prev + 1
+      );
+    }
+  };
+
   useEffect(() => {
-    const targetPercent =
-      currentSlide === 1 ? thisYearExpPercent : lastYearExpPercent;
-    if (currentSlide === 1 || currentSlide === 2) {
+    let targetPercent = 0;
+    if (currentSlide === 1) {
+      targetPercent = thisYearExpPercent;
+    } else if (!isMaxLevel && currentSlide === 2) {
+      targetPercent = lastYearExpPercent;
+    }
+    if (currentSlide === 1 || (!isMaxLevel && currentSlide === 2)) {
       setAnimatedPercents((prev) => ({ ...prev, [currentSlide]: 0 }));
       let current = 0;
       const interval = setInterval(() => {
@@ -133,27 +160,49 @@ const ProfileCard = () => {
       }, 10);
       return () => clearInterval(interval);
     }
-  }, [currentSlide, thisYearExpPercent, lastYearExpPercent]);
+  }, [currentSlide, thisYearExpPercent, lastYearExpPercent, isMaxLevel]);
 
   const handleInfoClick = () => {
     setTooltipVisible(!tooltipVisible);
   };
 
-  const changeSlide = (direction) => {
-    if (direction === "left") {
-      setCurrentSlide((prev) => (prev === 0 ? prev : prev - 1));
-    } else if (direction === "right") {
-      setCurrentSlide((prev) => (prev === slides.length - 1 ? prev : prev + 1));
-    }
-  };
+  // 신규 입사자일 경우
+  if (isNewEmployee) {
+    return (
+      <SliderContainer>
+        <CardContent>
+          <ProfileCardContainer>
+            <ProfileHeader>
+              <ProfileInfo>
+                <div>
+                  <h3>{memberInfo.name}</h3>
+                  <p>신규입사자</p>
+                </div>
+                <p>{memberInfo.team}</p>
+                <p>{memberInfo.identificationNumber}</p>
+              </ProfileInfo>
+              <ProfileImageWrapper>
+                <ProfileImage src={memberInfo.character} alt="profile" />
+              </ProfileImageWrapper>
+            </ProfileHeader>
+            <ExperienceSection>
+              <h4>총 누적 경험치</h4>
+              <ExperienceValue>{displayTotalExp.toLocaleString()}</ExperienceValue>
+              <ProgressBar>
+                <Progress percent={displayPercent} />
+                <CoinWrapper percent={displayPercent}>
+                  <CoinIcon src={coinIcon} alt="coin" />
+                </CoinWrapper>
+              </ProgressBar>
+            </ExperienceSection>
+          </ProfileCardContainer>
+          <Carousel />
+        </CardContent>
+      </SliderContainer>
+    );
+  }
 
-  const handlers = useSwipeable({
-    onSwipedLeft: () => changeSlide("right"),
-    onSwipedRight: () => changeSlide("left"),
-    preventDefaultTouchmoveEvent: true,
-    trackMouse: true,
-  });
-
+  // 신규 입사자가 아닐 경우
   return (
     <SliderContainer {...handlers}>
       <SlidesWrapper currentSlide={currentSlide}>
@@ -175,23 +224,18 @@ const ProfileCard = () => {
               </ProfileHeader>
               <ExperienceSection>
                 <h4>총 누적 경험치</h4>
-                <ExperienceValue>{totalExp.toLocaleString()}</ExperienceValue>
+                <ExperienceValue>{displayTotalExp.toLocaleString()}</ExperienceValue>
                 <ProgressBar>
-                  <Progress percent={percent} />
-                  <CoinWrapper percent={percent}>
+                  <Progress percent={displayPercent} />
+                  <CoinWrapper percent={displayPercent}>
                     <CoinIcon src={coinIcon} alt="coin" />
                   </CoinWrapper>
-                  {percent >= 55 && percent <= 90 && (
-                    <SpeechBubble
-                      percent={percent}
-                      src={speechBubble}
-                      alt="speech bubble"
-                    />
-                  )}
                 </ProgressBar>
-                <p>
-                  다음 {nextLevel}레벨까지 {remainingExp.toLocaleString()} 남음
-                </p>
+                {!isMaxLevel && (
+                  <p>
+                    다음 {nextLevel}레벨까지 {displayRemainingExp.toLocaleString()} 남음
+                  </p>
+                )}
               </ExperienceSection>
             </ProfileCardContainer>
             <Carousel>
@@ -252,51 +296,53 @@ const ProfileCard = () => {
           </CardContent>
         </Slide>
 
-        <Slide>
-          <CardContent>
-            <ProfileCardContainer>
-              <SecondThirdSlide>
-                <Header>
-                  <Title>
-                    {lastYearExpTotal.toLocaleString()}do를 달성하셨어요!
-                  </Title>
-                  <InfoIconWrapper onClick={handleInfoClick}>
-                    <InfoIcon src={info} alt="info" />
-                    {tooltipVisible && (
-                      <Tooltip>
-                        <img src={speechBubble3} alt="speech bubble" />
-                      </Tooltip>
-                    )}
-                  </InfoIconWrapper>
-                </Header>
-                <ProgressContainer>
-                  <CircularProgressbar
-                    value={animatedPercents[2]}
-                    styles={buildStyles({
-                      rotation: 0,
-                      strokeLinecap: "round",
-                      trailColor: "#E6E6E6",
-                      pathColor: "#FC5833",
-                    })}
+        {!isMaxLevel && (
+          <Slide>
+            <CardContent>
+              <ProfileCardContainer>
+                <SecondThirdSlide>
+                  <Header>
+                    <Title>
+                      {lastYearExpTotal.toLocaleString()}do를 달성하셨어요!
+                    </Title>
+                    <InfoIconWrapper onClick={handleInfoClick}>
+                      <InfoIcon src={info} alt="info" />
+                      {tooltipVisible && (
+                        <Tooltip>
+                          <img src={speechBubble3} alt="speech bubble" />
+                        </Tooltip>
+                      )}
+                    </InfoIconWrapper>
+                  </Header>
+                  <ProgressContainer>
+                    <CircularProgressbar
+                      value={animatedPercents[2]}
+                      styles={buildStyles({
+                        rotation: 0,
+                        strokeLinecap: "round",
+                        trailColor: "#E6E6E6",
+                        pathColor: "#FC5833",
+                      })}
+                    />
+                    <ProgressTextContainer>
+                      <SlideText>작년 누적 경험치</SlideText>
+                      <Percentage>{lastYearExpPercent}%</Percentage>
+                    </ProgressTextContainer>
+                  </ProgressContainer>
+                </SecondThirdSlide>
+              </ProfileCardContainer>
+              <Carousel>
+                {slides.map((_, index) => (
+                  <Dot
+                    key={index}
+                    active={index === currentSlide}
+                    onClick={() => setCurrentSlide(index)}
                   />
-                  <ProgressTextContainer>
-                    <SlideText>작년 누적 경험치</SlideText>
-                    <Percentage>{lastYearExpPercent}%</Percentage>
-                  </ProgressTextContainer>
-                </ProgressContainer>
-              </SecondThirdSlide>
-            </ProfileCardContainer>
-            <Carousel>
-              {slides.map((_, index) => (
-                <Dot
-                  key={index}
-                  active={index === currentSlide}
-                  onClick={() => setCurrentSlide(index)}
-                />
-              ))}
-            </Carousel>
-          </CardContent>
-        </Slide>
+                ))}
+              </Carousel>
+            </CardContent>
+          </Slide>
+        )}
       </SlidesWrapper>
     </SliderContainer>
   );
