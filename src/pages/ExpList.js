@@ -312,7 +312,7 @@ const InfoIcon = styled.img`
 const InfoImage = styled.img`
   position: absolute;
   top: 45px;
-  left: 15px;
+  left: -10px;
   z-index: 100;
 `;
 
@@ -342,10 +342,11 @@ const DropDownMenu = styled.div`
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
   border-radius: 4px;
   z-index: 10;
+  padding: 8px 0;
 `;
 
 const DropDownItem = styled.div`
-  padding: 8px 8px;
+  padding: 12px 14px;
   ${(props) => props.theme.fonts.regular};
   font-size: 14px;
   color: ${(props) => props.theme.colors.gray3};
