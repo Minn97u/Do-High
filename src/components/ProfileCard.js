@@ -8,7 +8,6 @@ import { getMemberInfo } from "../api/UserApi";
 import coinIcon from "../assets/coin.svg";
 import info from "../assets/info.svg";
 import profile from "../assets/profile.svg";
-import speechBubble from "../assets/speechBubble.svg";
 import speechBubble2 from "../assets/speechBubble2.svg";
 import speechBubble3 from "../assets/speechBubble3.svg";
 
@@ -194,13 +193,6 @@ const ProfileCard = () => {
                 <CoinWrapper percent={displayPercent}>
                   <CoinIcon src={coinIcon} alt="coin" />
                 </CoinWrapper>
-                {displayPercent >= 55 && displayPercent <= 90 && (
-                  <SpeechBubble
-                    percent={displayPercent}
-                    src={speechBubble}
-                    alt="speech bubble"
-                  />
-                )}
               </ProgressBar>
             </ExperienceSection>
           </ProfileCardContainer>
@@ -238,13 +230,6 @@ const ProfileCard = () => {
                   <CoinWrapper percent={displayPercent}>
                     <CoinIcon src={coinIcon} alt="coin" />
                   </CoinWrapper>
-                  {displayPercent >= 55 && displayPercent <= 90 && (
-                    <SpeechBubble
-                      percent={displayPercent}
-                      src={speechBubble}
-                      alt="speech bubble"
-                    />
-                  )}
                 </ProgressBar>
                 {!isMaxLevel && (
                   <p>
