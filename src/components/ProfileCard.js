@@ -117,6 +117,26 @@ const ProfileCard = () => {
     fetchMemberInfo();
   }, []);
 
+  const isNewEmployee = memberInfo.level === "미평가";
+  const displayTotalExp = isNewEmployee ? 0 : totalExp;
+  const displayPercent = isNewEmployee ? 0 : percent;
+  const displayRemainingExp = isNewEmployee ? 0 : remainingExp;
+
+  const handlers = useSwipeable({
+    onSwipedLeft: () => changeSlide("right"),
+    onSwipedRight: () => changeSlide("left"),
+    preventDefaultTouchmoveEvent: true,
+    trackMouse: true,
+  });
+
+  const changeSlide = (direction) => {
+    if (direction === "left") {
+      setCurrentSlide((prev) => (prev === 0 ? prev : prev - 1));
+    } else if (direction === "right") {
+      setCurrentSlide((prev) => (prev === slides.length - 1 ? prev : prev + 1));
+    }
+  };
+
   useEffect(() => {
     const targetPercent =
       currentSlide === 1 ? thisYearExpPercent : lastYearExpPercent;
@@ -139,21 +159,53 @@ const ProfileCard = () => {
     setTooltipVisible(!tooltipVisible);
   };
 
-  const changeSlide = (direction) => {
-    if (direction === "left") {
-      setCurrentSlide((prev) => (prev === 0 ? prev : prev - 1));
-    } else if (direction === "right") {
-      setCurrentSlide((prev) => (prev === slides.length - 1 ? prev : prev + 1));
-    }
-  };
+  // 신규 입사자일 경우
+  if (isNewEmployee) {
+    return (
+      <SliderContainer>
+        <CardContent>
+          <ProfileCardContainer>
+            <ProfileHeader>
+              <ProfileInfo>
+                <div>
+                  <h3>{memberInfo.name}</h3>
+                  <p>신규입사자</p>
+                </div>
+                <p>{memberInfo.team}</p>
+                <p>{memberInfo.identificationNumber}</p>
+              </ProfileInfo>
+              <ProfileImageWrapper>
+                <ProfileImage src={memberInfo.character} alt="profile" />
+              </ProfileImageWrapper>
+            </ProfileHeader>
+            <ExperienceSection>
+              <h4>총 누적 경험치</h4>
+              <ExperienceValue>
+                {displayTotalExp.toLocaleString()}
+              </ExperienceValue>
+              <ProgressBar>
+                <Progress percent={displayPercent} />
+                <CoinWrapper percent={displayPercent}>
+                  <CoinIcon src={coinIcon} alt="coin" />
+                </CoinWrapper>
+                {displayPercent >= 55 && displayPercent <= 90 && (
+                  <SpeechBubble
+                    percent={displayPercent}
+                    src={speechBubble}
+                    alt="speech bubble"
+                  />
+                )}
+              </ProgressBar>
+            </ExperienceSection>
+          </ProfileCardContainer>
+          <Carousel>
+            </Carousel>
+        </CardContent>
+      </SliderContainer>
+    );
+  }
 
-  const handlers = useSwipeable({
-    onSwipedLeft: () => changeSlide("right"),
-    onSwipedRight: () => changeSlide("left"),
-    preventDefaultTouchmoveEvent: true,
-    trackMouse: true,
-  });
-
+  // 신규 입사자가 아닐 경우
   return (
     <SliderContainer {...handlers}>
       <SlidesWrapper currentSlide={currentSlide}>
@@ -175,22 +227,25 @@ const ProfileCard = () => {
               </ProfileHeader>
               <ExperienceSection>
                 <h4>총 누적 경험치</h4>
-                <ExperienceValue>{totalExp.toLocaleString()}</ExperienceValue>
+                <ExperienceValue>
+                  {displayTotalExp.toLocaleString()}
+                </ExperienceValue>
                 <ProgressBar>
-                  <Progress percent={percent} />
-                  <CoinWrapper percent={percent}>
+                  <Progress percent={displayPercent} />
+                  <CoinWrapper percent={displayPercent}>
                     <CoinIcon src={coinIcon} alt="coin" />
                   </CoinWrapper>
-                  {percent >= 55 && percent <= 90 && (
+                  {displayPercent >= 55 && displayPercent <= 90 && (
                     <SpeechBubble
-                      percent={percent}
+                      percent={displayPercent}
                       src={speechBubble}
                       alt="speech bubble"
                     />
                   )}
                 </ProgressBar>
                 <p>
-                  다음 {nextLevel}레벨까지 {remainingExp.toLocaleString()} 남음
+                  다음 {nextLevel}레벨까지{" "}
+                  {displayRemainingExp.toLocaleString()} 남음
                 </p>
               </ExperienceSection>
             </ProfileCardContainer>
