@@ -113,7 +113,8 @@ const ExpList = () => {
   };
 
   const formatDate = (dateString) => {
-    return dayjs(dateString).format("YYYY.MM.DD");
+    const normalizedDate = dateString.replace(/\./g, "-");
+    return dayjs(normalizedDate).format("YYYY.MM.DD");
   };
 
   const getInfoImage = () => {
