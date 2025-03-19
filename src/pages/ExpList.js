@@ -78,7 +78,7 @@ const ExpList = () => {
       }
 
       if (data.responseType === "SUCCESS") {
-        setExpList(data.success);
+        setExpList(data.success.exps);
       } else {
         console.error("데이터 로드 실패:", data.error?.message);
         setExpList([]);
