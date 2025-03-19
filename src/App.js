@@ -1,26 +1,31 @@
 import { Navigate, Route, Routes } from "react-router-dom";
-import Home from "./pages/Main";
-import Login from "./pages/Login";
-import Admin from "./pages/AdminPages/Admin";
-import BoardPost from "./pages/AdminPages/BoardPost";
-import BoardEdit from "./pages/AdminPages/BoardEdit";
-import Alarm from "./pages/Alarm";
-import MypageEntry from "./pages/MypageEntry";
-import MyPage from "./pages/MyPage";
-import PwChange from "./pages/PwChange";
-import NotFoundPage from "./pages/NotFoundPage";
-import BoardList from "./pages/BoardList";
-import BoardDetail from "./pages/BoardDetail";
-import Quest from "./pages/Quest";
-import ExpList from "./pages/ExpList";
 import Layout from "./components/Layout";
 import ScrollToTop from "./components/ScrollToTop";
+import Admin from "./pages/AdminPages/Admin";
+import BoardEdit from "./pages/AdminPages/BoardEdit";
+import BoardPost from "./pages/AdminPages/BoardPost";
+import Alarm from "./pages/Alarm";
+import BoardDetail from "./pages/BoardDetail";
+import BoardList from "./pages/BoardList";
+import ExpList from "./pages/ExpList";
+import Login from "./pages/Login";
+import Home from "./pages/Main";
+import MyPage from "./pages/MyPage";
+import MypageEntry from "./pages/MypageEntry";
+import NotFoundPage from "./pages/NotFoundPage";
+import OnboardingPage from "./pages/OnboardingPage";
+import PwChange from "./pages/PwChange";
+import Quest from "./pages/Quest";
 
 function App() {
   return (
     <>
       <Routes>
         <Route path="/" element={<Navigate to="/auth/login" />} />
+        <Route path="/auth/login" element={<Login />} />
+        <Route path="/onboarding" element={<OnboardingPage />} />
+        <Route path="/admin" element={<Admin />} />
+
         <Route
           path="/main"
           element={
@@ -37,9 +42,6 @@ function App() {
             </Layout>
           }
         />
-        <Route path="/auth/login" element={<Login />} />
-
-        <Route path="/admin" element={<Admin />} />
 
         <Route
           path="/mypage-entry"
@@ -51,7 +53,6 @@ function App() {
         />
         <Route path="/mypage" element={<MyPage />} />
         <Route path="/mypage/pwchange" element={<PwChange />} />
-
         <Route
           path="/boardlist"
           element={
@@ -63,7 +64,6 @@ function App() {
         <Route path="/boardPost" element={<BoardPost />} />
         <Route path="/boardlist/:boardId" element={<BoardDetail />} />
         <Route path="/boardedit/:boardId" element={<BoardEdit />} />
-
         <Route
           path="/quest"
           element={
@@ -80,7 +80,6 @@ function App() {
             </Layout>
           }
         />
-
         <Route
           path="*"
           element={

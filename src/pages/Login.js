@@ -52,7 +52,7 @@ const Login = () => {
         if (userType === "admin") {
           navigate("/admin");
         } else {
-          navigate("/main");
+          navigate("/onboarding");
         }
       } else if (responseType === "ERROR") {
         setErrorMessage(error.message || "로그인에 실패했습니다.");
