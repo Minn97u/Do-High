@@ -10,6 +10,21 @@ const onboardingImages = [
   "/images/Frame3.png",
 ];
 
+const slideVariants = {
+  enter: (direction) => ({
+    x: direction > 0 ? "100%" : "-100%", // 오른쪽으로 이동 (다음 슬라이드)
+    opacity: 0,
+  }),
+  center: {
+    x: "0%", // 👉 화면 중앙 정렬
+    opacity: 1,
+  },
+  exit: (direction) => ({
+    x: direction > 0 ? "-100%" : "100%", // 왼쪽으로 이동 (이전 슬라이드)
+    opacity: 0,
+  }),
+};
+
 const Onboarding = () => {
   const navigate = useNavigate();
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -43,10 +58,12 @@ const Onboarding = () => {
         <AnimatePresence initial={false} custom={direction}>
           <Slide
             key={currentSlide}
-            initial={{ x: direction * 100 + "%", opacity: 1 }} // ✅ 방향에 따라 출발 위치 변경
-            animate={{ x: "0%", opacity: 1 }} // ✅ 화면 중앙으로 이동
-            exit={{ x: -direction * 100 + "%" }} // ✅ 반대 방향으로 나가기
-            transition={{ type: "spring", stiffness: 50, damping: 20 }} // ✅ 부드러운 애니메이션 효과
+            custom={direction}
+            variants={slideVariants} // variants 사용하여 방향 지정
+            initial="enter"
+            animate="center"
+            exit="exit"
+            transition={{ type: "spring", stiffness: 300, damping: 30 }} 
           >
             <img
               src={onboardingImages[currentSlide]}
@@ -90,6 +107,7 @@ const Slide = styled(motion.div)`
   position: absolute;
   width: 100%;
   height: 100%;
+  opacity: ${(props) => (props.$active ? "1" : "0")};
 
   img {
     width: 100vw;

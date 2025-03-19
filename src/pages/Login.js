@@ -139,9 +139,9 @@ const Tab = styled.div`
   flex: 1;
   text-align: center;
   font-weight: 500;
-  color: ${(props) => (props.active ? "black" : props.theme.colors.gray2)};
+  color: ${(props) => (props.$active ? "black" : props.theme.colors.gray2)};
   border-bottom: ${(props) =>
-    props.active ? `3px solid ${props.theme.colors.subBlue}` : "none"};
+    props.$active ? `3px solid ${props.theme.colors.subBlue}` : "none"};
 `;
 
 const InputContainer = styled.div`
