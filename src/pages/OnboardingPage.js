@@ -1,5 +1,7 @@
-import { useEffect, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useSwipeable } from "react-swipeable";
 import styled from "styled-components";
 
 const onboardingImages = [
@@ -11,31 +13,52 @@ const onboardingImages = [
 const Onboarding = () => {
   const navigate = useNavigate();
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [direction, setDirection] = useState(1);
+
+  const handlers = useSwipeable({
+    onSwipedLeft: () => handleNextSlide(), // 왼쪽으로 스와이프하면 다음 슬라이드
+    onSwipedRight: () => handlePrevSlide(), // 오른쪽으로 스와이프하면 이전 슬라이드
+    trackMouse: true, // 마우스 드래그도 허용
+  });
 
   const handleNextSlide = () => {
     if (currentSlide < onboardingImages.length - 1) {
-      setCurrentSlide(currentSlide + 1);
+      setDirection(1); // 오른쪽
+      setCurrentSlide((prev) => prev + 1);
     } else {
       navigate("/main");
     }
   };
 
+  const handlePrevSlide = () => {
+    if (currentSlide > 0) {
+      setDirection(-1); // 왼쪽
+      setCurrentSlide((prev) => prev - 1);
+    }
+  };
+
   return (
-    <Container>
+    <Container {...handlers}>
       <SlideWrapper>
-        {onboardingImages.map((image, index) => {
-          console.log(`Slide 렌더링 확인: index=${index}, image=${image}`);
-          console.log(`이미지 로드 확인:`, image);
-          return (
-            <Slide key={index} $active={index === currentSlide}>
-              <img src={image} alt={` ${index + 1}`} />
-            </Slide>
-          );
-        })}
+        <AnimatePresence initial={false} custom={direction}>
+          <Slide
+            key={currentSlide}
+            initial={{ x: direction * 100 + "%", opacity: 1 }} // ✅ 방향에 따라 출발 위치 변경
+            animate={{ x: "0%", opacity: 1 }} // ✅ 화면 중앙으로 이동
+            exit={{ x: -direction * 100 + "%" }} // ✅ 반대 방향으로 나가기
+            transition={{ type: "spring", stiffness: 50, damping: 20 }} // ✅ 부드러운 애니메이션 효과
+          >
+            <img
+              src={onboardingImages[currentSlide]}
+              alt={`Onboarding ${currentSlide + 1}`}
+            />
+          </Slide>
+        </AnimatePresence>
       </SlideWrapper>
-      <Button onClick={handleNextSlide}>
-        {currentSlide === onboardingImages.length - 1 ? "시작하기" : "다음"}
-      </Button>
+
+      {currentSlide === onboardingImages.length - 1 && (
+        <Button onClick={handleNextSlide}>시작하기 </Button>
+      )}
     </Container>
   );
 };
@@ -48,8 +71,10 @@ const Container = styled.div`
   align-items: center;
   justify-content: center;
   height: 100vh;
+  width: 100vw;
   position: relative;
-  z-index: 1;
+  overflow: hidden;
+  touch-action: pan-y;
 `;
 
 const SlideWrapper = styled.div`
@@ -60,10 +85,8 @@ const SlideWrapper = styled.div`
   position: relative;
 `;
 
-const Slide = styled.div`
+const Slide = styled(motion.div)`
   flex: 0 0 100%;
-  opacity: ${(props) => (props.$active ? "1" : "0")};
-  transition: opacity 0.5s ease-in-out;
   position: absolute;
   width: 100%;
   height: 100%;
@@ -79,7 +102,7 @@ const Button = styled.button`
   position: absolute;
   bottom: 20px;
   padding: 10px 20px;
-  background-color: #007aff;
+  background-color: #fc5833;
   color: white;
   border: none;
   border-radius: 5px;

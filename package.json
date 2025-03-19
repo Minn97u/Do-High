@@ -11,6 +11,7 @@
     "date-fns": "^4.1.0",
     "dayjs": "^1.11.13",
     "firebase": "^11.1.0",
+    "framer-motion": "^12.5.0",
     "react": "^19.0.0",
     "react-calendar": "^5.1.0",
     "react-circular-progressbar": "^2.1.0",
