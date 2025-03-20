@@ -16,7 +16,7 @@ const slideVariants = {
     opacity: 0,
   }),
   center: {
-    x: "0%", // 👉 화면 중앙 정렬
+    x: "0%", // 화면 중앙 정렬
     opacity: 1,
   },
   exit: (direction) => ({
