@@ -16,12 +16,14 @@ import NotFoundPage from "./pages/NotFoundPage";
 import OnboardingPage from "./pages/OnboardingPage";
 import PwChange from "./pages/PwChange";
 import Quest from "./pages/Quest";
+import SplashScreen from "./pages/SplashScreen";
 
 function App() {
   return (
     <>
       <Routes>
-        <Route path="/" element={<Navigate to="/auth/login" />} />
+        <Route path="/" element={<Navigate to="/splash" />} />
+        <Route path="/splash" element={<SplashScreen />} />
         <Route path="/auth/login" element={<Login />} />
         <Route path="/onboarding" element={<OnboardingPage />} />
         <Route path="/admin" element={<Admin />} />
