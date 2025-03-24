@@ -63,7 +63,7 @@ const Onboarding = () => {
             initial="enter"
             animate="center"
             exit="exit"
-            transition={{ type: "spring", stiffness: 300, damping: 30 }} 
+            transition={{ type: "spring", stiffness: 300, damping: 30 }}
           >
             <img
               src={onboardingImages[currentSlide]}
@@ -118,11 +118,17 @@ const Slide = styled(motion.div)`
 
 const Button = styled.button`
   position: absolute;
-  bottom: 20px;
-  padding: 10px 20px;
-  background-color: #fc5833;
+  bottom: 60px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80%;
+  height: 56px;
+  background: linear-gradient(90deg, #ffa843 0%, #f1583e 100%);
   color: white;
+  font-size: 16px;
+  font-weight: 500;
   border: none;
-  border-radius: 5px;
+  border-radius: 999px;
   cursor: pointer;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 `;
