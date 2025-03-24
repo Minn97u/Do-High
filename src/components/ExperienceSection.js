@@ -68,8 +68,9 @@ const ExperienceSection = () => {
   }, []);
 
   const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString("ko-KR").replace(/\./g, ".");
+    const normalizedDate = dateString.replace(/\./g, "-");
+    const date = new Date(normalizedDate);
+    return date.toLocaleDateString("ko-KR");
   };
 
   const handleExpClick = () => {
