@@ -40,8 +40,6 @@ const Onboarding = () => {
     if (currentSlide < onboardingImages.length - 1) {
       setDirection(1); // 오른쪽
       setCurrentSlide((prev) => prev + 1);
-    } else {
-      navigate("/main");
     }
   };
 
@@ -74,7 +72,7 @@ const Onboarding = () => {
       </SlideWrapper>
 
       {currentSlide === onboardingImages.length - 1 && (
-        <Button onClick={handleNextSlide}>시작하기 </Button>
+        <Button onClick={() => navigate("/main")}>시작하기 </Button>
       )}
     </Container>
   );
