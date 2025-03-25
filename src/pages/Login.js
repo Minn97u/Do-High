@@ -22,6 +22,30 @@ const Login = () => {
   //   }
   // }, [navigate]);
 
+  const fetchUserInfo = async () => {
+    console.log("fetchUserInfo() 실행됨");
+    try {
+      const response = await Axios.get("/member/");
+      const { responseType, success } = response.data;
+
+      if (responseType === "SUCCESS") {
+        console.log("사용자 정보 조회 성공", success);
+        const { token } = success;
+
+        if (!token) {
+          // 신규 유저: 온보딩 페이지로 이동
+          navigate("/onboarding");
+        } else {
+          // 기존 유저: 바로 메인 페이지로 이동
+          navigate("/main");
+        }
+      }
+    } catch (error) {
+      console.error("사용자 정보 조회 실패", error);
+      navigate("/auth/login"); // 오류 발생 시 로그인으로 다시 이동
+    }
+  };
+
   const handleLogin = async () => {
     const endpoint =
       userType === "admin" ? "/auth/admin/login" : "/auth/member/login";
@@ -52,7 +76,7 @@ const Login = () => {
         if (userType === "admin") {
           navigate("/admin");
         } else {
-          navigate("/main");
+          await fetchUserInfo();
         }
       } else if (responseType === "ERROR") {
         setErrorMessage(error.message || "로그인에 실패했습니다.");
@@ -139,9 +163,9 @@ const Tab = styled.div`
   flex: 1;
   text-align: center;
   font-weight: 500;
-  color: ${(props) => (props.active ? "black" : props.theme.colors.gray2)};
+  color: ${(props) => (props.$active ? "black" : props.theme.colors.gray2)};
   border-bottom: ${(props) =>
-    props.active ? `3px solid ${props.theme.colors.subBlue}` : "none"};
+    props.$active ? `3px solid ${props.theme.colors.subBlue}` : "none"};
 `;
 
 const InputContainer = styled.div`
