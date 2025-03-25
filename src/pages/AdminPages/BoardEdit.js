@@ -2,14 +2,15 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
 import backBtn from "../../assets/backBtn.svg";
-
 import { getPostById, updatePost } from "../../api/BoardApi";
+import ConfirmModal from "../../components/Modal";
 
 const BoardEdit = () => {
   const navigate = useNavigate();
   const { boardId } = useParams();
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
+  const [cancelModalOpen, setCancelModalOpen] = useState(false);
 
   const isButtonDisabled =
     title.trim().length === 0 || content.trim().length === 0;
@@ -45,10 +46,19 @@ const BoardEdit = () => {
     }
   };
 
+  const handleBackButton = () => {
+    setCancelModalOpen(true);
+  };
+
+  const handleCancelEdit = () => {
+    setCancelModalOpen(false);
+    navigate(`/boardList/${boardId}`);
+  };
+
   return (
     <Container>
       <Header>
-        <BackButton onClick={() => navigate(`/boardList/${boardId}`)}>
+        <BackButton onClick={handleBackButton}>
           <img src={backBtn} alt="뒤로가기" />
         </BackButton>
         <HeaderTitle>게시글 수정</HeaderTitle>
@@ -80,6 +90,14 @@ const BoardEdit = () => {
       >
         수정 완료
       </SubmitButton>
+
+      <ConfirmModal
+        isOpen={cancelModalOpen}
+        onClose={() => setCancelModalOpen(false)}
+        onConfirm={handleCancelEdit}
+        title="게시글 수정을 중단하시겠습니까?"
+        subtitle="수정사항은 삭제됩니다."
+      />
     </Container>
   );
 };
