@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import styled from "styled-components";
 import { getRecentExp } from "../api/ExpApi";
 import { getQuests } from "../api/QuestApi";
@@ -74,14 +74,22 @@ const ExperienceSection = () => {
   };
 
   const handleExpClick = () => {
-    navigate("/exp");
+    if (recentExp) {
+      navigate(`/exp?tab=${encodeURIComponent(recentExp.expName)}`);
+    } else {
+      navigate("/exp");
+    }
   };
 
   return (
     <ExperienceSectionContainer>
-      <SectionHeader onClick={handleExpClick}>
+      <SectionHeader
+        onClick={() => {
+          navigate("/exp?tab=전체");
+        }}
+      >
         <SectionTitle>최근에 {memberName}님이 받은 do예요!</SectionTitle>
-        <ArrowIcon src={backBtn} alt="More" onClick={handleExpClick} />
+        <ArrowIcon src={backBtn} alt="More" />
       </SectionHeader>
       {recentExp ? (
         <RecentDoCard onClick={handleExpClick}>
