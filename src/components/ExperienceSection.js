@@ -77,10 +77,6 @@ const ExperienceSection = () => {
     navigate("/exp");
   };
 
-  const handleQuestClick = () => {
-    navigate("/quest");
-  };
-
   return (
     <ExperienceSectionContainer>
       <SectionHeader onClick={handleExpClick}>
@@ -105,16 +101,27 @@ const ExperienceSection = () => {
         <EmptyMessage>최근 경험치가 없습니다.</EmptyMessage>
       )}
 
-      <SectionHeader onClick={handleQuestClick}>
+      <SectionHeader>
         <SectionTitle>{memberName}님이 수행한 퀘스트예요!</SectionTitle>
-        <ArrowIcon src={backBtn} alt="More" onClick={handleQuestClick} />
+        <ArrowIcon
+          src={backBtn}
+          alt="More"
+          onClick={() => navigate("/quest")}
+        />
       </SectionHeader>
       {quests && quests.length > 0 ? (
         <QuestList>
           {quests.map((quest, index) => {
             const coinType = quest.coin || "MAX";
             return (
-              <QuestCard key={index} onClick={handleQuestClick}>
+              <QuestCard
+                key={index}
+                onClick={() =>
+                  navigate(
+                    `/quest?tab=${quest.description}&year=${quest.year}&month=${quest.month}`
+                  )
+                }
+              >
                 <QuestTitle>{quest.expName}</QuestTitle>
                 <DottedLine />
                 <QuestIcon
@@ -223,6 +230,7 @@ const QuestCard = styled.div`
   border-radius: 20px;
   background-color: ${(props) => props.theme.colors.white};
   text-align: center;
+  cursor: pointer;
 `;
 
 const QuestTitle = styled.div`
