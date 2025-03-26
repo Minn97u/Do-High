@@ -32,7 +32,7 @@ const Quest = () => {
   const currentYear = new Date().getFullYear();
   const [selectedYear, setSelectedYear] = useState(String(currentYear));
   const [questType, setQuestType] = useState("월");
-  const [selectedMonth, setSelectedMonth] = useState(1);
+  const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1);
 
   const [apiData, setApiData] = useState(null);
   const [monthsData, setMonthsData] = useState(
