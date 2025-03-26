@@ -39,10 +39,10 @@ const useExpInfiniteScroll = (selectedTab, sortOption) => {
     getNextPageParam: (lastPage) => {
       const current = lastPage.currentPage;
       const total = lastPage.totalPages;
-      return current + 1 < total ? current + 2 : undefined;
+      return current < total ? current + 1 : undefined;
     },
-    staleTime: 30000,
-    cacheTime: 60000,
+    staleTime: 30000, // 데이터를 불러온 후 30초동안은 캐시된 데이터 사용
+    cacheTime: 60000, // 쿼리가 더 이상 화면에 마운트되어 사용되지 않아도 1분간 캐시 유지
   });
 };
 
