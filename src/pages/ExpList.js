@@ -88,6 +88,11 @@ const ExpList = () => {
     };
   }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
 
+  useEffect(() => {
+    setSortOption("최신순");
+    setSortOpen(false); // 드롭다운 닫기
+  }, [selectedTab]);
+
   const handleSortClick = () => setSortOpen((prev) => !prev);
   const handleSortSelect = (option) => {
     setSortOption(option);
@@ -183,6 +188,7 @@ const ExpList = () => {
               </ItemRight>
             </ListItem>
           ))}
+          <div ref={observerRef} />
         </ListContainer>
       )}
     </Container>
