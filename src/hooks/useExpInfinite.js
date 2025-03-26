@@ -16,11 +16,11 @@ const apiMap = {
 };
 
 const sortMap = {
-  최신순: ["date,DESC"],
-  오래된순: ["date,ASC"],
+  최신순: ["DESC"],
+  오래된순: ["ASC"],
 };
 
-const useExpInfiniteScroll = (selectedTab, sortOption) => {
+const useExpInfinite = (selectedTab, sortOption) => {
   return useInfiniteQuery({
     queryKey: ["exp", selectedTab, sortOption],
     queryFn: async ({ pageParam = 1 }) => {
@@ -46,4 +46,4 @@ const useExpInfiniteScroll = (selectedTab, sortOption) => {
   });
 };
 
-export default useExpInfiniteScroll;
+export default useExpInfinite;
