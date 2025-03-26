@@ -1,90 +1,50 @@
-import React, { useEffect, useRef, useState, useCallback } from "react";
-import styled from "styled-components";
 import dayjs from "dayjs";
-import { getPosts } from "../api/BoardApi";
+import React, { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import styled from "styled-components";
 import backBtn from "../assets/backBtn.svg";
 import dropdownArrow from "../assets/dropdown.svg";
 import writeIcon from "../assets/write.svg";
-import { useNavigate } from "react-router-dom";
+import useBoardInfinite from "../hooks/useBoardInfinite";
 
 const BoardList = () => {
   const navigate = useNavigate();
-
   const [sortOpen, setSortOpen] = useState(false);
   const [sortOption, setSortOption] = useState("최신순");
-
-  const [posts, setPosts] = useState([]);
-  const [page, setPage] = useState(1);
-  const size = 10;
-  const [totalPages, setTotalPages] = useState(1);
   const isAdmin = localStorage.getItem("isAdmin") === "true";
+  const observerRef = useRef();
 
-  const observerTarget = useRef(null);
+  const {
+    data,
+    isLoading,
+    isError,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useBoardInfinite(sortOption);
 
-  // 정렬 옵션을 "createdAt,DESC" or "createdAt,ASC"로 변환
-  const getSortParam = () =>
-    sortOption === "최신순" ? "createdAt,DESC" : "createdAt,ASC";
+  const posts = data?.pages.flatMap((page) => page.posts) ?? [];
 
-  // 게시글 목록 불러오기 (page 증가 시마다 호출)
-  const fetchPosts = useCallback(
-    async (pageNum) => {
-      try {
-        const sortParam = getSortParam();
-        const data = await getPosts(pageNum, size, sortParam);
-        // data: { totalPostCount, totalPages, currentPage, posts: [...] }
-
-        // 기존 목록 + 새로 불러온 목록 누적
-        setPosts((prev) => [...prev, ...data.posts]);
-        setTotalPages(data.totalPages);
-      } catch (error) {
-        console.error("게시글 조회 실패:", error.message);
-      }
-    },
-    [sortOption]
-  );
-
-  // 초기 로드 + sort 변경 시 page=1부터 다시 불러오기
   useEffect(() => {
-    setPosts([]);
-    setPage(1);
-    setTotalPages(1);
-  }, [sortOption]);
+    if (!hasNextPage || isFetchingNextPage) return;
 
-  // page 변경 시 fetchPosts 호출
-  useEffect(() => {
-    fetchPosts(page);
-  }, [page, fetchPosts]);
-
-  // Intersection Observer 로 마지막 요소 관찰
-  // 마지막 요소가 보이면 page+1 (다음 페이지) 요청
-  useEffect(() => {
     const observer = new IntersectionObserver(
-      (entries) => {
-        const target = entries[0];
-        if (target.isIntersecting) {
-          setPage((prev) => prev + 1);
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          fetchNextPage();
         }
       },
-      {
-        threshold: 0.5,
-      }
+      { threshold: 0.5 }
     );
 
-    if (observerTarget.current) {
-      observer.observe(observerTarget.current);
+    if (observerRef.current) {
+      observer.observe(observerRef.current);
     }
-    return () => {
-      if (observerTarget.current) observer.unobserve(observerTarget.current);
-    };
-  }, []);
 
-  // 페이지가 totalPages를 초과하면 더 이상 요청 X
-  useEffect(() => {
-    if (page > totalPages) {
-      // observerTarget disconnect or unobserve
-      // 혹은 observerTarget.current를 숨겨도 됨
-    }
-  }, [page, totalPages]);
+    return () => {
+      if (observerRef.current) observer.unobserve(observerRef.current);
+    };
+  }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
 
   const handleSortClick = () => {
     setSortOpen((prev) => !prev);
@@ -140,7 +100,7 @@ const BoardList = () => {
             <ItemDate>작성일 {formatDate(post.createdAt)}</ItemDate>
           </ListItem>
         ))}
-        {page <= totalPages && <ObserverTarget ref={observerTarget} />}
+        {hasNextPage && <ObserverTarget ref={observerRef} />}
       </ListContainer>
 
       {isAdmin && (

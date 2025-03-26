@@ -1,22 +1,14 @@
 import { Axios } from "./Axios";
 
-//게시글 전체 조회ㄴ
+//게시글 전체 조회
 // BoardApi.js
-export const getPosts = async (
-  page = 1,
-  size = 10,
-  sort = "createdAt,DESC"
-) => {
+export const getPosts = async (page, size, order) => {
   try {
     const response = await Axios.get("/posts", {
-      params: { page, size, sort },
+      params: { page, size, sort: `createdAt,${order}` },
     });
-    if (response.data.responseType === "SUCCESS") {
-      // data: { totalPostCount, totalPages, currentPage, posts: [...] }
-      return response.data.success;
-    } else {
-      throw new Error(response.data.error?.message);
-    }
+    console.log(response.data);
+    return response.data;
   } catch (error) {
     throw error;
   }
@@ -25,9 +17,9 @@ export const getPosts = async (
 //게시글 단건 조회
 export const getPostById = async (postId) => {
   try {
-    const response = await Axios.get("/posts/${postId}");
+    const response = await Axios.get(`/posts/${postId}`);
     if (response.data.responseType === "SUCCESS") {
-      return response.data.success;
+      return response.data;
     } else {
       throw new Error(response.data.error?.message);
     }
@@ -54,7 +46,7 @@ export const createPost = async (title, content) => {
 //게시글 삭제
 export const deletePostById = async (postId) => {
   try {
-    const response = await Axios.delete("/posts/${postId}");
+    const response = await Axios.delete(`/posts/${postId}`);
     if (response.data.responseType === "SUCCESS") {
       return response.data.success;
     } else {

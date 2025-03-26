@@ -7,12 +7,7 @@ import expListInfo1 from "../assets/expListInfo1.svg";
 import expListInfo2 from "../assets/expListInfo2.svg";
 import expListInfo3 from "../assets/expListInfo3.svg";
 import infoIcon from "../assets/info.svg";
-import useExpInfiniteScroll from "../hooks/useExpInfinite.js";
-
-const orderMap = {
-  최신순: "desc",
-  오래된순: "asc",
-};
+import useExpInfinite from "../hooks/useExpInfinite.js";
 
 const coinMap = {
   S: require("../assets/coin/S.svg").default,
@@ -53,7 +48,7 @@ const ExpList = () => {
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
-  } = useExpInfiniteScroll(selectedTab, sortOption);
+  } = useExpInfinite(selectedTab, sortOption);
 
   const expList = data?.pages.flatMap((page) => page.exps) ?? [];
 
@@ -83,7 +78,7 @@ const ExpList = () => {
           fetchNextPage();
         }
       },
-      { threshold: 1 }
+      { threshold: 0.5 }
     );
 
     if (observerRef.current) {
@@ -198,7 +193,7 @@ const ExpList = () => {
               </ItemRight>
             </ListItem>
           ))}
-          <div ref={observerRef} />
+          {hasNextPage && <ObserverTarget ref={observerRef} />}
         </ListContainer>
       )}
     </Container>
@@ -418,4 +413,9 @@ const ItemPoints = styled.div`
   ${(props) => props.theme.fonts.semiBold};
   font-size: 24px;
   color: ${(props) => props.theme.colors.mainC};
+`;
+
+const ObserverTarget = styled.div`
+  width: 100%;
+  height: 30px;
 `;

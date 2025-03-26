@@ -201,6 +201,9 @@ const PostDate = styled.p`
 const PostContent = styled.div`
   ${(props) => props.theme.fonts.regular};
   font-size: 16px;
+  width: 100%;
+  min-height: 400px;
   color: ${(props) => props.theme.colors.black2};
   white-space: pre-line;
+  overflow-wrap: break-word;
 `;
