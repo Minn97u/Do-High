@@ -17,7 +17,7 @@ export const getPosts = async (page, size, order) => {
 //게시글 단건 조회
 export const getPostById = async (postId) => {
   try {
-    const response = await Axios.get("/posts/${postId}");
+    const response = await Axios.get(`/posts/${postId}`);
     if (response.data.responseType === "SUCCESS") {
       return response.data;
     } else {
@@ -46,7 +46,7 @@ export const createPost = async (title, content) => {
 //게시글 삭제
 export const deletePostById = async (postId) => {
   try {
-    const response = await Axios.delete("/posts/${postId}");
+    const response = await Axios.delete(`/posts/${postId}`);
     if (response.data.responseType === "SUCCESS") {
       return response.data.success;
     } else {
