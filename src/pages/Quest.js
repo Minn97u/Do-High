@@ -1,4 +1,5 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useEffect } from "react";
+import { useSearchParams, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { Axios } from "../api/Axios";
 import infoIcon from "../assets/info.svg";
@@ -21,27 +22,38 @@ const getCoinImage = (coin) => {
 };
 
 const Quest = () => {
-  const [questList, setQuestList] = useState([]);
-  const [selectedQuest, setSelectedQuest] = useState(null);
-  const [menuOpen, setMenuOpen] = useState(false);
+  const [searchParams, setSearchParams] = useSearchParams();
 
-  const [infoOpen, setInfoOpen] = useState(false);
+  const initialTab = searchParams.get("tab") || "default";
+  const initialYear =
+    searchParams.get("year") || String(new Date().getFullYear());
+  const initialMonth =
+    Number(searchParams.get("month")) || new Date().getMonth() + 1;
 
-  const cardContainerRef = useRef(null);
-
-  const currentYear = new Date().getFullYear();
-  const [selectedYear, setSelectedYear] = useState(String(currentYear));
+  const [selectedTab, setSelectedTab] = useState(initialTab);
+  const [selectedYear, setSelectedYear] = useState(initialYear);
+  const [selectedMonth, setSelectedMonth] = useState(initialMonth);
   const [questType, setQuestType] = useState("월");
-  const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1);
-
   const [apiData, setApiData] = useState(null);
   const [monthsData, setMonthsData] = useState(
     Array.from({ length: 12 }, (_, i) => ({ month: i + 1, coin: null }))
   );
   const [weeksData, setWeeksData] = useState([]);
   const [activities, setActivities] = useState([]);
-
   const [weekInfo, setWeekInfo] = useState([]);
+  const [questList, setQuestList] = useState([]);
+  const [selectedQuest, setSelectedQuest] = useState(null);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [infoOpen, setInfoOpen] = useState(false);
+  const cardContainerRef = React.useRef(null);
+
+  useEffect(() => {
+    setSearchParams({
+      tab: selectedTab,
+      year: selectedYear,
+      month: selectedMonth,
+    });
+  }, [selectedTab, selectedYear, selectedMonth, setSearchParams]);
 
   useEffect(() => {
     const fetchQuestList = async () => {
@@ -50,8 +62,14 @@ const Quest = () => {
         if (res.data.responseType === "SUCCESS") {
           const list = res.data.success;
           setQuestList(list);
-          if (list.length > 0) {
+          const found = list.find(
+            (item) => item.questName.toLowerCase() === selectedTab.toLowerCase()
+          );
+          if (found) {
+            setSelectedQuest(found);
+          } else if (list.length > 0) {
             setSelectedQuest(list[0]);
+            setSelectedTab(list[0].questName);
           }
         } else {
           console.error("QuestList API 에러:", res.data.error?.message);
@@ -61,7 +79,7 @@ const Quest = () => {
       }
     };
     fetchQuestList();
-  }, []);
+  }, [selectedTab]);
 
   useEffect(() => {
     const fetchWeekInfo = async () => {
@@ -84,6 +102,7 @@ const Quest = () => {
   const handleMenuSelect = (item) => {
     setSelectedQuest(item);
     setMenuOpen(false);
+    setSelectedTab(item.questName);
   };
 
   useEffect(() => {
@@ -196,8 +215,14 @@ const Quest = () => {
 
   const handleYearChange = (direction) => {
     const yearNum = Number(selectedYear);
-    if (direction === 1 && questType === "월" && yearNum >= currentYear) return;
-    setSelectedYear(String(yearNum + direction));
+    if (
+      direction === 1 &&
+      questType === "월" &&
+      yearNum >= new Date().getFullYear()
+    )
+      return;
+    const newYear = String(yearNum + direction);
+    setSelectedYear(newYear);
   };
 
   const handleWeekModeMonthChange = (direction) => {
@@ -210,7 +235,7 @@ const Quest = () => {
       newMonth = 1;
       newYear += 1;
     }
-    if (newYear > currentYear) return;
+    if (newYear > new Date().getFullYear()) return;
     setSelectedYear(String(newYear));
     setSelectedMonth(newMonth);
   };
@@ -261,7 +286,7 @@ const Quest = () => {
             <Year>{selectedYear}년</Year>
             <Arrow
               onClick={() => handleYearChange(1)}
-              disabled={Number(selectedYear) >= currentYear}
+              disabled={Number(selectedYear) >= new Date().getFullYear()}
             >
               &gt;
             </Arrow>
