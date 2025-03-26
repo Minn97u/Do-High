@@ -1,18 +1,12 @@
 import dayjs from "dayjs";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
-import {
-  getCpExp,
-  getExpList,
-  getJqExp,
-  getLqExp,
-  getPfExp,
-} from "../api/ExpApi";
 import dropdownArrow from "../assets/dropdown.svg";
 import expListInfo1 from "../assets/expListInfo1.svg";
 import expListInfo2 from "../assets/expListInfo2.svg";
 import expListInfo3 from "../assets/expListInfo3.svg";
 import infoIcon from "../assets/info.svg";
+import useExpInfiniteScroll from "../hooks/useExpInfinite.js";
 
 const orderMap = {
   최신순: "desc",
@@ -43,9 +37,20 @@ const ExpList = () => {
   const [infoOpen, setInfoOpen] = useState(false);
   const [sortOption, setSortOption] = useState("최신순");
   const [selectedTab, setSelectedTab] = useState("전체");
-  const [expList, setExpList] = useState([]);
   const [loading, setLoading] = useState(false);
   const infoRef = useRef(null);
+  const observerRef = useRef();
+
+  const {
+    data,
+    isLoading,
+    isError,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useExpInfiniteScroll(selectedTab, sortOption);
+
+  const expList = data?.pages.flatMap((page) => page.exps) ?? [];
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -60,57 +65,39 @@ const ExpList = () => {
     };
   }, []);
 
-  const fetchExpList = useCallback(async () => {
-    setLoading(true);
-    try {
-      const order = orderMap[sortOption];
-      let data;
-      if (selectedTab === "전체") {
-        data = await getExpList(order);
-      } else if (selectedTab === "인사평가") {
-        data = await getPfExp(order);
-      } else if (selectedTab === "직무 퀘스트") {
-        data = await getJqExp(order);
-      } else if (selectedTab === "리더 퀘스트") {
-        data = await getLqExp(order);
-      } else if (selectedTab === "전사 프로젝트") {
-        data = await getCpExp(order);
-      }
-
-      if (data.responseType === "SUCCESS") {
-        setExpList(data.success.exps);
-      } else {
-        console.error("데이터 로드 실패:", data.error?.message);
-        setExpList([]);
-      }
-    } catch (error) {
-      console.error("API 호출 오류:", error.message);
-    } finally {
-      setLoading(false);
-    }
-  }, [selectedTab, sortOption]);
-
   useEffect(() => {
-    fetchExpList();
-  }, [fetchExpList]);
+    if (!hasNextPage || isFetchingNextPage) return;
 
-  const handleSortClick = () => {
-    setSortOpen((prev) => !prev);
-  };
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          fetchNextPage();
+        }
+      },
+      { threshold: 1 }
+    );
 
+    if (observerRef.current) {
+      observer.observe(observerRef.current);
+    }
+
+    return () => {
+      if (observerRef.current) {
+        observer.unobserve(observerRef.current);
+      }
+    };
+  }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
+
+  const handleSortClick = () => setSortOpen((prev) => !prev);
   const handleSortSelect = (option) => {
     setSortOption(option);
     setSortOpen(false);
   };
-
   const handleTabClick = (tab) => {
     setSelectedTab(tab);
     setInfoOpen(false);
   };
-
-  const handleInfoClick = () => {
-    setInfoOpen((prev) => !prev);
-  };
+  const handleInfoClick = () => setInfoOpen((prev) => !prev);
 
   const formatDate = (dateString) => {
     const normalizedDate = dateString.replace(/\./g, "-");
@@ -130,6 +117,77 @@ const ExpList = () => {
         return null;
     }
   };
+
+  // const fetchExpList = useCallback(async () => {
+  //   setLoading(true);
+  //   try {
+  //     const order = orderMap[sortOption];
+  //     let data;
+  //     if (selectedTab === "전체") {
+  //       data = await getExpList(order);
+  //     } else if (selectedTab === "인사평가") {
+  //       data = await getPfExp(order);
+  //     } else if (selectedTab === "직무 퀘스트") {
+  //       data = await getJqExp(order);
+  //     } else if (selectedTab === "리더 퀘스트") {
+  //       data = await getLqExp(order);
+  //     } else if (selectedTab === "전사 프로젝트") {
+  //       data = await getCpExp(order);
+  //     }
+
+  //     if (data.responseType === "SUCCESS") {
+  //       setExpList(data.success.exps);
+  //     } else {
+  //       console.error("데이터 로드 실패:", data.error?.message);
+  //       setExpList([]);
+  //     }
+  //   } catch (error) {
+  //     console.error("API 호출 오류:", error.message);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // }, [selectedTab, sortOption]);
+
+  // useEffect(() => {
+  //   fetchExpList();
+  // }, [fetchExpList]);
+
+  // const handleSortClick = () => {
+  //   setSortOpen((prev) => !prev);
+  // };
+
+  // const handleSortSelect = (option) => {
+  //   setSortOption(option);
+  //   setSortOpen(false);
+  // };
+
+  // const handleTabClick = (tab) => {
+  //   setSelectedTab(tab);
+  //   setInfoOpen(false);
+  // };
+
+  // const handleInfoClick = () => {
+  //   setInfoOpen((prev) => !prev);
+  // };
+
+  // const formatDate = (dateString) => {
+  //   const normalizedDate = dateString.replace(/\./g, "-");
+  //   return dayjs(normalizedDate).format("YYYY.MM.DD");
+  // };
+
+  // const getInfoImage = () => {
+  //   switch (selectedTab) {
+  //     case "직무 퀘스트":
+  //       return expListInfo1;
+  //     case "인사평가":
+  //       return expListInfo2;
+  //     case "리더 퀘스트":
+  //     case "전사 프로젝트":
+  //       return expListInfo3;
+  //     default:
+  //       return null;
+  // }
+  // };
 
   return (
     <Container>
@@ -152,7 +210,7 @@ const ExpList = () => {
 
         <SortBar hasInfoIcon={selectedTab !== "전체"}>
           {selectedTab !== "전체" && (
-            <InfoIconWrapper onClick={handleInfoClick}>
+            <InfoIconWrapper onClick={handleInfoClick} info={infoRef}>
               <InfoIcon src={infoIcon} alt="정보" />
               {infoOpen && <InfoImage src={getInfoImage()} alt="정보 설명" />}
             </InfoIconWrapper>
