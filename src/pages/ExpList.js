@@ -183,7 +183,7 @@ const ExpList = () => {
               </ItemRight>
             </ListItem>
           ))}
-          <div ref={observerRef} />
+          {hasNextPage && <ObserverTarget ref={observerRef} />}
         </ListContainer>
       )}
     </Container>
@@ -402,4 +402,9 @@ const ItemPoints = styled.div`
   ${(props) => props.theme.fonts.semiBold};
   font-size: 24px;
   color: ${(props) => props.theme.colors.mainC};
+`;
+
+const ObserverTarget = styled.div`
+  width: 100%;
+  height: 30px;
 `;
