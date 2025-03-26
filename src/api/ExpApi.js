@@ -1,11 +1,13 @@
 import { Axios } from "./Axios";
 
 // 전체 경험치 목록 조회
-export const getExpList = async (order) => {
+export const getExpList = async (page, size, order) => {
   try {
     const response = await Axios.get(`/exp/list`, {
       params: {
-        order,
+        page,
+        size,
+        sort: `date,${order}`,
       },
     });
     return response.data;
@@ -38,10 +40,10 @@ export const getRecentExp = async () => {
 };
 
 // 인사평가 경험치 목록 조회
-export const getPfExp = async (order) => {
+export const getPfExp = async (page, size, order) => {
   try {
     const response = await Axios.get(`/exp/pf`, {
-      params: { order },
+      params: { page, size, sort: `date,${order}` },
     });
     return response.data;
   } catch (error) {
@@ -51,10 +53,10 @@ export const getPfExp = async (order) => {
 };
 
 // 리더부여퀘스트 경험치 목록 조회
-export const getLqExp = async (order) => {
+export const getLqExp = async (page, size, order) => {
   try {
     const response = await Axios.get(`/exp/lq`, {
-      params: { order },
+      params: { page, size, sort: `date,${order}` },
     });
     return response.data;
   } catch (error) {
@@ -64,10 +66,10 @@ export const getLqExp = async (order) => {
 };
 
 // 직무퀘스트 경험치 목록 조회
-export const getJqExp = async (order) => {
+export const getJqExp = async (page, size, order) => {
   try {
     const response = await Axios.get(`/exp/jq`, {
-      params: { order },
+      params: { page, size, sort: `date,${order}` },
     });
     return response.data;
   } catch (error) {
@@ -77,10 +79,10 @@ export const getJqExp = async (order) => {
 };
 
 // 전사프로젝트 경험치 목록 조회
-export const getCpExp = async (order) => {
+export const getCpExp = async (page, size, order) => {
   try {
     const response = await Axios.get(`/exp/cp`, {
-      params: { order },
+      params: { page, size, sort: `date,${order}` },
     });
     return response.data;
   } catch (error) {
