@@ -27,7 +27,7 @@ const BoardDetail = () => {
       try {
         const postId = Number(boardId);
         const data = await getPostById(postId);
-        setPost(data);
+        setPost(data.success);
       } catch (error) {
         console.error("게시글 상세 조회 실패:", error.message);
       }
