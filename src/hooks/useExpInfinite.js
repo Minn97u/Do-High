@@ -10,9 +10,9 @@ import {
 const apiMap = {
   전체: getExpList,
   인사평가: getPfExp,
-  "직무 퀘스트": getJqExp,
-  "리더 퀘스트": getLqExp,
-  "전사 프로젝트": getCpExp,
+  직무퀘스트: getJqExp,
+  리더퀘스트: getLqExp,
+  전사프로젝트: getCpExp,
 };
 
 const sortMap = {

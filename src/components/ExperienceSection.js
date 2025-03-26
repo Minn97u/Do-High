@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import styled from "styled-components";
 import { getRecentExp } from "../api/ExpApi";
 import { getQuests } from "../api/QuestApi";
@@ -74,18 +74,22 @@ const ExperienceSection = () => {
   };
 
   const handleExpClick = () => {
-    navigate("/exp");
-  };
-
-  const handleQuestClick = () => {
-    navigate("/quest");
+    if (recentExp) {
+      navigate(`/exp?tab=${encodeURIComponent(recentExp.expName)}`);
+    } else {
+      navigate("/exp");
+    }
   };
 
   return (
     <ExperienceSectionContainer>
-      <SectionHeader onClick={handleExpClick}>
+      <SectionHeader
+        onClick={() => {
+          navigate("/exp?tab=전체");
+        }}
+      >
         <SectionTitle>최근에 {memberName}님이 받은 do예요!</SectionTitle>
-        <ArrowIcon src={backBtn} alt="More" onClick={handleExpClick} />
+        <ArrowIcon src={backBtn} alt="More" />
       </SectionHeader>
       {recentExp ? (
         <RecentDoCard onClick={handleExpClick}>
@@ -105,16 +109,27 @@ const ExperienceSection = () => {
         <EmptyMessage>최근 경험치가 없습니다.</EmptyMessage>
       )}
 
-      <SectionHeader onClick={handleQuestClick}>
+      <SectionHeader>
         <SectionTitle>{memberName}님이 수행한 퀘스트예요!</SectionTitle>
-        <ArrowIcon src={backBtn} alt="More" onClick={handleQuestClick} />
+        <ArrowIcon
+          src={backBtn}
+          alt="More"
+          onClick={() => navigate("/quest")}
+        />
       </SectionHeader>
       {quests && quests.length > 0 ? (
         <QuestList>
           {quests.map((quest, index) => {
             const coinType = quest.coin || "MAX";
             return (
-              <QuestCard key={index} onClick={handleQuestClick}>
+              <QuestCard
+                key={index}
+                onClick={() =>
+                  navigate(
+                    `/quest?tab=${quest.description}&year=${quest.year}&month=${quest.month}`
+                  )
+                }
+              >
                 <QuestTitle>{quest.expName}</QuestTitle>
                 <DottedLine />
                 <QuestIcon
@@ -223,6 +238,7 @@ const QuestCard = styled.div`
   border-radius: 20px;
   background-color: ${(props) => props.theme.colors.white};
   text-align: center;
+  cursor: pointer;
 `;
 
 const QuestTitle = styled.div`
