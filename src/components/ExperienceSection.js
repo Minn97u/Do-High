@@ -109,13 +109,9 @@ const ExperienceSection = () => {
         <EmptyMessage>최근 경험치가 없습니다.</EmptyMessage>
       )}
 
-      <SectionHeader>
+      <SectionHeader onClick={() => navigate("/quest")}>
         <SectionTitle>{memberName}님이 수행한 퀘스트예요!</SectionTitle>
-        <ArrowIcon
-          src={backBtn}
-          alt="More"
-          onClick={() => navigate("/quest")}
-        />
+        <ArrowIcon src={backBtn} alt="More" />
       </SectionHeader>
       {quests && quests.length > 0 ? (
         <QuestList>
