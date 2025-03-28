@@ -92,7 +92,7 @@ const Login = () => {
       <img src={logo} alt="logo" />
       <TabContainer>
         <Tab
-          active={userType === "general"}
+          $active={userType === "general"}
           onClick={() => {
             setUserType("general");
             setId("");
@@ -102,7 +102,7 @@ const Login = () => {
           두핸더
         </Tab>
         <Tab
-          active={userType === "admin"}
+          $active={userType === "admin"}
           onClick={() => {
             setUserType("admin");
             setId("");
