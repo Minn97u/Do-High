@@ -90,7 +90,7 @@ const Wrapper = styled.div`
 
   width: 100vw;
   height: 100vh;
-  background-color: #ffffff;
+  background-color: #f7f8fa;
 `;
 
 const Container = styled.div`
