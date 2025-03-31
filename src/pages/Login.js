@@ -4,8 +4,7 @@ import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { Axios } from "../api/Axios";
 import logo from "../assets/logo.svg";
-// import { getFCMToken } from "../firebase";
-// import { handleAllowNotification } from "../NotificationFunc";
+import { handleAllowNotification } from "../NotificationFunc";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -15,13 +14,7 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
 
-  // useEffect(() => {
-  //   const token = localStorage.getItem("accessToken");
-  //   if (token) {
-  //     navigate("/main");
-  //   }
-  // }, [navigate]);
-
+  // 로그인 후 사용자 정보 확인(기존/신규 구분) 함수
   const fetchUserInfo = async () => {
     console.log("fetchUserInfo() 실행됨");
     try {
@@ -46,6 +39,7 @@ const Login = () => {
     }
   };
 
+  // 로그인 처리 함수
   const handleLogin = async () => {
     const endpoint =
       userType === "admin" ? "/auth/admin/login" : "/auth/member/login";
@@ -59,20 +53,29 @@ const Login = () => {
       const { responseType, success, error } = response.data;
 
       if (responseType === "SUCCESS") {
-        // await handleAllowNotification();
-
+        // 1) JWT 토큰, 사용자 타입 저장
         localStorage.setItem("accessToken", success.jwtToken);
         localStorage.setItem("isAdmin", userType === "admin");
 
-        // if (userType === "general") {
-        //   const fcmToken = await getFCMToken();
-        //   if (fcmToken) {
-        //     await Axios.post("/member/uuid", {
-        //       token: fcmToken,
-        //     });
-        //   }
-        // }
+        // 2) 일반 유저라면 알림 권한 요청 + FCM 토큰 서버에 전송 (토큰 획득 실패해도 로그인 진행)
+        if (userType === "general") {
+          try {
+            const fcmToken = await handleAllowNotification();
+            if (fcmToken) {
+              console.log("획득한 FCM Token:", fcmToken);
+              const tokenResponse = await Axios.post("/member/uuid", {
+                token: fcmToken,
+              });
+              console.log("FCM 토큰 전송 성공:", tokenResponse.data);
+            } else {
+              console.warn("FCM 토큰을 받지 못했습니다. 계속 진행합니다.");
+            }
+          } catch (e) {
+            console.error("FCM 토큰 처리 중 에러 발생:", e);
+          }
+        }
 
+        // 3) 라우팅
         if (userType === "admin") {
           navigate("/admin");
         } else {
@@ -81,9 +84,9 @@ const Login = () => {
       } else if (responseType === "ERROR") {
         setErrorMessage(error.message || "로그인에 실패했습니다.");
       }
-    } catch (error) {
+    } catch (err) {
       alert("로그인에 실패했습니다. 다시 시도해주세요");
-      console.error(error);
+      console.error(err);
     }
   };
 

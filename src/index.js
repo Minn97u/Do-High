@@ -5,24 +5,17 @@ import { ThemeProvider } from "styled-components";
 import GlobalStyle from "./styles/GlobalStyle";
 import { Theme } from "./styles/Theme";
 import { BrowserRouter } from "react-router-dom";
-// import { handleAllowNotification } from "./NotificationFunc";
 
-// 서비스 워커 등록 함수
-// const registerServiceWorker = async () => {
-//   if ("serviceWorker" in navigator) {
-//     try {
-//       const registration = await navigator.serviceWorker.register(
-//         "../firebase-messaging-sw.js"
-//       );
-//       console.log("Service Worker registered with scope:", registration.scope);
-//     } catch (error) {
-//       console.error("Service Worker registration failed:", error);
-//     }
-//   }
-// };
-
-// handleAllowNotification();
-// registerServiceWorker();
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker
+    .register("/firebase-messaging-sw.js")
+    .then((registration) => {
+      console.log("Service Worker 등록 성공:", registration);
+    })
+    .catch((err) => {
+      console.error("Service Worker 등록 실패:", err);
+    });
+}
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
@@ -33,5 +26,5 @@ root.render(
         <App />
       </BrowserRouter>
     </ThemeProvider>
-  </React.StrictMode>,
+  </React.StrictMode>
 );

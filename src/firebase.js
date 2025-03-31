@@ -30,7 +30,7 @@ const getFCMToken = async () => {
     const token = await getToken(messaging, { vapidKey });
     if (token) {
       console.log("FCM Token:", token);
-      return token; // 토큰을 반환
+      return token;
     } else {
       console.error("FCM token not available.");
       return null;
@@ -42,17 +42,6 @@ const getFCMToken = async () => {
 };
 
 // 푸시 알림을 수신하는 처리 함수
-// const handleIncomingMessages = () => {
-//   onMessage(messaging, (payload) => {
-//     console.log("Message received. ", payload);
-//     // 알림 표시
-//     new Notification(payload.notification.title, {
-//       body: payload.notification.body,
-//     });
-//   });
-// };
-
-// 푸시 알림을 수신하는 처리 함수
 const handleIncomingMessages = () => {
   onMessage(messaging, (payload) => {
     console.log("Message received. ", payload);
@@ -61,7 +50,7 @@ const handleIncomingMessages = () => {
     const { title, body } = payload.notification;
     new Notification(title, {
       body: body,
-      icon: payload.notification.icon || "/default-icon.png",
+      icon: payload.notification.icon || "../public/dohigh.png",
     });
 
     // // 알림 클릭 시 동작 처리
@@ -79,4 +68,4 @@ const initializeFCM = () => {
   handleIncomingMessages();
 };
 
-export { messaging, initializeFCM, getFCMToken };
+export { messaging, initializeFCM, getFCMToken, handleIncomingMessages };
