@@ -51,42 +51,55 @@ const Onboarding = () => {
   };
 
   return (
-    <Container {...handlers}>
-      <SlideWrapper>
-        <AnimatePresence initial={false} custom={direction}>
-          <Slide
-            key={currentSlide}
-            custom={direction}
-            variants={slideVariants} // variants 사용하여 방향 지정
-            initial="enter"
-            animate="center"
-            exit="exit"
-            transition={{ type: "spring", stiffness: 300, damping: 30 }}
-          >
-            <img
-              src={onboardingImages[currentSlide]}
-              alt={`Onboarding ${currentSlide + 1}`}
-            />
-          </Slide>
-        </AnimatePresence>
-      </SlideWrapper>
+    <Wrapper>
+      <Container {...handlers}>
+        <SlideWrapper>
+          <AnimatePresence initial={false} custom={direction}>
+            <Slide
+              key={currentSlide}
+              custom={direction}
+              variants={slideVariants} // variants 사용하여 방향 지정
+              initial="enter"
+              animate="center"
+              exit="exit"
+              transition={{ type: "spring", stiffness: 300, damping: 30 }}
+            >
+              <img
+                src={onboardingImages[currentSlide]}
+                alt={`Onboarding ${currentSlide + 1}`}
+                draggable={false}
+              />
+            </Slide>
+          </AnimatePresence>
+        </SlideWrapper>
 
-      {currentSlide === onboardingImages.length - 1 && (
-        <Button onClick={() => navigate("/main")}>시작하기 </Button>
-      )}
-    </Container>
+        {currentSlide === onboardingImages.length - 1 && (
+          <Button onClick={() => navigate("/main")}>시작하기 </Button>
+        )}
+      </Container>
+    </Wrapper>
   );
 };
 
 export default Onboarding;
+
+const Wrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  width: 100vw;
+  height: 100vh;
+  background-color: #ffffff;
+`;
 
 const Container = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 100vh;
-  width: 100vw;
+  width: 390px;
+  height: 844px;
   position: relative;
   overflow: hidden;
   touch-action: pan-y;
@@ -101,16 +114,19 @@ const SlideWrapper = styled.div`
 `;
 
 const Slide = styled(motion.div)`
-  flex: 0 0 100%;
+  display: flex;
   position: absolute;
   width: 100%;
   height: 100%;
+  background-color: #f7f8fa;
   opacity: ${(props) => (props.$active ? "1" : "0")};
+  justify-content: center;
+  align-items: center;
 
   img {
-    width: 100vw;
-    height: 100vh;
-    object-fit: cover;
+    width: 80%;
+    height: auto;
+    object-fit: contain;
   }
 `;
 
