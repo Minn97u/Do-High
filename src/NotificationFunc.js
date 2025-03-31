@@ -1,13 +1,21 @@
-import { initializeFCM } from "./firebase";
+import { getFCMToken, handleIncomingMessages } from "./firebase";
 
 export async function handleAllowNotification() {
-  // 알림 권한 요청
-  const permission = await Notification.requestPermission();
+  // 이미 권한이 허용되었으면 바로 토큰 획득
+  if (Notification.permission === "granted") {
+    const token = await getFCMToken();
+    handleIncomingMessages();
+    return token;
+  }
 
-  // 권한이 허용되었으면 서비스 워커 등록하고, FCM 토큰 가져오기
+  // 만약 권한이 "default" (아직 선택 안함) 이라면 요청
+  const permission = await Notification.requestPermission();
   if (permission === "granted") {
-    initializeFCM();
+    const token = await getFCMToken();
+    handleIncomingMessages();
+    return token;
   } else {
-    console.error("Notification permission denied.");
+    console.error("Notification permission denied or not granted.");
+    return null;
   }
 }
