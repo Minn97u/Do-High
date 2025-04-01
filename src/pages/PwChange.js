@@ -128,6 +128,7 @@ const PwChange = () => {
             />
 
             <ToggleButton
+              type="button"
               onClick={() => setShowCurrentPassword(!showCurrentPassword)}
             >
               {showCurrentPassword ? <IoEye /> : <IoEyeOff />}
@@ -155,7 +156,10 @@ const PwChange = () => {
                 },
               })}
             />
-            <ToggleButton onClick={() => setShowNewPassword(!showNewPassword)}>
+            <ToggleButton
+              type="button"
+              onClick={() => setShowNewPassword(!showNewPassword)}
+            >
               {showNewPassword ? <IoEye /> : <IoEyeOff />}
             </ToggleButton>
           </PasswordContainer>
@@ -181,6 +185,7 @@ const PwChange = () => {
               })}
             />
             <ToggleButton
+              type="button"
               onClick={() => setShowConfirmPassword(!showConfirmPassword)}
             >
               {showConfirmPassword ? <IoEye /> : <IoEyeOff />}
@@ -274,6 +279,7 @@ const PasswordContainer = styled.div`
 const Input = styled.input`
   width: 100%;
   padding: 14px;
+  padding-right: 50px;
   font-size: 14px;
   background-color: ${(props) =>
     props.hasError ? "#FFEEEB" : props.theme.colors.gray};
@@ -291,7 +297,7 @@ const Input = styled.input`
   }
 `;
 
-const ToggleButton = styled.span`
+const ToggleButton = styled.button`
   position: absolute;
   right: 10px;
   top: 57%;
@@ -301,6 +307,10 @@ const ToggleButton = styled.span`
   cursor: pointer;
   color: ${(props) => props.theme.colors.gray2};
   font-size: 25px;
+  user-select: none;
+  padding: 8px;
+  min-width: 44px;
+  min-height: 44px;
 `;
 
 const ErrorMessage = styled.div`

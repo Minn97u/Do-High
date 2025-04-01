@@ -19,11 +19,18 @@ const BoardEdit = () => {
     const fetchExistingPost = async () => {
       try {
         const postId = Number(boardId);
-        const data = await getPostById(postId);
-        setTitle(data.title || "");
-        setContent(data.content || "");
+        const response = await getPostById(postId);
+        if (response.responseType === "SUCCESS") {
+          const { title, content } = response.success;
+          setTitle(title || "");
+          setContent(content || "");
+        } else {
+          console.error("게시글 조회 실패:", response.error.message);
+          alert("게시글을 불러오는 데 실패했습니다.");
+        }
       } catch (error) {
         console.error("게시글 불러오기 실패:", error.message);
+        alert("서버 오류로 게시글을 불러오지 못했습니다.");
       }
     };
 
