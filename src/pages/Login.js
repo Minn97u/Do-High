@@ -14,72 +14,54 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
 
-  // 로그인 후 사용자 정보 확인(기존/신규 구분) 함수
-  const fetchUserInfo = async () => {
-    console.log("fetchUserInfo() 실행됨");
-    try {
-      const response = await Axios.get("/member/");
-      const { responseType, success } = response.data;
-
-      if (responseType === "SUCCESS") {
-        console.log("사용자 정보 조회 성공", success);
-        const { token } = success;
-
-        if (!token) {
-          // 신규 유저: 온보딩 페이지로 이동
-          navigate("/onboarding");
-        } else {
-          // 기존 유저: 바로 메인 페이지로 이동
-          navigate("/main");
-        }
-      }
-    } catch (error) {
-      console.error("사용자 정보 조회 실패", error);
-      navigate("/auth/login"); // 오류 발생 시 로그인으로 다시 이동
-    }
-  };
-
-  // 로그인 처리 함수
   const handleLogin = async () => {
     const endpoint =
       userType === "admin" ? "/auth/admin/login" : "/auth/member/login";
-
+  
     try {
       const response = await Axios.post(endpoint, {
         loginRequestId: id,
         password: password,
       });
-
+  
       const { responseType, success, error } = response.data;
-
+  
       if (responseType === "SUCCESS") {
-        // 1) JWT 토큰, 사용자 타입 저장
         localStorage.setItem("accessToken", success.jwtToken);
         localStorage.setItem("isAdmin", userType === "admin");
-
-        // 2) 일반 유저라면 알림 권한 요청 + FCM 토큰 서버에 전송 (토큰 획득 실패해도 로그인 진행)
-        if (userType === "general") {
-          try {
-            const fcmToken = await handleAllowNotification();
-            if (fcmToken) {
-              console.log("획득한 FCM Token:", fcmToken);
-              const tokenResponse = await Axios.post("/member/uuid", {
-                token: fcmToken,
-              });
-              console.log("FCM 토큰 전송 성공:", tokenResponse.data);
-            } else {
-              console.warn("FCM 토큰을 받지 못했습니다. 계속 진행합니다.");
-            }
-          } catch (e) {
-            console.error("FCM 토큰 처리 중 에러 발생:", e);
-          }
-        }
-
-        // 3) 라우팅
+  
         if (userType === "admin") {
           navigate("/admin");
         } else {
-          await fetchUserInfo();
+          // 1. 먼저 사용자 정보 확인 (token 유무)
+          const userInfoRes = await Axios.get("/member/");
+          const { responseType: infoType, success: info } = userInfoRes.data;
+  
+          if (infoType === "SUCCESS") {
+            const { token } = info;
+  
+            if (!token) {
+              navigate("/onboarding");
+            } else {
+              navigate("/main");
+            }
+  
+            // 2. navigate 이후 → FCM 토큰 전송
+            try {
+              const fcmToken = await handleAllowNotification();
+              if (fcmToken) {
+                console.log("획득한 FCM Token:", fcmToken);
+                const tokenRes = await Axios.post("/member/uuid", {
+                  token: fcmToken,
+                });
+                console.log("FCM 토큰 전송 성공:", tokenRes.data);
+              } else {
+                console.warn("FCM 토큰을 받지 못했습니다.");
+              }
+            } catch (e) {
+              console.error("FCM 토큰 처리 중 에러:", e);
+            }
+          }
         }
       } else if (responseType === "ERROR") {
         setErrorMessage(error.message || "로그인에 실패했습니다.");
