@@ -48,17 +48,20 @@ const handleIncomingMessages = () => {
 
     // 클라이언트에서 알림을 표시하는 방법
     const { title, body } = payload.notification;
-    new Notification(title, {
+    const redirectPath = payload.data?.redirectPath || "/";
+
+    // 알림 인스턴스를 변수에 저장
+    const notification = new Notification(title, {
       body: body,
-      icon: payload.notification.icon || "../public/dohigh.png",
+      icon: payload.notification.icon || "/dohigh.png",
     });
 
     // // 알림 클릭 시 동작 처리
-    // self.addEventListener("notificationclick", (event) => {
-    //   event.notification.close();
-    //   // 클릭 시 특정 URL로 이동
-    //   clients.openWindow("https://your-website.com");
-    // });
+    notification.onclick = () => {
+      console.log("🔁 알림 클릭됨 → 이동:", redirectPath);
+      window.focus(); // 창이 백그라운드에 있다면 활성화
+      window.location.href = redirectPath;
+    };
   });
 };
 

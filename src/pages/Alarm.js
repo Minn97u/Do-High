@@ -26,7 +26,7 @@ const Alarm = () => {
     WQUEST: flagIcon,
   };
 
-  const handleNotificationClick = (id, category) => {
+  const handleNotificationClick = (id, redirectPath) => {
     setClickedNotifications((prev) => {
       const updated = new Set(prev);
       updated.add(id);
@@ -37,24 +37,10 @@ const Alarm = () => {
       return updated;
     });
 
-    switch (category) {
-      case "EXP":
-        navigate("/exp");
-        break;
-      case "LEVELUP":
-        navigate("/main");
-        break;
-      case "MQUEST":
-        navigate("/quest");
-        break;
-      case "POST":
-        navigate("/boardlist");
-        break;
-      case "WQUEST":
-        navigate("/quest");
-        break;
-      default:
-        console.log("Unknocategory");
+    if (redirectPath) {
+      navigate(redirectPath);
+    } else {
+      navigate("/alarm");
     }
   };
 
@@ -100,7 +86,10 @@ const Alarm = () => {
           <NotificationCard
             key={notification.id}
             onClick={() =>
-              handleNotificationClick(notification.id, notification.category)
+              handleNotificationClick(
+                notification.id,
+                notification.redirectPath
+              )
             }
             clicked={clickedNotifications.has(notification.id)}
           >
@@ -126,7 +115,7 @@ export default Alarm;
 
 const PageContainer = styled.div`
   background-color: ${(props) => props.theme.colors.gray};
-  height: 100vh;
+  height: 92vh;
   display: flex;
   flex-direction: column;
   width: 100%;
@@ -136,7 +125,6 @@ const Header = styled.div`
   display: flex;
   align-items: center;
   width: 100%;
-  position: relative;
   /* height: 50px; */
   margin-bottom: 10px;
   padding: 15px 0;

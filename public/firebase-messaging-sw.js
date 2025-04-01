@@ -1,3 +1,4 @@
+//firebase-messaging-sw.js
 importScripts(
   "https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"
 );
@@ -23,7 +24,31 @@ messaging.onBackgroundMessage(function (payload) {
   const notificationTitle = payload.notification.title;
   const notificationOptions = {
     body: payload.notification.body,
-    icon: payload.notification.icon || "/default-icon.png",
+    icon: payload.notification.icon || "/dohigh.png",
+    data: {
+      redirectPath: payload.data?.redirectPath || "/",
+    },
   };
   self.registration.showNotification(notificationTitle, notificationOptions);
+});
+
+// 알림 클릭 시 동작 처리
+self.addEventListener("notificationclick", function (event) {
+  const redirectPath = event.notification?.data?.redirectPath || "/";
+  event.notification.close();
+
+  event.waitUntil(
+    clients
+      .matchAll({ type: "window", includeUncontrolled: true })
+      .then((clientList) => {
+        for (const client of clientList) {
+          if (client.url.includes("/") && "focus" in client) {
+            client.postMessage({ type: "REDIRECT", redirectPath });
+            return client.focus();
+          }
+        }
+
+        return clients.openWindow(redirectPath);
+      })
+  );
 });

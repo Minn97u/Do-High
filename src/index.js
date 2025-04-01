@@ -5,6 +5,10 @@ import { ThemeProvider } from "styled-components";
 import GlobalStyle from "./styles/GlobalStyle";
 import { Theme } from "./styles/Theme";
 import { BrowserRouter } from "react-router-dom";
+import { initializeFCM } from "./firebase";
+
+//포그라운드 알림오도록 호출
+initializeFCM();
 
 if ("serviceWorker" in navigator) {
   navigator.serviceWorker
