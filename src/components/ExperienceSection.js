@@ -67,11 +67,10 @@ const ExperienceSection = () => {
     fetchQuests();
   }, []);
 
-  const formatDate = (dateString) => {
-    const normalizedDate = dateString.replace(/\./g, "-");
-    const date = new Date(normalizedDate);
-    return date.toLocaleDateString("ko-KR");
-  };
+  function formatDate(dateString) {
+    if (!dateString) return "";
+    return dateString.replace(/-/g, ".");
+  }
 
   const handleExpClick = () => {
     if (recentExp) {

@@ -12,6 +12,7 @@ const BoardDetail = () => {
   const { boardId } = useParams();
   const [menuOpen, setMenuOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [notFound, setNotFound] = useState(false);
   const isAdmin = localStorage.getItem("isAdmin") === "true";
 
   const [post, setPost] = useState({
@@ -26,10 +27,16 @@ const BoardDetail = () => {
     const fetchPostDetail = async () => {
       try {
         const postId = Number(boardId);
-        const data = await getPostById(postId);
-        setPost(data.success);
+        const response = await getPostById(postId);
+
+        if (response.responseType === "SUCCESS" && response.success) {
+          setPost(response.success);
+        } else {
+          setNotFound(true);
+        }
       } catch (error) {
         console.error("게시글 상세 조회 실패:", error.message);
+        setNotFound(true);
       }
     };
 
@@ -89,9 +96,20 @@ const BoardDetail = () => {
       </Header>
 
       <DetailContainer>
-        <PostTitle>{post.title}</PostTitle>
-        <PostDate>작성일 {formatDate(post.createdAt)}</PostDate>
-        <PostContent>{post.content}</PostContent>
+        {notFound ? (
+          <>
+            <NotFoundMessage>존재하지 않는 게시물입니다.</NotFoundMessage>
+            <GoBackButton onClick={() => navigate("/boardlist")}>
+              목록으로 가기
+            </GoBackButton>
+          </>
+        ) : (
+          <>
+            <PostTitle>{post.title}</PostTitle>
+            <PostDate>작성일 {formatDate(post.createdAt)}</PostDate>
+            <PostContent>{post.content}</PostContent>
+          </>
+        )}
       </DetailContainer>
 
       <ConfirmModal
@@ -145,13 +163,18 @@ const HeaderTitle = styled.h1`
 `;
 
 const MenuButton = styled.button`
+  position: absolute;
+  right: 14px;
+  top: 4px;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
   background: none;
   border: none;
   cursor: pointer;
-  position: absolute;
-  right: 28px;
-  top: 11px;
-  font-size: 24px;
 `;
 
 const DropdownMenu = styled.div`
@@ -206,4 +229,30 @@ const PostContent = styled.div`
   color: ${(props) => props.theme.colors.black2};
   white-space: pre-line;
   overflow-wrap: break-word;
+`;
+
+const NotFoundMessage = styled.div`
+  text-align: center;
+  font-size: 16px;
+  ${(props) => props.theme.fonts.medium};
+  color: ${(props) => props.theme.colors.gray2};
+  margin-top: 100px;
+  line-height: 1.6;
+`;
+
+const GoBackButton = styled.button`
+  display: block;
+  margin: 24px auto 0;
+  padding: 10px 20px;
+  background-color: ${(props) => props.theme.colors.btnGray};
+  color: white;
+  border: none;
+  border-radius: 20px;
+  font-size: 14px;
+  cursor: pointer;
+  ${(props) => props.theme.fonts.medium};
+
+  &:hover {
+    opacity: 0.9;
+  }
 `;

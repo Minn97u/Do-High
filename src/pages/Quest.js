@@ -420,8 +420,8 @@ const Selector = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-top: 38px;
-  margin-bottom: 22px;
+  margin-top: 34px;
+  margin-bottom: 18px;
   position: relative;
 `;
 
@@ -431,6 +431,13 @@ const Arrow = styled.button`
   font-size: 20px;
   color: ${(props) => props.theme.colors.gray3};
   cursor: pointer;
+  padding: 7px 16px;
+  min-width: 44px;
+  min-height: 44px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
   &:disabled {
     color: #ccc;
@@ -441,7 +448,7 @@ const Arrow = styled.button`
 const Year = styled.div`
   ${(props) => props.theme.fonts.semiBold};
   font-size: 18px;
-  margin: 0 30px;
+  margin: 0 10px;
   color: ${(props) => props.theme.colors.black2};
 `;
 
