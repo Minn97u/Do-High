@@ -13,7 +13,7 @@ const PwChange = () => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isPasswordDuplicate, setIsPasswordDuplicate] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isCurrentPasswordValid, setIsCurrentPasswordValid] = useState(null); // true: 올바른 현재 비밀번호, false: 틀린 현재 비밀번호
+  const [isCurrentPasswordValid, setIsCurrentPasswordValid] = useState(null);
   const [checkingPassword, setCheckingPassword] = useState(false);
 
   const {
@@ -145,14 +145,13 @@ const PwChange = () => {
           <PasswordContainer>
             <Input
               type={showNewPassword ? "text" : "password"}
-              placeholder="영문, 숫자 포함 8자 이상"
+              placeholder="6자 이상 입력"
               hasError={!!errors.newPassword || isPasswordDuplicate === true}
               {...register("newPassword", {
                 required: "신규 비밀번호를 입력해주세요.",
-                pattern: {
-                  value: /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/,
-                  message:
-                    "비밀번호는 영문, 숫자를 포함하고 8자 이상이어야 합니다.",
+                minLength: {
+                  value: 6,
+                  message: "비밀번호는 6자 이상이어야 합니다.",
                 },
               })}
             />
@@ -164,8 +163,6 @@ const PwChange = () => {
             <ErrorMessage>{errors.newPassword.message}</ErrorMessage>
           ) : isPasswordDuplicate === true ? (
             <ErrorMessage>기존 비밀번호와 동일합니다.</ErrorMessage>
-          ) : isPasswordDuplicate === false ? (
-            <></>
           ) : null}
         </InputContainer>
 
