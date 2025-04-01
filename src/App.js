@@ -1,6 +1,6 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-import { Navigate, Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
 import Layout from "./components/Layout";
 import ScrollToTop from "./components/ScrollToTop";
 import Admin from "./pages/AdminPages/Admin";
@@ -19,9 +19,30 @@ import OnboardingPage from "./pages/OnboardingPage";
 import PwChange from "./pages/PwChange";
 import Quest from "./pages/Quest";
 import SplashScreen from "./pages/SplashScreen";
+import { useEffect } from "react";
 
 function App() {
+  const navigate = useNavigate();
   const queryClient = new QueryClient();
+
+  // 알림 클릭 시 동작 처리
+  useEffect(() => {
+    if (!navigator.serviceWorker) return;
+
+    const handler = (event) => {
+      if (event.data?.type === "REDIRECT" && event.data.redirectPath) {
+        console.log("📨 REDIRECT 수신:", event.data.redirectPath);
+        navigate(event.data.redirectPath);
+      }
+    };
+
+    navigator.serviceWorker.addEventListener("message", handler);
+
+    return () => {
+      navigator.serviceWorker.removeEventListener("message", handler);
+    };
+  }, [navigate]);
+
   return (
     <QueryClientProvider client={queryClient}>
       <>
