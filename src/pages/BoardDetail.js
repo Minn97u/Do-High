@@ -163,13 +163,18 @@ const HeaderTitle = styled.h1`
 `;
 
 const MenuButton = styled.button`
+  position: absolute;
+  right: 14px;
+  top: 4px;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
   background: none;
   border: none;
   cursor: pointer;
-  position: absolute;
-  right: 28px;
-  top: 11px;
-  font-size: 24px;
 `;
 
 const DropdownMenu = styled.div`
