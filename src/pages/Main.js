@@ -1,3 +1,4 @@
+import { onMessage } from "firebase/messaging";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
@@ -5,7 +6,6 @@ import logo from "../assets/logo.png";
 import notificationIcon from "../assets/notification.svg";
 import ExperienceSection from "../components/ExperienceSection";
 import ProfileCard from "../components/ProfileCard";
-import { onMessage } from "firebase/messaging";
 import { messaging } from "../firebase";
 
 const Main = () => {
@@ -14,18 +14,42 @@ const Main = () => {
   // 포그라운드 메시지 수신
   useEffect(() => {
     const unsubscribe = onMessage(messaging, (payload) => {
-      console.log("Foreground message received:", payload);
-      if (payload?.notification) {
-        // 브라우저의 Notification API를 사용해 알림 표시
-        new Notification(payload.notification.title, {
-          body: payload.notification.body,
-          icon: payload.notification.icon || "../public/dohigh.png",
-        });
+      // console.log("Foreground message received:", payload);
+
+      try {
+        const title = payload.notification?.title || "알림";
+        const body = payload.notification?.body || "";
+        const redirectPath = payload.data?.redirectPath || "/";
+
+        // console.log("title:", title);
+        // console.log("body:", body);
+        // console.log("redirectPath:", redirectPath);
+        // console.log("Notification 생성 시도");
+
+        const now = new Date().toLocaleTimeString();
+        setTimeout(() => {
+          const notification = new Notification(`${title} (${now})`, {
+            body,
+            icon: `${window.location.origin}/dohigh.png`,
+            requireInteraction: true,
+            data: { redirectPath },
+          });
+
+          notification.onclick = (event) => {
+            const path = event.target?.data?.redirectPath;
+            console.log("알림 클릭됨 → 이동:", path);
+            if (path) {
+              window.focus();
+              window.location.href = path;
+            }
+          };
+        }, 1000);
+      } catch (err) {
+        console.error("알림 생성 실패:", err);
       }
     });
-    return () => {
-      unsubscribe();
-    };
+
+    return () => unsubscribe();
   }, []);
 
   return (
