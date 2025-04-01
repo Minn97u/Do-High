@@ -115,7 +115,7 @@ export default Alarm;
 
 const PageContainer = styled.div`
   background-color: ${(props) => props.theme.colors.gray};
-  height: 100vh;
+  height: 92vh;
   display: flex;
   flex-direction: column;
   width: 100%;
@@ -125,7 +125,6 @@ const Header = styled.div`
   display: flex;
   align-items: center;
   width: 100%;
-  position: relative;
   /* height: 50px; */
   margin-bottom: 10px;
   padding: 15px 0;
