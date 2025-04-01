@@ -3,7 +3,7 @@ import { IoEye, IoEyeOff } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { Axios } from "../api/Axios";
-import logo from "../assets/logo.svg";
+import logo from "../assets/logo.png";
 import { handleAllowNotification } from "../NotificationFunc";
 
 const Login = () => {
@@ -92,7 +92,7 @@ const Login = () => {
 
   return (
     <Container>
-      <img src={logo} alt="logo" />
+      <Logo src={logo} alt="Company Logo" />
       <TabContainer>
         <Tab
           $active={userType === "general"}
@@ -225,4 +225,8 @@ const ErrorMessage = styled.div`
   color: ${(props) => props.theme.colors.mainC};
   font-size: 14px;
   margin-bottom: 16px;
+`;
+
+const Logo = styled.img`
+  width: 150px;
 `;
