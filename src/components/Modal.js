@@ -1,4 +1,3 @@
-
 import styled from "styled-components";
 
 const Modal = ({ isOpen, onClose, onConfirm, title, subtitle }) => {
@@ -68,6 +67,10 @@ const ModalTitle = styled.h2`
   font-size: 20px;
   font-weight: 700;
   text-align: center;
+
+  @media (max-width: 380px) {
+    font-size: 16px;
+  }
 `;
 
 const ModalSubtitle = styled.p`
