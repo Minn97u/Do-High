@@ -477,8 +477,7 @@ const InfoIcon = styled.img`
 const InfoImage = styled.img`
   position: absolute;
   top: 25px;
-  right: -24px;
-  width: 250px;
+  right: -14.5px;
   z-index: 100;
   border-radius: 8px;
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
