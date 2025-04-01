@@ -1,3 +1,7 @@
+// 목표: firebase-messaging-sw.js의 역할은 단 2개
+// 	1.	백그라운드 메시지 수신 → showNotification 호출
+// 	2.	알림 클릭 시 이동 → 열린 탭 있으면 focus, 없으면 새 창 open
+
 //firebase-messaging-sw.js
 importScripts(
   "https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"
@@ -19,17 +23,15 @@ firebase.initializeApp({
 const messaging = firebase.messaging();
 
 // 백그라운드 메시지 수신
-messaging.onBackgroundMessage(function (payload) {
-  console.log("[firebase-messaging-sw.js] 백그라운드 메시지 수신", payload);
-  const notificationTitle = payload.notification.title;
-  const notificationOptions = {
-    body: payload.notification.body,
-    icon: payload.notification.icon || "/dohigh.png",
-    data: {
-      redirectPath: payload.data?.redirectPath || "/",
-    },
-  };
-  self.registration.showNotification(notificationTitle, notificationOptions);
+messaging.onBackgroundMessage((payload) => {
+  const { title, body, icon } = payload.notification;
+  const redirectPath = payload.data?.redirectPath || "/";
+
+  self.registration.showNotification(title, {
+    body,
+    icon: icon || "/dohigh.png",
+    data: { redirectPath },
+  });
 });
 
 // 알림 클릭 시 동작 처리
