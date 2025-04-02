@@ -495,14 +495,6 @@ const InfoIcon = styled.img`
   z-index: 10;
 `;
 
-const InfoImage = styled.img`
-  position: absolute;
-  top: 25px;
-  right: -14.5px;
-  z-index: 100;
-  border-radius: 8px;
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-`;
 
 const Tooltip = styled.div`
   position: absolute;

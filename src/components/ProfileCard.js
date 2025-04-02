@@ -10,6 +10,7 @@ import info from "../assets/info.svg";
 import profile from "../assets/profile.svg";
 import speechBubble2 from "../assets/speechBubble2.svg";
 import speechBubble3 from "../assets/speechBubble3.svg";
+import useTooltipVisible from "../hooks/useTooltipVisible";
 
 const ProfileCard = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -33,6 +34,26 @@ const ProfileCard = () => {
     identificationNumber: "",
     character: profile,
   });
+
+  const {
+    visible: isSecondSlideTooltipVisible,
+    setVisible: setSecondSlideTooltipVisible,
+    wrapperRef: secondTooltipWrapperRef,
+  } = useTooltipVisible();
+
+  const {
+    visible: isThirdSlideTooltipVisible,
+    setVisible: setThirdSlideTooltipVisible,
+    wrapperRef: thirdTooltipWrapperRef,
+  } = useTooltipVisible();
+
+  const handleSecondTooltipClick = () => {
+    setSecondSlideTooltipVisible((prev) => !prev);
+  };
+
+  const handleThirdTooltipClick = () => {
+    setThirdSlideTooltipVisible((prev) => !prev);
+  };
 
   useEffect(() => {
     const fetchGraphData = async () => {
@@ -265,11 +286,14 @@ const ProfileCard = () => {
                   <Title>
                     {thisYearExpTotal.toLocaleString()}do를 달성하셨어요!
                   </Title>
-                  <InfoIconWrapper onClick={handleInfoClick}>
+                  <InfoIconWrapper
+                    onClick={handleSecondTooltipClick}
+                    ref={secondTooltipWrapperRef}
+                  >
                     <InfoIcon src={info} alt="info" />
-                    {tooltipVisible && (
+                    {isSecondSlideTooltipVisible && (
                       <Tooltip>
-                        <img src={speechBubble2} alt="speech bubble" />
+                        <img src={speechBubble2} />
                       </Tooltip>
                     )}
                   </InfoIconWrapper>
@@ -312,11 +336,14 @@ const ProfileCard = () => {
                     <Title>
                       {lastYearExpTotal.toLocaleString()}do를 달성하셨어요!
                     </Title>
-                    <InfoIconWrapper onClick={handleInfoClick}>
+                    <InfoIconWrapper
+                      onClick={handleThirdTooltipClick}
+                      ref={thirdTooltipWrapperRef}
+                    >
                       <InfoIcon src={info} alt="info" />
-                      {tooltipVisible && (
+                      {isThirdSlideTooltipVisible && (
                         <Tooltip>
-                          <img src={speechBubble3} alt="speech bubble" />
+                          <img src={speechBubble3} />
                         </Tooltip>
                       )}
                     </InfoIconWrapper>
