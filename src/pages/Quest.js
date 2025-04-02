@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from "react";
-import { useSearchParams, useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import styled from "styled-components";
 import { Axios } from "../api/Axios";
+import arrowIcon from "../assets/dropdown.svg";
 import infoIcon from "../assets/info.svg";
 import expListInfo from "../assets/questInfo.svg";
-import arrowIcon from "../assets/dropdown.svg";
 
 import defaultCoin from "../assets/coin.svg";
 import goldCoin from "../assets/coin/GoldDo.svg";
@@ -13,6 +13,7 @@ import noCoin from "../assets/coin/noCoin.svg";
 
 import FlippableCard from "../components/FlippableCard";
 import FlippableCardWithMonth from "../components/FlippableCardWithMonth";
+import useTooltipVisible from "../hooks/useTooltipVisible";
 
 const getCoinImage = (coin) => {
   if (coin === "MAX") return goldCoin;
@@ -44,8 +45,13 @@ const Quest = () => {
   const [questList, setQuestList] = useState([]);
   const [selectedQuest, setSelectedQuest] = useState(null);
   const [menuOpen, setMenuOpen] = useState(false);
-  const [infoOpen, setInfoOpen] = useState(false);
   const cardContainerRef = React.useRef(null);
+
+  const {
+    visible: infoOpen,
+    setVisible: setInfoOpen,
+    wrapperRef: infoWrapperRef,
+  } = useTooltipVisible();
 
   useEffect(() => {
     setSearchParams({
@@ -290,13 +296,17 @@ const Quest = () => {
             >
               &gt;
             </Arrow>
-            <InfoIconWrapper>
+            <InfoIconWrapper ref={infoWrapperRef}>
               <InfoIcon
                 src={infoIcon}
                 alt="정보"
                 onClick={() => setInfoOpen((prev) => !prev)}
               />
-              {infoOpen && <InfoImage src={expListInfo} alt="정보 설명" />}
+              {infoOpen && (
+                <Tooltip>
+                  <img src={expListInfo} alt="정보 설명" />
+                </Tooltip>
+              )}
             </InfoIconWrapper>
           </Selector>
         ) : (
@@ -306,13 +316,17 @@ const Quest = () => {
               {selectedYear}년 {selectedMonth}월
             </Year>
             <Arrow onClick={() => handleWeekModeMonthChange(1)}>&gt;</Arrow>
-            <InfoIconWrapper>
+            <InfoIconWrapper ref={infoWrapperRef}>
               <InfoIcon
                 src={infoIcon}
                 alt="정보"
                 onClick={() => setInfoOpen((prev) => !prev)}
               />
-              {infoOpen && <InfoImage src={expListInfo} alt="정보 설명" />}
+              {infoOpen && (
+                <Tooltip>
+                  <img src={expListInfo} alt="정보 설명" />
+                </Tooltip>
+              )}
             </InfoIconWrapper>
           </Selector>
         )}
@@ -488,6 +502,17 @@ const InfoImage = styled.img`
   z-index: 100;
   border-radius: 8px;
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+`;
+
+const Tooltip = styled.div`
+  position: absolute;
+  top: 20px;
+  right: -10px;
+  z-index: 10;
+  img {
+    width: 170px;
+    height: auto;
+  }
 `;
 
 const CardContainer = styled.div`
