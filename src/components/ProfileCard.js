@@ -134,9 +134,7 @@ const ProfileCard = () => {
     if (direction === "left") {
       setCurrentSlide((prev) => (prev === 0 ? prev : prev - 1));
     } else if (direction === "right") {
-      setCurrentSlide((prev) =>
-        prev === slides.length - 1 ? prev : prev + 1
-      );
+      setCurrentSlide((prev) => (prev === slides.length - 1 ? prev : prev + 1));
     }
   };
 
@@ -166,6 +164,10 @@ const ProfileCard = () => {
     setTooltipVisible(!tooltipVisible);
   };
 
+  useEffect(() => {
+    setTooltipVisible(false); // 슬라이드 이동 시 툴팁 끄기
+  }, [currentSlide]);
+
   // 신규 입사자일 경우
   if (isNewEmployee) {
     return (
@@ -187,7 +189,9 @@ const ProfileCard = () => {
             </ProfileHeader>
             <ExperienceSection>
               <h4>총 누적 경험치</h4>
-              <ExperienceValue>{displayTotalExp.toLocaleString()}</ExperienceValue>
+              <ExperienceValue>
+                {displayTotalExp.toLocaleString()}
+              </ExperienceValue>
               <ProgressBar>
                 <Progress percent={displayPercent} />
                 <CoinWrapper percent={displayPercent}>
@@ -224,7 +228,9 @@ const ProfileCard = () => {
               </ProfileHeader>
               <ExperienceSection>
                 <h4>총 누적 경험치</h4>
-                <ExperienceValue>{displayTotalExp.toLocaleString()}</ExperienceValue>
+                <ExperienceValue>
+                  {displayTotalExp.toLocaleString()}
+                </ExperienceValue>
                 <ProgressBar>
                   <Progress percent={displayPercent} />
                   <CoinWrapper percent={displayPercent}>
@@ -233,7 +239,8 @@ const ProfileCard = () => {
                 </ProgressBar>
                 {!isMaxLevel && (
                   <p>
-                    다음 {nextLevel}레벨까지 {displayRemainingExp.toLocaleString()} 남음
+                    다음 {nextLevel}레벨까지{" "}
+                    {displayRemainingExp.toLocaleString()} 남음
                   </p>
                 )}
               </ExperienceSection>
@@ -515,12 +522,25 @@ const InfoIconWrapper = styled.div`
   top: 5px;
   right: 0;
   display: inline-block;
+
+  &::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 40px;
+    height: 40px;
+    transform: translate(-50%, -50%);
+    background: transparent;
+    pointer-events: auto;
+  }
 `;
 
 const InfoIcon = styled.img`
   width: 18px;
   height: 18px;
   cursor: pointer;
+  z-index: 10;
 `;
 
 const Tooltip = styled.div`
