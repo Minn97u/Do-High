@@ -328,6 +328,18 @@ const Quest = () => {
             >
               &gt;
             </Arrow>
+            <InfoIconWrapper ref={infoWrapperRef}>
+              <InfoIcon
+                src={infoIcon}
+                alt="정보"
+                onClick={() => setInfoOpen((prev) => !prev)}
+              />
+              {infoOpen && (
+                <Tooltip>
+                  <img src={expListInfo} alt="정보 설명" />
+                </Tooltip>
+              )}
+            </InfoIconWrapper>
           </Selector>
         ) : (
           <Selector>
@@ -336,20 +348,20 @@ const Quest = () => {
               {selectedYear}년 {selectedMonth}월
             </Year>
             <Arrow onClick={() => handleWeekModeMonthChange(1)}>&gt;</Arrow>
+            <InfoIconWrapper ref={infoWrapperRef}>
+              <InfoIcon
+                src={infoIcon}
+                alt="정보"
+                onClick={() => setInfoOpen((prev) => !prev)}
+              />
+              {infoOpen && (
+                <Tooltip>
+                  <img src={expListInfo} alt="정보 설명" />
+                </Tooltip>
+              )}
+            </InfoIconWrapper>
           </Selector>
         )}
-        <InfoIconWrapper ref={infoWrapperRef}>
-          <InfoIcon
-            src={infoIcon}
-            alt="정보"
-            onClick={() => setInfoOpen((prev) => !prev)}
-          />
-          {infoOpen && (
-            <Tooltip>
-              <img src={expListInfo} alt="정보 설명" />
-            </Tooltip>
-          )}
-        </InfoIconWrapper>
 
         <CardContainer ref={cardContainerRef}>
           {questType === "월" ? (
