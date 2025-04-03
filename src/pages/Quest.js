@@ -45,9 +45,7 @@ const Quest = () => {
   const [questList, setQuestList] = useState([]);
   const [selectedQuest, setSelectedQuest] = useState(null);
   const [menuOpen, setMenuOpen] = useState(false);
-  const [infoOpen, setInfoOpen] = useState(false);
   const [latestAchievedWeek, setLatestAchievedWeek] = useState(0);
-  const cardContainerRef = useRef(null);
   const infoRef = useRef(null);
   const cardContainerRef = React.useRef(null);
 
@@ -320,38 +318,38 @@ const Quest = () => {
       </Header>
 
       <SubContainer>
-          {questType === "월" ? (
-            <Selector>
-              <Arrow onClick={() => handleYearChange(-1)}>&lt;</Arrow>
-              <Year>{selectedYear}년</Year>
-              <Arrow
-                onClick={() => handleYearChange(1)}
-                disabled={Number(selectedYear) >= new Date().getFullYear()}
-              >
-                &gt;
-              </Arrow>
-            </Selector>
-          ) : (
-            <Selector>
-              <Arrow onClick={() => handleWeekModeMonthChange(-1)}>&lt;</Arrow>
-              <Year>
-                {selectedYear}년 {selectedMonth}월
-              </Year>
-              <Arrow onClick={() => handleWeekModeMonthChange(1)}>&gt;</Arrow>
-            </Selector>
+        {questType === "월" ? (
+          <Selector>
+            <Arrow onClick={() => handleYearChange(-1)}>&lt;</Arrow>
+            <Year>{selectedYear}년</Year>
+            <Arrow
+              onClick={() => handleYearChange(1)}
+              disabled={Number(selectedYear) >= new Date().getFullYear()}
+            >
+              &gt;
+            </Arrow>
+          </Selector>
+        ) : (
+          <Selector>
+            <Arrow onClick={() => handleWeekModeMonthChange(-1)}>&lt;</Arrow>
+            <Year>
+              {selectedYear}년 {selectedMonth}월
+            </Year>
+            <Arrow onClick={() => handleWeekModeMonthChange(1)}>&gt;</Arrow>
+          </Selector>
+        )}
+        <InfoIconWrapper ref={infoWrapperRef}>
+          <InfoIcon
+            src={infoIcon}
+            alt="정보"
+            onClick={() => setInfoOpen((prev) => !prev)}
+          />
+          {infoOpen && (
+            <Tooltip>
+              <img src={expListInfo} alt="정보 설명" />
+            </Tooltip>
           )}
-            <InfoIconWrapper ref={infoWrapperRef}>
-              <InfoIcon
-                src={infoIcon}
-                alt="정보"
-                onClick={() => setInfoOpen((prev) => !prev)}
-              />
-              {infoOpen && (
-                <Tooltip>
-                  <img src={expListInfo} alt="정보 설명" />
-                </Tooltip>
-              )}
-            </InfoIconWrapper>
+        </InfoIconWrapper>
 
         <CardContainer ref={cardContainerRef}>
           {questType === "월" ? (
@@ -526,7 +524,6 @@ const InfoIcon = styled.img`
   height: 20px;
   z-index: 10;
 `;
-
 
 const Tooltip = styled.div`
   position: absolute;
