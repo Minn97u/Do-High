@@ -10,6 +10,7 @@ import info from "../assets/info.svg";
 import profile from "../assets/profile.svg";
 import speechBubble2 from "../assets/speechBubble2.svg";
 import speechBubble3 from "../assets/speechBubble3.svg";
+import useTooltipVisible from "../hooks/useTooltipVisible";
 
 const ProfileCard = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -33,6 +34,26 @@ const ProfileCard = () => {
     identificationNumber: "",
     character: profile,
   });
+
+  const {
+    visible: isSecondSlideTooltipVisible,
+    setVisible: setSecondSlideTooltipVisible,
+    wrapperRef: secondTooltipWrapperRef,
+  } = useTooltipVisible();
+
+  const {
+    visible: isThirdSlideTooltipVisible,
+    setVisible: setThirdSlideTooltipVisible,
+    wrapperRef: thirdTooltipWrapperRef,
+  } = useTooltipVisible();
+
+  const handleSecondTooltipClick = () => {
+    setSecondSlideTooltipVisible((prev) => !prev);
+  };
+
+  const handleThirdTooltipClick = () => {
+    setThirdSlideTooltipVisible((prev) => !prev);
+  };
 
   useEffect(() => {
     const fetchGraphData = async () => {
@@ -134,9 +155,7 @@ const ProfileCard = () => {
     if (direction === "left") {
       setCurrentSlide((prev) => (prev === 0 ? prev : prev - 1));
     } else if (direction === "right") {
-      setCurrentSlide((prev) =>
-        prev === slides.length - 1 ? prev : prev + 1
-      );
+      setCurrentSlide((prev) => (prev === slides.length - 1 ? prev : prev + 1));
     }
   };
 
@@ -166,6 +185,10 @@ const ProfileCard = () => {
     setTooltipVisible(!tooltipVisible);
   };
 
+  useEffect(() => {
+    setTooltipVisible(false); // 슬라이드 이동 시 툴팁 끄기
+  }, [currentSlide]);
+
   // 신규 입사자일 경우
   if (isNewEmployee) {
     return (
@@ -187,7 +210,9 @@ const ProfileCard = () => {
             </ProfileHeader>
             <ExperienceSection>
               <h4>총 누적 경험치</h4>
-              <ExperienceValue>{displayTotalExp.toLocaleString()}</ExperienceValue>
+              <ExperienceValue>
+                {displayTotalExp.toLocaleString()}
+              </ExperienceValue>
               <ProgressBar>
                 <Progress percent={displayPercent} />
                 <CoinWrapper percent={displayPercent}>
@@ -224,7 +249,9 @@ const ProfileCard = () => {
               </ProfileHeader>
               <ExperienceSection>
                 <h4>총 누적 경험치</h4>
-                <ExperienceValue>{displayTotalExp.toLocaleString()}</ExperienceValue>
+                <ExperienceValue>
+                  {displayTotalExp.toLocaleString()}
+                </ExperienceValue>
                 <ProgressBar>
                   <Progress percent={displayPercent} />
                   <CoinWrapper percent={displayPercent}>
@@ -233,7 +260,8 @@ const ProfileCard = () => {
                 </ProgressBar>
                 {!isMaxLevel && (
                   <p>
-                    다음 {nextLevel}레벨까지 {displayRemainingExp.toLocaleString()} 남음
+                    다음 {nextLevel}레벨까지{" "}
+                    {displayRemainingExp.toLocaleString()} 남음
                   </p>
                 )}
               </ExperienceSection>
@@ -258,11 +286,14 @@ const ProfileCard = () => {
                   <Title>
                     {thisYearExpTotal.toLocaleString()}do를 달성하셨어요!
                   </Title>
-                  <InfoIconWrapper onClick={handleInfoClick}>
+                  <InfoIconWrapper
+                    onClick={handleSecondTooltipClick}
+                    ref={secondTooltipWrapperRef}
+                  >
                     <InfoIcon src={info} alt="info" />
-                    {tooltipVisible && (
+                    {isSecondSlideTooltipVisible && (
                       <Tooltip>
-                        <img src={speechBubble2} alt="speech bubble" />
+                        <img src={speechBubble2} />
                       </Tooltip>
                     )}
                   </InfoIconWrapper>
@@ -305,11 +336,14 @@ const ProfileCard = () => {
                     <Title>
                       {lastYearExpTotal.toLocaleString()}do를 달성하셨어요!
                     </Title>
-                    <InfoIconWrapper onClick={handleInfoClick}>
+                    <InfoIconWrapper
+                      onClick={handleThirdTooltipClick}
+                      ref={thirdTooltipWrapperRef}
+                    >
                       <InfoIcon src={info} alt="info" />
-                      {tooltipVisible && (
+                      {isThirdSlideTooltipVisible && (
                         <Tooltip>
-                          <img src={speechBubble3} alt="speech bubble" />
+                          <img src={speechBubble3} />
                         </Tooltip>
                       )}
                     </InfoIconWrapper>
@@ -515,12 +549,25 @@ const InfoIconWrapper = styled.div`
   top: 5px;
   right: 0;
   display: inline-block;
+
+  &::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 40px;
+    height: 40px;
+    transform: translate(-50%, -50%);
+    background: transparent;
+    pointer-events: auto;
+  }
 `;
 
 const InfoIcon = styled.img`
   width: 18px;
   height: 18px;
   cursor: pointer;
+  z-index: 10;
 `;
 
 const Tooltip = styled.div`
