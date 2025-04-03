@@ -3,11 +3,9 @@ import { useEffect, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import styled from "styled-components";
 import dropdownArrow from "../assets/dropdown.svg";
-import expListInfo1 from "../assets/expListInfo1.svg";
-import expListInfo2 from "../assets/expListInfo2.svg";
-import expListInfo3 from "../assets/expListInfo3.svg";
 import infoIcon from "../assets/info.svg";
 import useExpInfinite from "../hooks/useExpInfinite.js";
+import useTooltipVisible from "../hooks/useTooltipVisible";
 
 const coinMap = {
   S: require("../assets/coin/S.svg").default,
@@ -35,11 +33,15 @@ const ExpList = () => {
   const initialTab = searchParams.get("tab") || "전체";
   const [selectedTab, setSelectedTab] = useState(normalizeTab(initialTab));
   const [sortOpen, setSortOpen] = useState(false);
-  const [infoOpen, setInfoOpen] = useState(false);
   const [sortOption, setSortOption] = useState("최신순");
   const [loading, setLoading] = useState(false);
-  const infoRef = useRef(null);
   const observerRef = useRef();
+
+  const {
+    visible: infoOpen,
+    setVisible: setInfoOpen,
+    wrapperRef: infoRef,
+  } = useTooltipVisible();
 
   const {
     data,
@@ -93,6 +95,11 @@ const ExpList = () => {
   }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
 
   useEffect(() => {
+    const imageSrc = getInfoImage();
+    if (imageSrc) {
+      const img = new Image();
+      img.src = imageSrc;
+    }
     setSortOption("최신순");
     setSortOpen(false);
   }, [selectedTab]);
@@ -107,7 +114,10 @@ const ExpList = () => {
     setSelectedTab(normalizeTab(tab));
     setInfoOpen(false);
   };
-  const handleInfoClick = () => setInfoOpen((prev) => !prev);
+
+  const handleInfoClick = () => {
+    setInfoOpen((prev) => !prev);
+  };
 
   const formatDate = (dateString) => {
     const normalizedDate = dateString.replace(/\./g, "-");
@@ -117,12 +127,12 @@ const ExpList = () => {
   const getInfoImage = () => {
     switch (normalizeTab(selectedTab)) {
       case normalizeTab("직무 퀘스트"):
-        return expListInfo1;
+        return "/assets/expListInfo1.svg";
       case normalizeTab("인사평가"):
-        return expListInfo2;
+        return "/assets/expListInfo2.svg";
       case normalizeTab("리더 퀘스트"):
       case normalizeTab("전사 프로젝트"):
-        return expListInfo3;
+        return "/assets/expListInfo3.svg";
       default:
         return null;
     }
