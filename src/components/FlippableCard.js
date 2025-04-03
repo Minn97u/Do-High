@@ -10,14 +10,23 @@ function getCoinIcon(coin) {
   return bronzeCoin;
 }
 
-const FlippableCard = ({ monthsData = [] }) => {
+const FlippableCard = ({
+  monthsData = [],
+  selectedYear,
+  currentYear,
+  selectedMonth,
+}) => {
   return (
     <CardWrapper>
       <Card>
         <MonthGrid>
           {monthsData.map(({ month, coin }) => (
             <Month key={month}>
-              <MonthText>{month}월</MonthText>
+              <MonthText
+                isFuture={selectedYear === currentYear && month > selectedMonth}
+              >
+                {month}월
+              </MonthText>
               <Icon2 src={getCoinIcon(coin)} alt="coin" />
             </Month>
           ))}
@@ -66,6 +75,8 @@ const Month = styled.div`
 const MonthText = styled.p`
   font-size: 14px;
   margin-bottom: 5px;
+  color: ${({ isFuture, theme }) =>
+    isFuture ? theme.colors.gray2 : theme.colors.black};
 `;
 
 const Icon2 = styled.img`

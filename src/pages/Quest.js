@@ -345,7 +345,12 @@ const Quest = () => {
 
         <CardContainer ref={cardContainerRef}>
           {questType === "월" ? (
-            <FlippableCard monthsData={monthsData} />
+            <FlippableCard
+              monthsData={monthsData}
+              selectedYear={Number(selectedYear)}
+              currentYear={new Date().getFullYear()}
+              selectedMonth={selectedMonth}
+            />
           ) : (
             <FlippableCardWithMonth
               weeksData={weeksData}
