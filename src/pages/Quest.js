@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useSearchParams } from "react-router-dom";
 import styled from "styled-components";
 import { Axios } from "../api/Axios";
@@ -45,6 +45,10 @@ const Quest = () => {
   const [questList, setQuestList] = useState([]);
   const [selectedQuest, setSelectedQuest] = useState(null);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [infoOpen, setInfoOpen] = useState(false);
+  const [latestAchievedWeek, setLatestAchievedWeek] = useState(0);
+  const cardContainerRef = useRef(null);
+  const infoRef = useRef(null);
   const cardContainerRef = React.useRef(null);
 
   const {
@@ -104,6 +108,19 @@ const Quest = () => {
     fetchWeekInfo();
   }, [selectedYear]);
 
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (infoRef.current && !infoRef.current.contains(event.target)) {
+        setInfoOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   const toggleMenu = () => setMenuOpen((prev) => !prev);
   const handleMenuSelect = (item) => {
     setSelectedQuest(item);
@@ -151,6 +168,23 @@ const Quest = () => {
       }
     }
   }, [apiData, questType, selectedMonth, weekInfo]);
+
+  useEffect(() => {
+    const fetchLatestQuestWeek = async () => {
+      try {
+        const res = await Axios.get("/exp/jq/home");
+        if (res.data.responseType === "SUCCESS") {
+          const quests = res.data.success || [];
+          const maxWeek = Math.max(...quests.map((q) => q.week));
+          setLatestAchievedWeek(maxWeek);
+        }
+      } catch (err) {
+        console.error("퀘스트 주차 정보 조회 실패:", err);
+      }
+    };
+
+    fetchLatestQuestWeek();
+  }, []);
 
   const parseYearData = (yearData) => {
     const newMonths = [];
@@ -286,16 +320,26 @@ const Quest = () => {
       </Header>
 
       <SubContainer>
-        {questType === "월" ? (
-          <Selector>
-            <Arrow onClick={() => handleYearChange(-1)}>&lt;</Arrow>
-            <Year>{selectedYear}년</Year>
-            <Arrow
-              onClick={() => handleYearChange(1)}
-              disabled={Number(selectedYear) >= new Date().getFullYear()}
-            >
-              &gt;
-            </Arrow>
+          {questType === "월" ? (
+            <Selector>
+              <Arrow onClick={() => handleYearChange(-1)}>&lt;</Arrow>
+              <Year>{selectedYear}년</Year>
+              <Arrow
+                onClick={() => handleYearChange(1)}
+                disabled={Number(selectedYear) >= new Date().getFullYear()}
+              >
+                &gt;
+              </Arrow>
+            </Selector>
+          ) : (
+            <Selector>
+              <Arrow onClick={() => handleWeekModeMonthChange(-1)}>&lt;</Arrow>
+              <Year>
+                {selectedYear}년 {selectedMonth}월
+              </Year>
+              <Arrow onClick={() => handleWeekModeMonthChange(1)}>&gt;</Arrow>
+            </Selector>
+          )}
             <InfoIconWrapper ref={infoWrapperRef}>
               <InfoIcon
                 src={infoIcon}
@@ -308,34 +352,22 @@ const Quest = () => {
                 </Tooltip>
               )}
             </InfoIconWrapper>
-          </Selector>
-        ) : (
-          <Selector>
-            <Arrow onClick={() => handleWeekModeMonthChange(-1)}>&lt;</Arrow>
-            <Year>
-              {selectedYear}년 {selectedMonth}월
-            </Year>
-            <Arrow onClick={() => handleWeekModeMonthChange(1)}>&gt;</Arrow>
-            <InfoIconWrapper ref={infoWrapperRef}>
-              <InfoIcon
-                src={infoIcon}
-                alt="정보"
-                onClick={() => setInfoOpen((prev) => !prev)}
-              />
-              {infoOpen && (
-                <Tooltip>
-                  <img src={expListInfo} alt="정보 설명" />
-                </Tooltip>
-              )}
-            </InfoIconWrapper>
-          </Selector>
-        )}
 
         <CardContainer ref={cardContainerRef}>
           {questType === "월" ? (
-            <FlippableCard monthsData={monthsData} />
+            <FlippableCard
+              monthsData={monthsData}
+              selectedYear={Number(selectedYear)}
+              currentYear={new Date().getFullYear()}
+              selectedMonth={selectedMonth}
+            />
           ) : (
-            <FlippableCardWithMonth weeksData={weeksData} />
+            <FlippableCardWithMonth
+              weeksData={weeksData}
+              latestAchievedWeek={latestAchievedWeek}
+              currentYear={new Date().getFullYear()}
+              selectedYear={Number(selectedYear)}
+            />
           )}
         </CardContainer>
 
