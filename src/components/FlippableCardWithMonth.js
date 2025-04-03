@@ -12,7 +12,12 @@ function getCoinIcon(coin) {
   return defaultCoin;
 }
 
-const FlippableCardWithMonth = ({ weeksData = [] }) => {
+const FlippableCardWithMonth = ({
+  weeksData = [],
+  latestAchievedWeek,
+  currentYear,
+  selectedYear,
+}) => {
   const achievedCount = weeksData.filter((w) => w.coin).length;
   const totalWeeks = weeksData.length;
 
@@ -22,7 +27,13 @@ const FlippableCardWithMonth = ({ weeksData = [] }) => {
         <WeekGrid>
           {weeksData.map((item, i) => (
             <Week key={i} achieved={!!item.coin}>
-              <WeekText>{item.week}주</WeekText>
+              <WeekText
+                isFuture={
+                  selectedYear === currentYear && item.week > latestAchievedWeek
+                }
+              >
+                {item.week}주
+              </WeekText>
               <Icon2
                 src={getCoinIcon(item.coin)}
                 alt="coin"
@@ -72,12 +83,13 @@ const Week = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  opacity: ${({ achieved }) => (achieved ? "1" : "0.5")};
 `;
 
 const WeekText = styled.p`
   font-size: 14px;
   margin-bottom: 5px;
+  color: ${({ isFuture, theme }) =>
+    isFuture ? theme.colors.gray2 : theme.colors.black};
 `;
 
 const Icon2 = styled.img`
