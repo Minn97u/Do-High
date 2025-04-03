@@ -3,9 +3,6 @@ import { useEffect, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import styled from "styled-components";
 import dropdownArrow from "../assets/dropdown.svg";
-import expListInfo1 from "../assets/expListInfo1.svg";
-import expListInfo2 from "../assets/expListInfo2.svg";
-import expListInfo3 from "../assets/expListInfo3.svg";
 import infoIcon from "../assets/info.svg";
 import useExpInfinite from "../hooks/useExpInfinite.js";
 import useTooltipVisible from "../hooks/useTooltipVisible";
@@ -98,6 +95,11 @@ const ExpList = () => {
   }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
 
   useEffect(() => {
+    const imageSrc = getInfoImage();
+    if (imageSrc) {
+      const img = new Image();
+      img.src = imageSrc;
+    }
     setSortOption("최신순");
     setSortOpen(false);
   }, [selectedTab]);
@@ -125,12 +127,12 @@ const ExpList = () => {
   const getInfoImage = () => {
     switch (normalizeTab(selectedTab)) {
       case normalizeTab("직무 퀘스트"):
-        return expListInfo1;
+        return "/assets/expListInfo1.svg";
       case normalizeTab("인사평가"):
-        return expListInfo2;
+        return "/assets/expListInfo2.svg";
       case normalizeTab("리더 퀘스트"):
       case normalizeTab("전사 프로젝트"):
-        return expListInfo3;
+        return "/assets/expListInfo3.svg";
       default:
         return null;
     }
