@@ -24,12 +24,14 @@ const messaging = firebase.messaging();
 
 // 백그라운드 메시지 수신
 messaging.onBackgroundMessage((payload) => {
-  const { title, body, icon } = payload.notification;
+  const title = payload.data?.title || "알림";
+  const body = payload.data?.body || "";
+  const icon = payload.data?.icon || "/dohigh.png";
   const redirectPath = payload.data?.redirectPath || "/";
 
   self.registration.showNotification(title, {
     body,
-    icon: icon || "/dohigh.png",
+    icon: icon,
     data: { redirectPath },
   });
 });
