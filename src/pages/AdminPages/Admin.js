@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import LogoutModal from "../../components/Modal";
-import { Axios } from "../../api/Axios";
+import { logoutMember } from "../../api/UserApi";
 
 const Admin = () => {
   const navigate = useNavigate();
