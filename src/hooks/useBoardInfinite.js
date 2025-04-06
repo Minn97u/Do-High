@@ -12,7 +12,7 @@ const useBoardInfinite = (sortOption) => {
       const size = 10;
       const sort = sortMap[sortOption];
       const response = await getPosts(pageParam, size, sort);
-      
+
       if (response.responseType !== "SUCCESS") {
         throw new Error(response.error?.message || "게시글 불러오기 실패");
       }
