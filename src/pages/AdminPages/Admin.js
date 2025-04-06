@@ -15,7 +15,7 @@ const Admin = () => {
       if (response.data.responseType === "SUCCESS") {
         localStorage.removeItem("accessToken");
         localStorage.removeItem("isAdmin");
-
+        localStorage.removeItem("refreshToken");
         navigate("/auth/login", { replace: true });
       } else {
         console.error("로그아웃 실패:", response.data.error.message);

@@ -17,35 +17,37 @@ const Login = () => {
   const handleLogin = async () => {
     const endpoint =
       userType === "admin" ? "/auth/admin/login" : "/auth/member/login";
-  
+
     try {
       const response = await Axios.post(endpoint, {
         loginRequestId: id,
         password: password,
       });
-  
+
       const { responseType, success, error } = response.data;
-  
+
       if (responseType === "SUCCESS") {
-        localStorage.setItem("accessToken", success.jwtToken);
+        // localStorage.setItem("accessToken", success.jwtToken);
+        localStorage.setItem("accessToken", success.accessToken);
+        localStorage.setItem("refreshToken", success.refreshToken);
         localStorage.setItem("isAdmin", userType === "admin");
-  
+
         if (userType === "admin") {
           navigate("/admin");
         } else {
           // 1. 먼저 사용자 정보 확인 (token 유무)
           const userInfoRes = await Axios.get("/member/");
           const { responseType: infoType, success: info } = userInfoRes.data;
-  
+
           if (infoType === "SUCCESS") {
             const { token } = info;
-  
+
             if (!token) {
               navigate("/onboarding");
             } else {
               navigate("/main");
             }
-  
+
             // 2. navigate 이후 → FCM 토큰 전송
             try {
               const fcmToken = await handleAllowNotification();
