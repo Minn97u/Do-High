@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { getExpStatus } from "../api/ExpApi";
-import { getMemberInfo } from "../api/UserApi";
+import { getMemberInfo, logoutMember } from "../api/UserApi";
 import { getUnreadNotificationCount } from "../api/NotificationApi";
 import coin from "../assets/coin.svg";
 import dropdownArrow from "../assets/dropdown.svg";
@@ -46,7 +46,9 @@ const MypageEntry = () => {
           console.error("경험치 정보 조회 오류:", expResponse.error.message);
         }
 
+
         const notiResponse = await getUnreadNotificationCount(); 
+        
         if (
           notiResponse.responseType === "SUCCESS" &&
           notiResponse.success > 0
@@ -73,18 +75,18 @@ const MypageEntry = () => {
 
   const handleLogout = async () => {
     try {
-      const response = await Axios.get("/member/logout");
+      const response = await logoutMember();
 
-      if (response.data.responseType === "SUCCESS") {
+      if (response.responseType === "SUCCESS") {
         localStorage.removeItem("accessToken");
         localStorage.removeItem("isAdmin");
         localStorage.removeItem("refreshToken");
         navigate("/auth/login", { replace: true });
       } else {
-        console.error("로그아웃 실패:", response.data.error.message);
+        console.error("로그아웃 실패:", response.error.message);
       }
     } catch (error) {
-      console.error("로그아웃 요청 오류:", error);
+      console.error("로그아웃 처리 중 오류:", error);
     }
   };
 

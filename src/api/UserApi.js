@@ -32,3 +32,14 @@ export const updateSelectedProfile = async (url) => {
     throw error;
   }
 };
+
+// 로그아웃
+export const logoutMember = async () => {
+  try {
+    const response = await Axios.get("/member/logout");
+    return response.data;
+  } catch (error) {
+    console.error("로그아웃 API 호출 오류:", error.message);
+    throw error;
+  }
+};
