@@ -8,7 +8,7 @@ const sortMap = {
 const useBoardInfinite = (sortOption) => {
   return useInfiniteQuery({
     queryKey: ["board", sortOption],
-    queryFn: async ({ pageParam = 0 }) => {
+    queryFn: async ({ pageParam = 1 }) => {
       const size = 10;
       const sort = sortMap[sortOption];
       const response = await getPosts(pageParam, size, sort);
