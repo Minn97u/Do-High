@@ -23,7 +23,7 @@ const sortMap = {
 const useExpInfinite = (selectedTab, sortOption) => {
   return useInfiniteQuery({
     queryKey: ["exp", selectedTab, sortOption],
-    queryFn: async ({ pageParam = 1 }) => {
+    queryFn: async ({ pageParam = 0 }) => {
       const size = 10;
       const sort = sortMap[sortOption];
       const api = apiMap[selectedTab];
