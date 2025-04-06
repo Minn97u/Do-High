@@ -46,7 +46,7 @@ const MypageEntry = () => {
           console.error("경험치 정보 조회 오류:", expResponse.error.message);
         }
 
-        const notiResponse = await getUnreadNotificationCount(); // ✅ 수정
+        const notiResponse = await getUnreadNotificationCount(); 
         if (
           notiResponse.responseType === "SUCCESS" &&
           notiResponse.success > 0
