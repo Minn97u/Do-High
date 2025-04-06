@@ -10,15 +10,15 @@ const Admin = () => {
 
   const handleLogout = async () => {
     try {
-      const response = await Axios.get("/member/logout");
+      const response = await logoutMember();
 
-      if (response.data.responseType === "SUCCESS") {
+      if (response.responseType === "SUCCESS") {
         localStorage.removeItem("accessToken");
         localStorage.removeItem("isAdmin");
         localStorage.removeItem("refreshToken");
         navigate("/auth/login", { replace: true });
       } else {
-        console.error("로그아웃 실패:", response.data.error.message);
+        console.error("로그아웃 실패:", response.error.message);
       }
     } catch (error) {
       console.error("로그아웃 요청 오류:", error);
