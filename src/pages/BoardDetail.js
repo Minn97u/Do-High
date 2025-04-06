@@ -1,3 +1,4 @@
+import { useQueryClient } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -14,6 +15,7 @@ const BoardDetail = () => {
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [notFound, setNotFound] = useState(false);
   const isAdmin = localStorage.getItem("isAdmin") === "true";
+  const queryClient = useQueryClient();
 
   const [post, setPost] = useState({
     id: null,
@@ -57,7 +59,8 @@ const BoardDetail = () => {
     try {
       await deletePostById(post.id);
       alert("삭제되었습니다.");
-      navigate(-1);
+      queryClient.invalidateQueries({ queryKey: ["board"] });
+      navigate("/boardlist");
     } catch (error) {
       console.error("게시글 삭제 실패:", error.message);
       alert("삭제에 실패했습니다.");
