@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { Axios } from "../api/Axios";
 import { getExpStatus } from "../api/ExpApi";
 import { getMemberInfo } from "../api/UserApi";
+import { getUnreadNotificationCount } from "../api/NotificationApi";
 import coin from "../assets/coin.svg";
 import dropdownArrow from "../assets/dropdown.svg";
 import notification from "../assets/notification.svg";
@@ -19,9 +19,9 @@ const MypageEntry = () => {
     character: profile,
   });
   const [totalExp, setTotalExp] = useState(0);
+  const [hasNotification, setHasNotification] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const navigate = useNavigate();
-  const hasNotification = true;
 
   useEffect(() => {
     const fetchData = async () => {
@@ -44,6 +44,16 @@ const MypageEntry = () => {
           setTotalExp(expResponse.success.exp);
         } else {
           console.error("경험치 정보 조회 오류:", expResponse.error.message);
+        }
+
+        const notiResponse = await getUnreadNotificationCount(); // ✅ 수정
+        if (
+          notiResponse.responseType === "SUCCESS" &&
+          notiResponse.success > 0
+        ) {
+          setHasNotification(true);
+        } else {
+          setHasNotification(false);
         }
       } catch (error) {
         console.error("API 호출 오류:", error.message);

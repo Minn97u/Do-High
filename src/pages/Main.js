@@ -1,12 +1,28 @@
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import logo from "../assets/logo.png";
 import notificationIcon from "../assets/notification.svg";
 import ExperienceSection from "../components/ExperienceSection";
 import ProfileCard from "../components/ProfileCard";
+import { getUnreadNotificationCount } from "../api/NotificationApi";
 
 const Main = () => {
   const navigate = useNavigate();
+  const [hasNotification, setHasNotification] = useState(false);
+
+  useEffect(() => {
+    const fetchNotification = async () => {
+      const response = await getUnreadNotificationCount();
+      if (response.responseType === "SUCCESS" && response.success > 0) {
+        setHasNotification(true);
+      } else {
+        setHasNotification(false);
+      }
+    };
+
+    fetchNotification();
+  }, []);
 
   return (
     <Container>
@@ -14,6 +30,7 @@ const Main = () => {
         <Logo src={logo} alt="logo" />
         <NotificationContainer onClick={() => navigate("/alarm")}>
           <NotificationIcon src={notificationIcon} alt="notification" />
+          {hasNotification && <NotificationBadge />}
         </NotificationContainer>
       </Header>
       <Content>
@@ -62,6 +79,16 @@ const NotificationIcon = styled.img`
   width: 22px;
   height: 22px;
   cursor: pointer;
+`;
+
+const NotificationBadge = styled.div`
+  position: absolute;
+  top: -3px;
+  right: -3px;
+  width: 4px;
+  height: 4px;
+  background-color: ${(props) => props.theme.colors.mainC};
+  border-radius: 50%;
 `;
 
 const Content = styled.div`
