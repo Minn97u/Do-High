@@ -9,3 +9,7 @@ export const getNotificationList = async () => {
     throw error;
   }
 };
+
+export const NotificationAsRead = async (id) => {
+  await Axios.patch(`/push/${id}`);
+};

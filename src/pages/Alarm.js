@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { Axios } from "../api/Axios";
-import { getNotificationList } from "../api/NotificationApi";
+import {
+  getNotificationList,
+  NotificationAsRead,
+} from "../api/NotificationApi";
 import backBtn from "../assets/backBtn.svg";
 import coin from "../assets/coin.svg";
 import flagIcon from "../assets/flag.svg";
@@ -25,10 +27,13 @@ const Alarm = () => {
 
   const handleNotificationClick = async (id, redirectPath) => {
     try {
-      await Axios.patch(`/push/${id}`);
+      await NotificationAsRead(id);
 
       const data = await getNotificationList();
-      console.log("알림 목록:", data);
+      if (!data) {
+        setError("알림을 불러오지 못했습니다.");
+        return;
+      }
       setNotifications(data);
 
       if (redirectPath) {
