@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import { getUnreadNotificationCount } from "../api/NotificationApi";
 import logo from "../assets/logo.png";
 import notificationIcon from "../assets/notification.svg";
 import ExperienceSection from "../components/ExperienceSection";
 import ProfileCard from "../components/ProfileCard";
-import { getUnreadNotificationCount } from "../api/NotificationApi";
 
 const Main = () => {
   const navigate = useNavigate();
@@ -45,8 +45,7 @@ export default Main;
 
 const Container = styled.div`
   background-color: ${(props) => props.theme.colors.gray};
-  height: 100vh;
-  width: 100%;
+  height: 100%;
   display: flex;
   flex-direction: column;
 `;
@@ -92,9 +91,7 @@ const NotificationBadge = styled.div`
 `;
 
 const Content = styled.div`
-  margin-top: 50px;
-  flex: 1;
+  padding: 60px 0 30px;
   overflow-y: auto;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
+  -webkit-overflow-scrolling: touch;
 `;
