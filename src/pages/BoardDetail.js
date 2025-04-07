@@ -137,6 +137,7 @@ const Container = styled.div`
   width: 100%;
   min-height: 100vh;
   background-color: ${(props) => props.theme.colors.white};
+  padding-bottom: 40px;
 `;
 
 const Header = styled.div`
