@@ -1,5 +1,6 @@
 import babelParser from "@babel/eslint-parser";
 import js from "@eslint/js";
+import prettier from "eslint-config-prettier";
 import react from "eslint-plugin-react";
 
 export default [
@@ -39,6 +40,15 @@ export default [
       "no-undef": "warn", // 정의되지 않은 변수 경고만 표시
       "import/order": "off", // import 순서 규칙 비활성화 (필요하면 다시 활성화 가능)
       "no-useless-catch": "off", // 불필요한 try/catch 경고 제거
+      quotes: [
+        "error",
+        "single",
+        {
+          avoidEscape: true,
+          allowTemplateLiterals: true,
+        },
+      ],
     },
   },
+  prettier,
 ];
