@@ -59,7 +59,7 @@ const BoardDetail = () => {
     try {
       await deletePostById(post.id);
       alert("삭제되었습니다.");
-      queryClient.invalidateQueries({ queryKey: ["board"] });
+      queryClient.invalidateQueries({ queryKey: ["board", "최신순"] });
       navigate("/boardlist");
     } catch (error) {
       console.error("게시글 삭제 실패:", error.message);
