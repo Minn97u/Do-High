@@ -14,7 +14,7 @@ import useTooltipVisible from "../hooks/useTooltipVisible";
 
 const ProfileCard = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
-  const [tooltipVisible, setTooltipVisible] = useState(false);
+  // const [tooltipVisible, setTooltipVisible] = useState(false);
   const [totalExp, setTotalExp] = useState(0);
   const [remainingExp, setRemainingExp] = useState(0);
   const [nextLevel, setNextLevel] = useState("");
@@ -181,13 +181,13 @@ const ProfileCard = () => {
     }
   }, [currentSlide, thisYearExpPercent, lastYearExpPercent, isMaxLevel]);
 
-  const handleInfoClick = () => {
-    setTooltipVisible(!tooltipVisible);
-  };
+  // const handleInfoClick = () => {
+  //   setTooltipVisible(!tooltipVisible);
+  // };
 
-  useEffect(() => {
-    setTooltipVisible(false); // 슬라이드 이동 시 툴팁 끄기
-  }, [currentSlide]);
+  // useEffect(() => {
+  //   setTooltipVisible(false); // 슬라이드 이동 시 툴팁 끄기
+  // }, [currentSlide]);
 
   // 신규 입사자일 경우
   if (isNewEmployee) {
