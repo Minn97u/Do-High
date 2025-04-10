@@ -205,7 +205,11 @@ const ProfileCard = () => {
                 <p>{memberInfo.identificationNumber}</p>
               </ProfileInfo>
               <ProfileImageWrapper>
-                <ProfileImage src={memberInfo.character} alt="profile" />
+                <ProfileImage
+                  src={memberInfo.character}
+                  alt="profile"
+                  loading="lazy"
+                />
               </ProfileImageWrapper>
             </ProfileHeader>
             <ExperienceSection>
@@ -216,7 +220,7 @@ const ProfileCard = () => {
               <ProgressBar>
                 <Progress percent={displayPercent} />
                 <CoinWrapper percent={displayPercent}>
-                  <CoinIcon src={coinIcon} alt="coin" />
+                  <CoinIcon src={coinIcon} alt="coin" loading="lazy" />
                 </CoinWrapper>
               </ProgressBar>
             </ExperienceSection>
@@ -244,7 +248,11 @@ const ProfileCard = () => {
                   <p>{memberInfo.identificationNumber}</p>
                 </ProfileInfo>
                 <ProfileImageWrapper>
-                  <ProfileImage src={memberInfo.character} alt="profile" />
+                  <ProfileImage
+                    src={memberInfo.character}
+                    alt="profile"
+                    loading="lazy"
+                  />
                 </ProfileImageWrapper>
               </ProfileHeader>
               <ExperienceSection>
@@ -255,7 +263,7 @@ const ProfileCard = () => {
                 <ProgressBar>
                   <Progress percent={displayPercent} />
                   <CoinWrapper percent={displayPercent}>
-                    <CoinIcon src={coinIcon} alt="coin" />
+                    <CoinIcon src={coinIcon} alt="coin" loading="lazy" />
                   </CoinWrapper>
                 </ProgressBar>
                 {!isMaxLevel && (
@@ -290,7 +298,7 @@ const ProfileCard = () => {
                     onClick={handleSecondTooltipClick}
                     ref={secondTooltipWrapperRef}
                   >
-                    <InfoIcon src={info} alt="info" />
+                    <InfoIcon src={info} alt="info" loading="lazy" />
                     {isSecondSlideTooltipVisible && (
                       <Tooltip>
                         <img src={speechBubble2} />
@@ -340,7 +348,7 @@ const ProfileCard = () => {
                       onClick={handleThirdTooltipClick}
                       ref={thirdTooltipWrapperRef}
                     >
-                      <InfoIcon src={info} alt="info" />
+                      <InfoIcon src={info} alt="info" loading="lazy" />
                       {isThirdSlideTooltipVisible && (
                         <Tooltip>
                           <img src={speechBubble3} />
