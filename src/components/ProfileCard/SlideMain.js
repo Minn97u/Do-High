@@ -1,6 +1,5 @@
 import styled from "styled-components";
 import ProfileHeader from "./ProfileHeader";
-
 import React from "react";
 
 const ProfileHeader = ({ memberInfo }) => {
