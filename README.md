@@ -45,6 +45,15 @@ DOHIGH는 두핸즈라는 기업의 요구사항을 반영하여, 사내 구성�
 - **사용자 만족도 증대**: 편리한 UI/UX와 직관적 데이터 시각화를 통해 사용 경험 최적화
 
 
+<img width="1000" alt="스크린샷 2025-05-03 오후 10 03 55" src="https://github.com/user-attachments/assets/09b0806d-4693-41fe-bb74-bfc8ba9767d3" />
+
+## ERD
+<img width="1000" alt="스크린샷 2025-05-03 오후 10 06 08" src="https://github.com/user-attachments/assets/15cd63c8-7e2b-412e-9928-c90cb426d3c3" />
+
+## Information Architecture
+<img width="1000" alt="스크린샷 2025-05-03 오후 10 05 24" src="https://github.com/user-attachments/assets/21ba3c0f-c336-4298-a38e-9fb5275c875b" />
+
+<img width="1000" alt="스크린샷 2025-05-03 오후 10 07 18" src="https://github.com/user-attachments/assets/d6e50170-3e77-4594-9e1e-7d4793bfd781" />
 
 # dohigh-frontend
 
